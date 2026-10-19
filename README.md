@@ -1,0 +1,104 @@
+# Prevent & Restore Physical Therapy — CMS & API (Part 1)
+
+Monorepo:
+
+```
+client/   Next.js 14 App Router (JavaScript), Tailwind CSS, Redux Toolkit, Lucide icons — admin CMS (Part 2 adds the public site here)
+server/   Node.js + Express 5 REST API, Prisma ORM, PostgreSQL, Amazon S3 media
+```
+
+The browser never talks to PostgreSQL; every read/write goes through the Express API (`client/src/lib/api.js`).
+
+## 1. Local setup
+
+Requirements: Node.js 20+, Yarn 1.x, PostgreSQL 14+ (Python 3 only if you re-run the legacy scraper).
+
+```bash
+# Server
+cd server
+cp .env.example .env            # fill in DATABASE_URL, SESSION_SECRET (>= 32 random chars), CLIENT_URL ...
+yarn install
+yarn migrate:deploy             # applies prisma/migrations (never resets data)
+yarn seed                       # idempotent; only inserts records that don't exist yet
+yarn dev                        # http://localhost:5000/api/health
+
+# Client
+cd ../client
+cp .env.example .env.local      # NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api
+yarn install
+yarn dev                        # http://localhost:3000/admin
+```
+
+### First administrator (one-time setup)
+1. On boot, if no admin exists, the server prints a one-time setup token to the log (valid 24h, `SETUP_TOKEN_TTL_HOURS`). You can issue a fresh one any time with `yarn setup:token`.
+2. Open `/admin/setup`, paste the token, and create the admin (bcrypt, 12 rounds).
+3. Setup is disabled permanently once an admin exists. There is no public registration.
+
+Sessions: httpOnly `pr_admin_session` cookie (JWT signed with `SESSION_SECRET`), 8h expiry (`SESSION_TTL_HOURS`), invalidated on password change. Login is rate-limited and locks an IP+email for 15 minutes after 5 failures.
+
+## 2. Migrations
+- Schema: `server/prisma/schema.prisma`. Migrations live in `server/prisma/migrations/`.
+- Change the schema, then run `yarn migrate:dev --name describe_change` locally to create a new incremental migration. Commit it.
+- In staging/production run only `yarn migrate:deploy`. Never run `prisma migrate reset` or `db push --force-reset` against a real database.
+
+## 3. Seed content
+`server/prisma/seed-data/legacy.json` was generated from the live WordPress site by `yarn scrape:legacy` (uses the WP REST API; requires `pip install beautifulsoup4`). Images were downloaded to `server/uploads/legacy/`.
+
+Seeded (placeholder content to be replaced by the client):
+- 2 blogs by Ray Waters (Sept 9, 2026) with full heading/list/disclaimer structure. **The source posts have no featured image**, so none was seeded.
+- 7 services (text from /physical-therapy-services/).
+- 13 conditions. The 5 with dedicated legacy pages (Back & Sciatica, Shoulder & Neck, Knee, Foot & Ankle, Sports Injuries) are fully seeded and published, with their featured images. The other 8 only appear as names on /other-conditions/, so they are seeded as **drafts** with the verified general "Other Conditions" text and need client content before publishing. Review/testimonial blocks were left out (no Reviews module).
+- Author "Ray Waters", credentials "PT, DPT, CSCS, CEAS" (from the homepage).
+- 301 redirects: /back-sciatica-pain/, /shoulder-neck-pain/, /knee-pain/, /foot-ankle-pain/, /sports-injuries/ → /what-we-treat/<slug>; both legacy blog URLs → /blog/<slug>; /physical-therapy-services/ → /services; /other-conditions/ → /what-we-treat.
+
+## 4. Public URL structure (for Part 2)
+| Content | Public path | Public API |
+|---|---|---|
+| Blog | `/blog/:slug` | `GET /api/public/blogs`, `/api/public/blogs/:slug`, `/blogs/categories`, `/blogs/tags` |
+| Service | `/services/:slug` | `GET /api/public/services`, `/:slug` |
+| Condition | `/what-we-treat/:slug` | `GET /api/public/conditions`, `/:slug` |
+| CMS page | `/:slug` | `GET /api/public/pages`, `/:slug` |
+| Redirects | — | `GET /api/public/redirects` (all active), `/redirects/resolve?path=` |
+| Sitemap | `/sitemap.xml` | `GET /api/public/sitemap.xml` (XML) and `/api/public/sitemap` (JSON) |
+| Settings | — | `GET /api/public/settings` |
+
+All list endpoints accept `page`, `limit`; blogs also `category`, `tag`, `search`, `sort=latest`. Every detail response includes a `seo` object (`title`, `description`, `canonical`, `robots`, `ogImage`, `path`) with fallbacks. Lists and sitemap exclude drafts, archived, trashed, future-dated and `noindex` content; detail endpoints serve published `noindex` items with `robots: "noindex, nofollow"` so the page still renders but is not indexed.
+
+All routes are also available under `/api/v1/...`.
+
+## 5. Admin API (cookie-authenticated)
+`/api/auth`: `GET setup/status`, `POST setup`, `POST login`, `POST logout`, `GET me`, `PUT password`
+
+`/api/admin`: `dashboard`, `blogs`, `services`, `conditions`, `pages` (each: `GET /`, `POST /`, `GET/PUT/DELETE /:id`, `PUT /reorder`, `GET /:id/preview`, `POST /:id/publish|unpublish|archive|restore`), `categories`, `tags`, `authors`, `redirects` (CRUD), `media` (`POST` multipart `file` + `folder`, `GET`, `DELETE /:id`, `GET /status`), `settings`.
+
+Slug rules: auto-generated from title, editable, unique per type. Changing the slug of a published item creates a 301 from the old path and re-points existing redirects (no chains). Manual redirects reject loops and chains. CMS page slugs cannot use reserved routes (home, about-us, blog, services, what-we-treat, admin, api, …) or a path that already has a redirect.
+
+## 6. Media / Amazon S3
+- Allowed: JPEG, PNG, WebP, GIF, AVIF up to 5 MB (`MAX_UPLOAD_MB`), validated by MIME type **and** file signature. Only URLs + metadata are stored in PostgreSQL (`media` table).
+- When all four `AWS_*` variables are real values, uploads go to S3 with server-side credentials. Otherwise they fall back to local disk (`server/uploads`, served at `/api/uploads/...`) — fine for development, not for multi-instance production.
+- S3 setup: create a bucket in the chosen region; allow public read for the `blogs/ services/ treatments/ pages/ general/` prefixes (bucket policy) or put CloudFront in front and set `AWS_S3_PUBLIC_BASE_URL`; create an IAM user limited to `s3:PutObject` and `s3:DeleteObject` on that bucket.
+- Seeded legacy images live in `server/uploads/legacy/`; upload them to S3 and update URLs when moving to S3 (or keep serving them from the API).
+
+## 7. Fonts
+Blair ITC Std and Futura PT are licensed fonts and were not available. `globals.css` already declares `@font-face` for `/fonts/BlairITCStd-Medium.woff2`, `/fonts/FuturaPT-Book.woff2`, `/fonts/FuturaPT-Demi.woff2`; drop the licensed webfont files into `client/public/fonts/`. Until then, fallbacks are Montserrat (headings) and Jost (body, a geometric Futura-style face).
+
+## 8. Deployment
+- **API**: any Node 20 host (Render, Railway, ECS, EC2…). Set env vars, run `yarn install --production=false && npx prisma generate && yarn migrate:deploy && yarn seed` (seed is optional and idempotent), start with `yarn start`. Set `NODE_ENV=production` (forces secure cookies) and `TRUST_PROXY` to the number of proxies in front.
+- **Client**: Vercel or any Node host: `yarn build && yarn start` with `NEXT_PUBLIC_API_BASE_URL=https://<api-host>/api`.
+- **Cookies**: the session cookie is `SameSite=Lax`. Serve the API on the same site as the admin (e.g. `admin.example.com` + `api.example.com`, or the API reverse-proxied under `/api`). Add every admin origin to `CLIENT_URL` (comma-separated).
+- **Database**: managed PostgreSQL (RDS, Neon, Supabase…). Back it up before running migrations.
+
+### Preview environment note
+In this Emergent preview, `backend/server.py` is only a small shim that starts an embedded PostgreSQL (binaries from `server/node_modules/@embedded-postgres`, data in `server/.pgdata`) plus the Express API and proxies `/api` to it; `frontend/package.json` `start` runs `client`. Neither is needed outside the preview.
+
+## 9. Remaining client credentials / configuration checklist
+- [ ] Production PostgreSQL `DATABASE_URL`
+- [ ] Strong `SESSION_SECRET` (e.g. `openssl rand -hex 32`)
+- [ ] `AWS_REGION`, `AWS_S3_BUCKET`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` (+ optional `AWS_S3_PUBLIC_BASE_URL` / CloudFront)
+- [ ] Production `CLIENT_URL` (admin origin) and `SITE_URL` (canonical public domain)
+- [ ] Licensed Blair ITC Std and Futura PT webfont files
+- [ ] Featured images for the two seeded blogs (none exist on the current site)
+- [ ] Content for the 8 draft conditions (Tennis Elbow, Golfer's Elbow, Tendinopathy, Numbness and Tingling, Headaches, Jaw Pain, Plantar Fasciitis, Posterior Tibialis Dysfunction)
+- [ ] Default meta description and social image (Settings → SEO defaults)
+- [ ] Confirm clinic details used in seeded copy (East Cobb / Marietta, GA; Dr. Ray Waters, PT, DPT) and the phone number that appears in the IT band article (404-907-2734, copied verbatim from the source)
+- [ ] Final replacement blog content from the client

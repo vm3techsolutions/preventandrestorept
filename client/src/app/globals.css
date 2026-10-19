@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
+
+/* Licensed brand fonts: drop the files into client/public/fonts/ to activate (see README). */
+@font-face {
+  font-family: 'Blair ITC Std';
+  src: url('/fonts/BlairITCStd-Medium.woff2') format('woff2');
+  font-weight: 500 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Futura PT';
+  src: url('/fonts/FuturaPT-Book.woff2') format('woff2');
+  font-weight: 300 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Futura PT';
+  src: url('/fonts/FuturaPT-Demi.woff2') format('woff2');
+  font-weight: 600 800;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-font-smoothing: antialiased; }
+  body { @apply font-body bg-slate-50 text-slate-700; }
+  h1, h2, h3, h4 { @apply font-heading text-navy; }
+  ::selection { background: #007791; color: #fff; }
+  :focus-visible { outline: 2px solid #0094B2; outline-offset: 2px; }
+}
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-[background-color,color,box-shadow,transform] duration-150 active:scale-[.98] disabled:opacity-50 disabled:pointer-events-none; }
+  .btn-primary { @apply btn bg-teal text-white shadow-sm hover:bg-teal-hover; }
+  .btn-navy { @apply btn bg-navy text-white hover:bg-navy-2; }
+  .btn-secondary { @apply btn bg-white text-navy border border-slate-300 hover:bg-slate-100; }
+  .btn-danger { @apply btn bg-rose-600 text-white hover:bg-rose-700; }
+  .btn-ghost { @apply inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-slate-600 hover:bg-slate-100 hover:text-navy transition-colors; }
+  .input { @apply w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-[border-color,box-shadow] placeholder:text-slate-400 focus:border-teal focus:ring-2 focus:ring-teal/20; }
+  .label { @apply mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500; }
+  .card { @apply rounded-xl border border-slate-200 bg-white shadow-xs; }
+  .th { @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 bg-slate-100/70 border-b border-slate-200; }
+  .td { @apply px-4 py-3 text-sm text-slate-700 border-b border-slate-100 align-middle; }
+  .rich a { @apply text-teal underline underline-offset-2; }
+  .rich strong, .rich b { @apply font-semibold text-navy; }
+}
+
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #94a3b8;
+}

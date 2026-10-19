@@ -1,0 +1,303 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Admin {
+  id             Int       @id @default(autoincrement())
+  email          String    @unique
+  name           String?
+  passwordHash   String    @map("password_hash")
+  sessionVersion Int       @default(1) @map("session_version")
+  lastLoginAt    DateTime? @map("last_login_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model SetupToken {
+  id        Int       @id @default(autoincrement())
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at")
+  usedAt    DateTime? @map("used_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("setup_tokens")
+}
+
+model LoginAttempt {
+  identifier  String    @id
+  count       Int       @default(0)
+  lockedUntil DateTime? @map("locked_until")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@map("login_attempts")
+}
+
+model Author {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  credentials String?
+  bio         String?  @db.Text
+  avatarUrl   String?  @map("avatar_url")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  blogs       Blog[]
+
+  @@map("authors")
+}
+
+model Blog {
+  id                   Int                   @id @default(autoincrement())
+  title                String
+  slug                 String                @unique
+  excerpt              String?               @db.Text
+  introduction         String?               @db.Text
+  authorId             Int?                  @map("author_id")
+  author               Author?               @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  status               ContentStatus         @default(DRAFT)
+  publishedAt          DateTime?             @map("published_at")
+  featuredImageUrl     String?               @map("featured_image_url")
+  featuredImageAlt     String?               @map("featured_image_alt")
+  featuredImageCaption String?               @map("featured_image_caption")
+  seoTitle             String?               @map("seo_title")
+  metaDescription      String?               @map("meta_description")
+  targetKeyword        String?               @map("target_keyword")
+  canonicalUrl         String?               @map("canonical_url")
+  noindex              Boolean               @default(false)
+  displayOrder         Int                   @default(0) @map("display_order")
+  deletedAt            DateTime?             @map("deleted_at")
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @updatedAt @map("updated_at")
+  blocks               BlogContentBlock[]
+  categories           BlogCategoryMapping[]
+  tags                 BlogTagMapping[]
+  related              BlogRelated[]         @relation("BlogRelatedFrom")
+  relatedBy            BlogRelated[]         @relation("BlogRelatedTo")
+
+  @@index([status])
+  @@index([publishedAt])
+  @@index([displayOrder])
+  @@index([deletedAt])
+  @@map("blogs")
+}
+
+model BlogContentBlock {
+  id        Int      @id @default(autoincrement())
+  blogId    Int      @map("blog_id")
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  type      String
+  position  Int
+  data      Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([blogId, position])
+  @@map("blog_content_blocks")
+}
+
+model BlogCategory {
+  id          Int                   @id @default(autoincrement())
+  name        String
+  slug        String                @unique
+  description String?               @db.Text
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+  blogs       BlogCategoryMapping[]
+
+  @@map("blog_categories")
+}
+
+model BlogTag {
+  id          Int              @id @default(autoincrement())
+  name        String
+  slug        String           @unique
+  description String?          @db.Text
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  blogs       BlogTagMapping[]
+
+  @@map("blog_tags")
+}
+
+model BlogCategoryMapping {
+  blogId     Int          @map("blog_id")
+  categoryId Int          @map("category_id")
+  blog       Blog         @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  category   BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@id([blogId, categoryId])
+  @@index([categoryId])
+  @@map("blog_category_mapping")
+}
+
+model BlogTagMapping {
+  blogId Int     @map("blog_id")
+  tagId  Int     @map("tag_id")
+  blog   Blog    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tag    BlogTag @relation(fields: [tagId], references: [id], onDelete: Restrict)
+
+  @@id([blogId, tagId])
+  @@index([tagId])
+  @@map("blog_tag_mapping")
+}
+
+model BlogRelated {
+  blogId        Int  @map("blog_id")
+  relatedBlogId Int  @map("related_blog_id")
+  position      Int  @default(0)
+  blog          Blog @relation("BlogRelatedFrom", fields: [blogId], references: [id], onDelete: Cascade)
+  relatedBlog   Blog @relation("BlogRelatedTo", fields: [relatedBlogId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, relatedBlogId])
+  @@map("blog_related")
+}
+
+model Service {
+  id               Int                @id @default(autoincrement())
+  title            String
+  slug             String             @unique
+  shortDescription String?            @map("short_description") @db.Text
+  content          Json               @default("[]")
+  featuredImageUrl String?            @map("featured_image_url")
+  featuredImageAlt String?            @map("featured_image_alt")
+  iconName         String?            @map("icon_name")
+  faqs             Json               @default("[]")
+  ctaHeading       String?            @map("cta_heading")
+  ctaLabel         String?            @map("cta_label")
+  ctaUrl           String?            @map("cta_url")
+  seoTitle         String?            @map("seo_title")
+  metaDescription  String?            @map("meta_description")
+  canonicalUrl     String?            @map("canonical_url")
+  noindex          Boolean            @default(false)
+  status           ContentStatus      @default(DRAFT)
+  publishedAt      DateTime?          @map("published_at")
+  displayOrder     Int                @default(0) @map("display_order")
+  deletedAt        DateTime?          @map("deleted_at")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  treatments       ServiceTreatment[]
+
+  @@index([status])
+  @@index([displayOrder])
+  @@index([deletedAt])
+  @@map("services")
+}
+
+model Treatment {
+  id               Int                @id @default(autoincrement())
+  title            String
+  slug             String             @unique
+  shortDescription String?            @map("short_description") @db.Text
+  content          Json               @default("[]")
+  featuredImageUrl String?            @map("featured_image_url")
+  featuredImageAlt String?            @map("featured_image_alt")
+  iconName         String?            @map("icon_name")
+  faqs             Json               @default("[]")
+  ctaHeading       String?            @map("cta_heading")
+  ctaLabel         String?            @map("cta_label")
+  ctaUrl           String?            @map("cta_url")
+  seoTitle         String?            @map("seo_title")
+  metaDescription  String?            @map("meta_description")
+  canonicalUrl     String?            @map("canonical_url")
+  noindex          Boolean            @default(false)
+  status           ContentStatus      @default(DRAFT)
+  publishedAt      DateTime?          @map("published_at")
+  displayOrder     Int                @default(0) @map("display_order")
+  deletedAt        DateTime?          @map("deleted_at")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  services         ServiceTreatment[]
+
+  @@index([status])
+  @@index([displayOrder])
+  @@index([deletedAt])
+  @@map("treatments")
+}
+
+model ServiceTreatment {
+  serviceId   Int       @map("service_id")
+  treatmentId Int       @map("treatment_id")
+  service     Service   @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+
+  @@id([serviceId, treatmentId])
+  @@index([treatmentId])
+  @@map("service_treatment_mapping")
+}
+
+model Page {
+  id               Int           @id @default(autoincrement())
+  title            String
+  slug             String        @unique
+  excerpt          String?       @db.Text
+  content          Json          @default("[]")
+  featuredImageUrl String?       @map("featured_image_url")
+  featuredImageAlt String?       @map("featured_image_alt")
+  seoTitle         String?       @map("seo_title")
+  metaDescription  String?       @map("meta_description")
+  canonicalUrl     String?       @map("canonical_url")
+  noindex          Boolean       @default(false)
+  status           ContentStatus @default(DRAFT)
+  publishedAt      DateTime?     @map("published_at")
+  displayOrder     Int           @default(0) @map("display_order")
+  deletedAt        DateTime?     @map("deleted_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@index([deletedAt])
+  @@map("pages")
+}
+
+model UrlRedirect {
+  id         Int      @id @default(autoincrement())
+  fromPath   String   @unique @map("from_path")
+  toPath     String   @map("to_path")
+  statusCode Int      @default(301) @map("status_code")
+  isActive   Boolean  @default(true) @map("is_active")
+  note       String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([toPath])
+  @@index([isActive])
+  @@map("url_redirects")
+}
+
+model Media {
+  id           Int      @id @default(autoincrement())
+  storage      String
+  key          String   @unique
+  url          String
+  folder       String
+  mimeType     String   @map("mime_type")
+  size         Int
+  originalName String?  @map("original_name")
+  alt          String?
+  caption      String?
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([folder])
+  @@map("media")
+}
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}

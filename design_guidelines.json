@@ -1,0 +1,151 @@
+{
+  "project_name": "Prevent & Restore Physical Therapy Admin CMS",
+  "app_type": "dashboard (admin CMS)",
+  "emotional_archetype": "ORGANIC & EARTHY / CLINICAL PRECISION",
+  "typography": {
+    "headings": {
+      "font_family": "Blair ITC Std, Outfit, Montserrat, Cinzel, sans-serif",
+      "google_font_import": "@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300..900;1,300..900&family=Outfit:wght@400;500;600;700;800&family=Jost:wght@300;400;500;600;700&display=swap');",
+      "h1": "font-['Blair_ITC_Std',Outfit,Montserrat,sans-serif] text-3xl sm:text-4xl font-bold tracking-tight text-[#001D39]",
+      "h2": "font-['Blair_ITC_Std',Outfit,Montserrat,sans-serif] text-xl sm:text-2xl font-semibold tracking-tight text-[#001D39]",
+      "h3": "font-['Blair_ITC_Std',Outfit,Montserrat,sans-serif] text-lg sm:text-xl font-medium text-[#001D39]",
+      "card_heading": "font-['Blair_ITC_Std',Outfit,Montserrat,sans-serif] text-base font-semibold text-[#001D39]"
+    },
+    "body": {
+      "font_family": "Futura PT, Jost, Inter, sans-serif",
+      "base": "font-['Futura_PT',Jost,Inter,sans-serif] text-sm text-slate-700 leading-relaxed",
+      "small": "font-['Futura_PT',Jost,Inter,sans-serif] text-xs text-slate-500",
+      "labels": "font-['Futura_PT',Jost,Inter,sans-serif] text-xs font-semibold uppercase tracking-wider text-slate-500"
+    }
+  },
+  "colors": {
+    "primary_teal": "#007791",
+    "primary_teal_hover": "#0094B2",
+    "navy_blue": "#001D39",
+    "navy_blue_light": "#002B54",
+    "pure_white": "#FFFFFF",
+    "background_light": "#F8FAFC",
+    "surface_card": "#FFFFFF",
+    "border_subtle": "#E2E8F0",
+    "border_accent": "rgba(0, 119, 145, 0.2)",
+    "text_main": "#001D39",
+    "text_muted": "#64748B",
+    "status_published": {
+      "bg": "bg-emerald-50",
+      "text": "text-emerald-700",
+      "border": "border-emerald-200"
+    },
+    "status_draft": {
+      "bg": "bg-amber-50",
+      "text": "text-amber-700",
+      "border": "border-amber-200"
+    },
+    "status_archived": {
+      "bg": "bg-slate-100",
+      "text": "text-slate-600",
+      "border": "border-slate-300"
+    }
+  },
+  "layout_and_navigation": {
+    "sidebar": {
+      "container": "w-64 bg-[#001D39] text-white flex flex-col min-h-screen border-r border-[#002B54]",
+      "brand_header": "p-6 border-b border-[#002B54] flex items-center gap-3",
+      "nav_item_active": "flex items-center gap-3 px-4 py-3 rounded-lg bg-[#007791] text-white font-medium shadow-sm transition-colors",
+      "nav_item_inactive": "flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:bg-[#0094B2]/20 hover:text-white transition-colors",
+      "nav_items_list": [
+        "Dashboard",
+        "Blogs",
+        "Services",
+        "What We Treat",
+        "Pages",
+        "Categories",
+        "Tags",
+        "URL Redirects",
+        "Settings",
+        "Logout"
+      ]
+    },
+    "header": {
+      "container": "h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30 shadow-xs",
+      "search_bar": "relative w-72 flex items-center",
+      "user_profile": "flex items-center gap-3 border-l border-slate-200 pl-4"
+    },
+    "main_content": "flex-1 bg-slate-50 p-6 sm:p-8 min-h-screen overflow-y-auto"
+  },
+  "components": {
+    "summary_cards": {
+      "grid": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8",
+      "card": "bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:border-[#007791]/40 transition-all flex items-center justify-between",
+      "metric_title": "text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1",
+      "metric_value": "text-3xl font-bold text-[#001D39]",
+      "metric_badge": "text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 text-[#007791]"
+    },
+    "content_tables": {
+      "wrapper": "bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden",
+      "header_controls": "p-5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4 bg-slate-50/50",
+      "table": "w-full text-left border-collapse",
+      "th": "px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 bg-slate-100/70 border-b border-slate-200",
+      "td": "px-4 py-3 text-sm text-slate-700 border-b border-slate-100 align-middle",
+      "drag_handle": "cursor-grab active:cursor-grabbing text-slate-400 hover:text-[#007791] transition-colors"
+    },
+    "block_editor": {
+      "container": "grid grid-cols-1 lg:grid-cols-3 gap-8",
+      "editor_main": "lg:col-span-2 space-y-6",
+      "seo_sidebar": "lg:col-span-1 bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5 h-fit sticky top-20",
+      "block_item": "bg-white p-4 rounded-lg border border-slate-200 shadow-xs relative group hover:border-[#007791]/50 transition-all",
+      "block_actions": "flex items-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity",
+      "supported_blocks": [
+        "H2 Heading",
+        "H3 Heading",
+        "Paragraph Rich Text",
+        "Lists (Bullet/Numbered)",
+        "Image with Alt & Caption",
+        "Quote / Highlight Box",
+        "Call to Action (CTA) Button",
+        "Medical Disclaimer Box"
+      ]
+    },
+    "buttons": {
+      "primary": "px-4 py-2.5 rounded-lg bg-[#007791] hover:bg-[#0094B2] text-white font-medium text-sm transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#007791]/50",
+      "secondary": "px-4 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[#001D39] font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-slate-300",
+      "danger": "px-4 py-2.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-medium text-sm transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/50",
+      "ghost": "px-3 py-1.5 rounded-md text-slate-600 hover:bg-slate-100 hover:text-[#001D39] text-sm transition-colors"
+    },
+    "inputs": {
+      "text": "w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 text-sm focus:border-[#007791] focus:ring-2 focus:ring-[#007791]/20 outline-none transition-all",
+      "select": "w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 text-sm focus:border-[#007791] focus:ring-2 focus:ring-[#007791]/20 outline-none transition-all",
+      "textarea": "w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 text-sm focus:border-[#007791] focus:ring-2 focus:ring-[#007791]/20 outline-none transition-all min-h-[100px]"
+    }
+  },
+  "image_urls": [
+    {
+      "url": "https://images.pexels.com/photos/20860625/pexels-photo-20860625.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Physical therapy leg stretching session in modern clinic",
+      "category": "featured_image_sample"
+    },
+    {
+      "url": "https://images.pexels.com/photos/20860622/pexels-photo-20860622.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Physiotherapist assisting patient rehabilitation exercise",
+      "category": "service_banner_sample"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1649751361457-01d3a696c7e6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDN8MHwxfHNlYXJjaHwxfHxwaHlzaWNhbCUyMHRoZXJhcHklMjByZWhhYmlsaXRhdGlvbiUyMHRyZWF0bWVudHxlbnwwfHx8fDE3OTIzOTU3Mzl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Physical therapist examining knee and leg joint",
+      "category": "blog_cover_sample"
+    }
+  ],
+  "instructions_to_main_agent": [
+    "Use Next.js App Router JS, Tailwind CSS, Redux Toolkit, and Lucide react icons.",
+    "Implement persistent sidebar navigation containing all 10 required routes (Dashboard, Blogs, Services, What We Treat, Pages, Categories, Tags, URL Redirects, Settings, Logout).",
+    "Ensure total, published, and draft counts are displayed prominently on the Dashboard summary cards.",
+    "Ensure drag-and-drop handles are visually available in table listings and block editor items.",
+    "Every interactive element MUST have a descriptive `data-testid` attribute (e.g. `data-testid='btn-publish-blog'`).",
+    "Adhere strictly to primary teal `#007791` and navy blue `#001D39` branding provided."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Never use generic centered layouts or plain browser inputs without Tailwind focus rings.",
+    "Use precise APCA contrast for buttons and text elements over light and dark backgrounds.",
+    "All modals, dropdowns, inputs, and tab triggers must contain explicit data-testid values.",
+    "Avoid default placeholder images; use the curated unsplash/pexels URLs supplied in design_guidelines.json."
+  ]
+}
