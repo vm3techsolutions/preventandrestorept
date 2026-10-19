@@ -46,7 +46,7 @@ Sessions: httpOnly `pr_admin_session` cookie (JWT signed with `SESSION_SECRET`),
 
 Seeded (placeholder content to be replaced by the client):
 - 2 blogs by Ray Waters (Sept 9, 2026) with full heading/list/disclaimer structure. **The source posts have no featured image**, so none was seeded.
-- 7 services (text from /physical-therapy-services/).
+- 7 services (text from /physical-therapy-services/). That page has no images, so services have no featured image yet.
 - 13 conditions. The 5 with dedicated legacy pages (Back & Sciatica, Shoulder & Neck, Knee, Foot & Ankle, Sports Injuries) are fully seeded and published, with their featured images. The other 8 only appear as names on /other-conditions/, so they are seeded as **drafts** with the verified general "Other Conditions" text and need client content before publishing. Review/testimonial blocks were left out (no Reviews module).
 - Author "Ray Waters", credentials "PT, DPT, CSCS, CEAS" (from the homepage).
 - 301 redirects: /back-sciatica-pain/, /shoulder-neck-pain/, /knee-pain/, /foot-ankle-pain/, /sports-injuries/ → /what-we-treat/<slug>; both legacy blog URLs → /blog/<slug>; /physical-therapy-services/ → /services; /other-conditions/ → /what-we-treat.
@@ -84,7 +84,7 @@ Blair ITC Std and Futura PT are licensed fonts and were not available. `globals.
 
 ## 8. Deployment
 - **API**: any Node 20 host (Render, Railway, ECS, EC2…). Set env vars, run `yarn install --production=false && npx prisma generate && yarn migrate:deploy && yarn seed` (seed is optional and idempotent), start with `yarn start`. Set `NODE_ENV=production` (forces secure cookies) and `TRUST_PROXY` to the number of proxies in front.
-- **Client**: Vercel or any Node host: `yarn build && yarn start` with `NEXT_PUBLIC_API_BASE_URL=https://<api-host>/api`.
+- **Client**: Vercel or any Node host: `yarn build && yarn start` with `NEXT_PUBLIC_API_BASE_URL=https://<api-host>/api`, or `/api` when the API is reverse-proxied on the same domain (recommended; this is how the preview runs).
 - **Cookies**: the session cookie is `SameSite=Lax`. Serve the API on the same site as the admin (e.g. `admin.example.com` + `api.example.com`, or the API reverse-proxied under `/api`). Add every admin origin to `CLIENT_URL` (comma-separated).
 - **Database**: managed PostgreSQL (RDS, Neon, Supabase…). Back it up before running migrations.
 

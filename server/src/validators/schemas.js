@@ -1,8 +1,10 @@
 const { z } = require('zod');
 
 const str = (max) => z.string().max(max);
+const SAFE_URL = /^(https?:\/\/|\/(?!\/)|#|mailto:|tel:)/i;
+const safeUrl = (max) => z.string().trim().max(max).refine((v) => !v || SAFE_URL.test(v), 'URL must start with https://, http://, /, mailto: or tel:');
 const optStr = (max) => z.string().max(max).optional().nullable().transform((v) => (v === undefined || v === null || v.trim() === '' ? null : v.trim()));
-const urlOrPath = optStr(2000).refine((v) => !v || /^(https?:\/\/|\/)/i.test(v) || /^(mailto|tel):/i.test(v), 'Must be a URL or a path starting with /');
+const urlOrPath = optStr(2000).refine((v) => !v || /^(https?:\/\/|\/(?!\/))/i.test(v) || /^(mailto|tel):/i.test(v), 'Must be a URL or a path starting with /');
 const absUrl = optStr(2000).refine((v) => !v || /^https?:\/\//i.test(v), 'Canonical URL must be an absolute http(s) URL');
 const ids = z.array(z.coerce.number().int().positive()).max(200).default([]);
 
@@ -10,11 +12,11 @@ const block = z.discriminatedUnion('type', [
   z.object({ type: z.literal('heading'), data: z.object({ level: z.coerce.number().int().min(2).max(3), text: str(300) }) }),
   z.object({ type: z.literal('paragraph'), data: z.object({ html: str(20000) }) }),
   z.object({ type: z.literal('list'), data: z.object({ style: z.enum(['ordered', 'unordered']), items: z.array(str(5000)).max(200) }) }),
-  z.object({ type: z.literal('image'), data: z.object({ url: str(2000), alt: str(300).default(''), caption: str(500).default('') }) }),
+  z.object({ type: z.literal('image'), data: z.object({ url: safeUrl(2000), alt: str(300).default(''), caption: str(500).default('') }) }),
   z.object({ type: z.literal('quote'), data: z.object({ text: str(3000), cite: str(300).default('') }) }),
   z.object({
     type: z.literal('cta'),
-    data: z.object({ heading: str(300).default(''), text: str(2000).default(''), buttonLabel: str(120), buttonUrl: str(2000) }),
+    data: z.object({ heading: str(300).default(''), text: str(2000).default(''), buttonLabel: str(120), buttonUrl: safeUrl(2000) }),
   }),
   z.object({ type: z.literal('disclaimer'), data: z.object({ text: str(3000) }) }),
 ]);

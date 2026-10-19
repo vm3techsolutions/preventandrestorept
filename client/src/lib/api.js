@@ -1,6 +1,8 @@
 // Centralized REST client for the Express API. All browser <-> server communication goes through here.
+// Absolute (http://localhost:5000/api) or same-origin relative (/api) base URL.
 const BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || '').replace(/\/$/, '');
-const API_ORIGIN = BASE ? new URL(BASE).origin : '';
+const API_ORIGIN = /^https?:\/\//i.test(BASE) ? new URL(BASE).origin : '';
+const origin = () => (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
 
 export class ApiError extends Error {
   constructor(message, status, details) {
@@ -11,7 +13,7 @@ export class ApiError extends Error {
 }
 
 async function request(path, { method = 'GET', body, query, form } = {}) {
-  const url = new URL(`${BASE}${path}`);
+  const url = new URL(`${BASE}${path}`, origin());
   Object.entries(query || {}).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v);
   });

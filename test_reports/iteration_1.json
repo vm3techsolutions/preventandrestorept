@@ -1,0 +1,46 @@
+{
+  "summary": "First full run covering backend + frontend for the Prevent & Restore CMS (Express/Prisma via FastAPI shim, Next.js admin). Backend: 33/33 pytest pass, covering auth, lockout, origin guard, dashboard counts, blog lifecycle, slug-change 301 with flattening, redirects loop/chain/dup validation, reserved and redirect-colliding page slugs, taxonomy CRUD and in-use 409, services reorder plus the public list order, public lists/sitemap/404, and media PNG/JPEG upload plus 415 rejections. Frontend on the CLIENT_URL host (c6816511...): every requested flow passed: login/error, sidebar items, dashboard, logout redirect, blog list search/filter, blog create with blocks, move up/down, save -> /admin/blogs/:id, publish, preview, trash/restore, service edit (FAQ + related conditions), drag reorder 'Order saved' persisted, categories/tags CRUD and in-use error toast, redirect modal with loop error, settings save and storage status, authors manager, pages 'about-us' error toast, mobile menu. One environment-level HIGH issue: on the REACT_APP_BACKEND_URL host (https://prevent-restore.preview.emergentagent.com) the admin cannot log in. The page shows 'Cannot reach the server' because the client calls the absolute c6816511 API URL cross-origin and that origin is not in CLIENT_URL (CORS fails, and originGuard returns 403 for that Origin).",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "ALL mutating /api/* from origin https://prevent-restore.preview.emergentagent.com", "issue": "originGuard returns 403 'Origin not allowed' and CORS rejects the request because CLIENT_URL only lists https://c6816511-...preview.emergentagent.com and localhost. Users on the REACT_APP_BACKEND_URL domain cannot log in.", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "POST/PUT /api/admin/{blogs,services,conditions,pages} blocks", "issue": "CTA buttonUrl and image block url accept 'javascript:alert(1)' and can be published. Stored-XSS risk when the public site or the preview renders <a href>/<img src>. The paragraph html is sanitized but these URL fields are not. (Verified: blog published with javascript: CTA, then trashed.)"},
+      {"endpoint": "POST /api/admin/redirects", "issue": "No check that fromPath is the URL of a live published item. An admin can create a redirect that shadows live content (publishing removes such redirects, but creating one afterwards is allowed)."},
+      {"endpoint": "GET /api/public/*", "issue": "Cache-Control public max-age=60 means a CDN may serve a stale order or content for up to 60s after reorder or publish. Acceptable, but worth documenting."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Login on https://prevent-restore.preview.emergentagent.com/admin/login", "issue": "Login fails with 'Cannot reach the server. Check your connection.' because NEXT_PUBLIC_API_BASE_URL is hardcoded to the c6816511 host, which makes the call cross-origin from this domain.", "selector": "[data-testid='login-error']", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "All admin pages", "issues": ["404 for /fonts/FuturaPT-Book.woff2, /fonts/FuturaPT-Demi.woff2 and /fonts/BlairITCStd-Medium.woff2, so the brand fonts fall back to other fonts"]},
+      {"screen": "New page editor (/admin/pages/new)", "issues": ["Publishing sidebar card is empty (title only) for pages, which looks unfinished"]},
+      {"screen": "Redirect modal", "issues": ["Active toggle knob is rendered partly outside the track"]},
+      {"screen": "Seed content", "issues": ["Seeded blogs (2) and services (7) have no featuredImageUrl. Only 5 conditions have images, although the user asked for seed images copied from the site."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_cms_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "HIGH: Make the admin work on the REACT_APP_BACKEND_URL domain. Use a same-origin relative API base ('/api') in the browser, or add https://prevent-restore.preview.emergentagent.com to CLIENT_URL (server/.env) and make NEXT_PUBLIC_API_BASE_URL match the domain being served.",
+    "Validate CTA buttonUrl, image url and the faq/cta urls in blocks against allowed schemes (http/https/relative/mailto/tel) to block javascript: and data: URLs.",
+    "Add the missing font files under client/public/fonts or remove the @font-face references.",
+    "Optional: give the seeded blogs and services featured images; reject manual redirects whose fromPath is a live published item."
+  ],
+  "critical_code_review_comments": [
+    "client/.env* hardcodes the preview host in NEXT_PUBLIC_API_BASE_URL, and server CLIENT_URL is a single host. This breaks on any other domain (including production domain changes), so prefer same-origin '/api'.",
+    "sanitizeBlocks only cleans text/html. Add URL scheme validation for cta.buttonUrl and image.url in the zod schema (validators/schemas.js).",
+    "The login limiter is 30 req/15min per req.ip. TRUST_PROXY=2 must match the real proxy hop count, or every user shares one IP bucket. Verify this in production.",
+    "Good: bcrypt $2b$ hashes, httpOnly session cookie, sessionVersion invalidation, timing-safe dummy hash, slug flattening in applySlugChange, P2025 mapped to 404."
+  ],
+  "updated_files": ["/app/backend/tests/test_cms_api.py"],
+  "success_rate": {"backend": "100% (33/33)", "frontend": "~93% (all flows pass on the c6816511 host; login broken on the prevent-restore host)"},
+  "test_credentials": "v3mtechnology@gmail.com / PRestore-Admin-2026x (from /app/memory/test_credentials.md)",
+  "seed_data_creation": "None kept. TEST_ blogs (ids 3-7) are left soft-deleted in trash. TEST redirects, tags, categories, authors and media were deleted. Service order restored to 1..7, service 7 FAQ/related reset to empty, and the settings default meta description restored to empty.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=<frontend/.env> pytest /app/backend/tests/test_cms_api.py. Run the UI tests on https://c6816511-f19e-4c63-836f-4d78e6c2e85c.preview.emergentagent.com (the configured CLIENT_URL). After the main agent's fix, also verify login on https://prevent-restore.preview.emergentagent.com. Restore and delete actions open a confirm dialog (confirm-ok-button). Saving a new item navigates client-side to /admin/<type>/:id (use wait_for_timeout rather than wait_for_url with the load event). Each TestAuth lockout run uses a random fake email.",
+  "rca of the issue": "Login fails on prevent-restore: the Next client is built with NEXT_PUBLIC_API_BASE_URL=https://c6816511-.../api, so the browser on prevent-restore makes a cross-origin request. Express cors() allows only env.clientOrigins (c6816511 and localhost), so the preflight/response lacks ACAO, fetch throws, and the user sees 'Cannot reach the server'. Even with CORS fixed, originGuard would return 403. Reproduce: curl -X POST https://prevent-restore.preview.emergentagent.com/api/auth/login -H 'Origin: https://prevent-restore.preview.emergentagent.com' returns 403 {Origin not allowed}. Fix: same-origin relative API base, or add the origin to CLIENT_URL."
+}

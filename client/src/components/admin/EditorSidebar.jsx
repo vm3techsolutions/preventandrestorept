@@ -57,6 +57,9 @@ export default function EditorSidebar({ type, form, set, item }) {
             </Field>
           </>
         )}
+        <p className="text-xs text-slate-500" data-testid="publishing-help">
+          {item?.status === 'PUBLISHED' ? `Live at ${item.path}.` : `Drafts are private. Publish to make it live at ${type.publicPrefix}${form.slug || '…'}.`}
+        </p>
         {item && (
           <dl className="space-y-1.5 text-xs text-slate-500" data-testid="editor-timestamps">
             <div className="flex justify-between"><dt>Created</dt><dd>{formatDate(item.createdAt)}</dd></div>
