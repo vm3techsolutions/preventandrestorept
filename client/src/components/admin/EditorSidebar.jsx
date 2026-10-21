@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { api } from '@/lib/api';
 import { taxonomySlices } from '@/store/slices/taxonomySlices';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatDateTime } from '@/lib/utils';
 import { Field } from './ui';
 import MultiSelect from './editor/MultiSelect';
 import SeoPanel from './editor/SeoPanel';
@@ -15,6 +15,28 @@ const Panel = ({ title, children, testId }) => (
     {children}
   </div>
 );
+
+const who = (a) => (a ? `${a.name || a.email} (ID ${a.id})` : 'Not recorded');
+
+function AuditTrail({ item }) {
+  const rows = [
+    ['Created by', who(item.createdBy), 'audit-created-by'],
+    ['Created at', formatDateTime(item.createdAt), 'audit-created-at'],
+    ['Last updated by', who(item.updatedBy), 'audit-updated-by'],
+    ['Last updated at', formatDateTime(item.updatedAt), 'audit-updated-at'],
+  ];
+  return (
+    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3" data-testid="audit-trail">
+      <p className="label mb-2">Audit trail</p>
+      <dl className="space-y-1.5 text-xs">
+        {rows.map(([k, v, t]) => (
+          <div key={k} className="flex justify-between gap-3"><dt className="text-slate-500">{k}</dt><dd className="text-right font-medium text-navy" data-testid={t}>{v}</dd></div>
+        ))}
+      </dl>
+      {!item.createdBy && <p className="mt-2 text-[11px] text-slate-400">Created before audit tracking (seeded content).</p>}
+    </div>
+  );
+}
 
 function useRelatedOptions(resource, selfId) {
   const [options, setOptions] = useState([]);
@@ -67,6 +89,7 @@ export default function EditorSidebar({ type, form, set, item }) {
             {!isBlog && <div className="flex justify-between"><dt>First published</dt><dd>{formatDate(item.publishedAt)}</dd></div>}
           </dl>
         )}
+        {item && 'createdBy' in item && <AuditTrail item={item} />}
       </Panel>
       {isBlog && (
         <Panel title="Organize" testId="organize-panel">

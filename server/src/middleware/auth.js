@@ -37,6 +37,7 @@ async function requireAuth(req, _res, next) {
     }
     const admin = await prisma.admin.findUnique({ where: { id: payload.sub } });
     if (!admin || admin.sessionVersion !== payload.v) throw new HttpError(401, 'Session is no longer valid');
+    if (!admin.isActive) throw new HttpError(401, 'This account has been deactivated');
     req.admin = admin;
     req.sessionExpiresAt = new Date(payload.exp * 1000).toISOString();
     next();
@@ -53,6 +54,6 @@ function originGuard(req, _res, next) {
   return next();
 }
 
-const publicAdmin = (a) => ({ id: a.id, email: a.email, name: a.name, lastLoginAt: a.lastLoginAt, createdAt: a.createdAt });
+const publicAdmin = (a) => ({ id: a.id, email: a.email, name: a.name, isActive: a.isActive, lastLoginAt: a.lastLoginAt, createdAt: a.createdAt });
 
 module.exports = { requireAuth, originGuard, issueSession, clearSession, publicAdmin, COOKIE_NAME };

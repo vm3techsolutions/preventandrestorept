@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import auth from './slices/authSlice';
 import dashboard from './slices/dashboardSlice';
+import admins from './slices/adminsSlice';
 import { blogs, services, conditions, pages } from './slices/contentSlices';
 import { categories, tags, authors } from './slices/taxonomySlices';
 
@@ -9,6 +10,7 @@ export const makeStore = () =>
     reducer: {
       auth,
       dashboard,
+      admins,
       blogs: blogs.reducer,
       services: services.reducer,
       conditions: conditions.reducer,

@@ -80,6 +80,11 @@ export const api = {
   tags: crud('tags'),
   authors: crud('authors'),
   redirects: crud('redirects'),
+  admins: {
+    list: (query) => request('/admin/admins', { query }),
+    create: (body) => request('/admin/admins', { method: 'POST', body }),
+    setStatus: (id, isActive) => request(`/admin/admins/${id}/status`, { method: 'PUT', body: { isActive } }),
+  },
   media: {
     status: () => request('/admin/media/status'),
     list: (query) => request('/admin/media', { query }),

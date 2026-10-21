@@ -23,6 +23,8 @@ function publishErrors(r, blocks) {
 }
 
 const relatedSelect = { select: { id: true, title: true, slug: true, status: true, deletedAt: true } };
+const adminRef = { select: { id: true, name: true, email: true } };
+const auditInclude = { createdBy: adminRef, updatedBy: adminRef };
 
 const blogs = {
   key: 'blogs',
@@ -30,10 +32,12 @@ const blogs = {
   label: 'Blog',
   folder: 'blogs',
   newOnTop: true,
+  audit: true,
   path: (slug) => `/blog/${slug}`,
   schema: blogSchema,
   searchFields: ['title', 'slug', 'excerpt'],
   include: {
+    ...auditInclude,
     author: true,
     blocks: { orderBy: { position: 'asc' } },
     categories: { include: { category: true } },
@@ -43,7 +47,7 @@ const blogs = {
       include: { relatedBlog: { select: { id: true, title: true, slug: true, status: true, deletedAt: true, excerpt: true, featuredImageUrl: true, featuredImageAlt: true, publishedAt: true } } },
     },
   },
-  listInclude: { author: true, categories: { include: { category: true } }, tags: { include: { tag: true } } },
+  listInclude: { ...auditInclude, author: true, categories: { include: { category: true } }, tags: { include: { tag: true } } },
   extraWhere(q) {
     const where = {};
     const by = (v) => (/^\d+$/.test(String(v)) ? { id: Number(v) } : { slug: String(v) });
@@ -124,11 +128,12 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
     model,
     label,
     folder,
+    audit: true,
     path: (slug) => `${prefix}/${slug}`,
     schema: serviceSchema,
     searchFields: ['title', 'slug', 'shortDescription'],
-    include: { [relation]: { include: { [relKey]: relatedSelect } } },
-    listInclude: { [relation]: { include: { [relKey]: relatedSelect } } },
+    include: { ...auditInclude, [relation]: { include: { [relKey]: relatedSelect } } },
+    listInclude: { ...auditInclude, [relation]: { include: { [relKey]: relatedSelect } } },
     toData: (b) => ({
       title: b.title,
       shortDescription: b.shortDescription,

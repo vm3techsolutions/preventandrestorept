@@ -6,6 +6,7 @@ const { createContentController } = require('../controllers/contentController');
 const { createTaxonomyController } = require('../controllers/taxonomyController');
 const media = require('../controllers/mediaController');
 const admin = require('../controllers/adminController');
+const adminUsers = require('../controllers/adminUsersController');
 const { taxonomySchema, authorSchema } = require('../validators/schemas');
 
 const router = express.Router();
@@ -49,6 +50,10 @@ router.get('/media/status', h(media.status));
 router.get('/media', h(media.list));
 router.post('/media', media.upload.single('file'), h(media.create));
 router.delete('/media/:id', h(media.remove));
+
+router.get('/admins', h(adminUsers.list));
+router.post('/admins', h(adminUsers.create));
+router.put('/admins/:id/status', h(adminUsers.setStatus));
 
 router.get('/settings', h(admin.getSettings));
 router.put('/settings', h(admin.updateSettings));
