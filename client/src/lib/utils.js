@@ -13,4 +13,6 @@ export function slugify(input) {
 
 export const formatDate = (d) => (d ? new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '—');
 
+export const formatDateTime = (d) => (d ? new Date(d).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '—');
+
 export const uid = () => Math.random().toString(36).slice(2, 10);

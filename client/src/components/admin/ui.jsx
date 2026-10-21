@@ -1,6 +1,7 @@
 'use client';
 
-import { Loader2, Inbox, AlertTriangle, X } from 'lucide-react';
+import { useState } from 'react';
+import { Loader2, Inbox, AlertTriangle, X, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const STATUS_STYLES = {
@@ -28,6 +29,20 @@ export function Field({ label, hint, error, children, htmlFor, right }) {
       {children}
       {hint && !error && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
       {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
+    </div>
+  );
+}
+
+export function PasswordInput({ id, value, onChange, testId, autoComplete = 'current-password', invalid, ...rest }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <input id={id} type={show ? 'text' : 'password'} autoComplete={autoComplete} value={value} onChange={onChange}
+        aria-invalid={invalid || undefined} className={cn('input pr-11', invalid && 'border-rose-400')} data-testid={testId} {...rest} />
+      <button type="button" onClick={() => setShow((s) => !s)} aria-label={show ? 'Hide password' : 'Show password'}
+        className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md p-2 text-slate-400 transition-colors hover:text-teal" data-testid={`${testId}-toggle`}>
+        {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
     </div>
   );
 }

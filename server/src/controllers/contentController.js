@@ -26,6 +26,8 @@ function orderBy(sort) {
 
 function createContentController(cfg) {
   const db = () => prisma[cfg.model];
+  // Audit fields come only from the authenticated session; request bodies can never set them.
+  const audit = (req, created) => (cfg.audit ? { updatedById: req.admin.id, ...(created ? { createdById: req.admin.id } : {}) } : {});
   const load = async (id) => {
     const item = await db().findUnique({ where: { id }, include: cfg.include });
     if (!item) throw new HttpError(404, `${cfg.label} not found`);
@@ -51,7 +53,7 @@ function createContentController(cfg) {
     const agg = await db().aggregate({ _max: { displayOrder: true }, _min: { displayOrder: true } });
     const displayOrder = cfg.newOnTop ? (agg._min.displayOrder ?? 1) - 1 : (agg._max.displayOrder ?? 0) + 1;
     const row = await prisma.$transaction(async (tx) => {
-      const created = await tx[cfg.model].create({ data: { ...cfg.toData(body), slug, status: 'DRAFT', displayOrder } });
+      const created = await tx[cfg.model].create({ data: { ...cfg.toData(body), slug, status: 'DRAFT', displayOrder, ...audit(req, true) } });
       if (cfg.afterSave) await cfg.afterSave(tx, created.id, body);
       return created;
     });
@@ -65,7 +67,7 @@ function createContentController(cfg) {
     const slug = await resolveSlug(cfg, body.slug, body.title, existing);
     const slugChanged = slug !== existing.slug && existing.status === 'PUBLISHED';
     await prisma.$transaction(async (tx) => {
-      await tx[cfg.model].update({ where: { id: existing.id }, data: { ...cfg.toData(body), slug } });
+      await tx[cfg.model].update({ where: { id: existing.id }, data: { ...cfg.toData(body), slug, ...audit(req) } });
       if (cfg.afterSave) await cfg.afterSave(tx, existing.id, body);
       if (slugChanged) await applySlugChange(tx, cfg.path(existing.slug), cfg.path(slug));
     });
@@ -80,7 +82,7 @@ function createContentController(cfg) {
       const errors = cfg.publishErrors(existing);
       if (errors.length) throw new HttpError(422, `Cannot publish: ${errors.join('; ')}`, errors);
     }
-    const data = { status };
+    const data = { status, ...audit(req) };
     if (status === 'PUBLISHED' && !existing.publishedAt) data.publishedAt = new Date();
     await prisma.$transaction(async (tx) => {
       await tx[cfg.model].update({ where: { id: existing.id }, data });
@@ -93,14 +95,14 @@ function createContentController(cfg) {
   async function remove(req, res) {
     const id = parseId(req.params.id);
     await load(id);
-    await db().update({ where: { id }, data: { deletedAt: new Date() } });
+    await db().update({ where: { id }, data: { deletedAt: new Date(), ...audit(req) } });
     res.json({ data: { id, deleted: true } });
   }
 
   async function restore(req, res) {
     const id = parseId(req.params.id);
     await load(id);
-    await db().update({ where: { id }, data: { deletedAt: null, status: 'DRAFT' } });
+    await db().update({ where: { id }, data: { deletedAt: null, status: 'DRAFT', ...audit(req) } });
     await respond(res, id);
   }
 

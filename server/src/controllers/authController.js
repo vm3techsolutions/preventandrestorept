@@ -49,6 +49,7 @@ async function login(req, res) {
     throw new HttpError(401, 'Invalid email or password');
   }
   await prisma.loginAttempt.deleteMany({ where: { identifier } });
+  if (!admin.isActive) throw new HttpError(403, 'This account has been deactivated. Contact another administrator.');
   const updated = await prisma.admin.update({ where: { id: admin.id }, data: { lastLoginAt: now } });
   const expiresAt = issueSession(res, updated);
   res.json({ data: { admin: publicAdmin(updated), expiresAt } });

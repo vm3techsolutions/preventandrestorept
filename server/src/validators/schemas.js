@@ -96,9 +96,15 @@ const password = z.string().min(10, 'Password must be at least 10 characters').m
 const loginSchema = z.object({ email: z.string().trim().toLowerCase().email(), password: z.string().min(1).max(200) });
 const setupSchema = z.object({ token: z.string().trim().min(10).max(200), email: z.string().trim().toLowerCase().email(), name: optStr(120), password });
 const changePasswordSchema = z.object({ currentPassword: z.string().min(1), newPassword: password });
+const adminCreateSchema = z.object({
+  name: z.string().trim().min(1, 'Full name is required').max(120),
+  email: z.string().trim().toLowerCase().email('Enter a valid email address'),
+  password,
+});
+const adminStatusSchema = z.object({ isActive: z.boolean() });
 const settingsSchema = z.object({ siteName: z.string().trim().min(1).max(120), defaultMetaDescription: z.string().max(500).default(''), defaultOgImage: z.string().max(2000).default('') });
 
 module.exports = {
   blogSchema, serviceSchema, pageSchema, taxonomySchema, authorSchema, redirectSchema, reorderSchema,
-  loginSchema, setupSchema, changePasswordSchema, settingsSchema,
+  loginSchema, setupSchema, changePasswordSchema, settingsSchema, adminCreateSchema, adminStatusSchema,
 };
