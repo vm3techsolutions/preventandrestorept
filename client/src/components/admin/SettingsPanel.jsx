@@ -44,19 +44,28 @@ function GeneralSettings({ initial }) {
 function PasswordForm() {
   const dispatch = useDispatch();
   const toast = useToast();
-  const [form, setForm] = useState({ currentPassword: '', newPassword: '' });
+  const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirm: '' });
+  const [errors, setErrors] = useState({});
   const submit = async (e) => {
     e.preventDefault();
-    const r = await dispatch(changePassword(form));
+    const v = {};
+    if (!form.currentPassword) v.currentPassword = 'Current password is required';
+    if (!form.newPassword) v.newPassword = 'New password is required';
+    else if (form.newPassword.length < 10 || !/[A-Za-z]/.test(form.newPassword) || !/\d/.test(form.newPassword)) v.newPassword = 'At least 10 characters, including letters and numbers';
+    if (form.confirm !== form.newPassword) v.confirm = 'Passwords do not match';
+    setErrors(v);
+    if (Object.keys(v).length) return null;
+    const r = await dispatch(changePassword({ currentPassword: form.currentPassword, newPassword: form.newPassword }));
     if (r.error) return toast(r.payload?.message, 'error');
-    setForm({ currentPassword: '', newPassword: '' });
+    setForm({ currentPassword: '', newPassword: '', confirm: '' });
     return toast('Password updated. Other sessions were signed out.');
   };
   return (
-    <form onSubmit={submit} className="card space-y-4 p-6" data-testid="password-form">
+    <form onSubmit={submit} noValidate className="card space-y-4 p-6" data-testid="password-form">
       <h2 className="text-lg font-semibold">Change password</h2>
-      <Field label="Current password" htmlFor="curpw"><PasswordInput id="curpw" required value={form.currentPassword} onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} testId="current-password-input" /></Field>
-      <Field label="New password" htmlFor="newpw" hint="At least 10 characters with letters and numbers."><PasswordInput id="newpw" autoComplete="new-password" required minLength={10} value={form.newPassword} onChange={(e) => setForm({ ...form, newPassword: e.target.value })} testId="new-password-input" /></Field>
+      <Field label="Current password" htmlFor="curpw" error={errors.currentPassword}><PasswordInput id="curpw" value={form.currentPassword} invalid={!!errors.currentPassword} onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} testId="current-password-input" /></Field>
+      <Field label="New password" htmlFor="newpw" hint="At least 10 characters with letters and numbers." error={errors.newPassword}><PasswordInput id="newpw" autoComplete="new-password" value={form.newPassword} invalid={!!errors.newPassword} onChange={(e) => setForm({ ...form, newPassword: e.target.value })} testId="new-password-input" /></Field>
+      <Field label="Confirm new password" htmlFor="newpw2" error={errors.confirm}><PasswordInput id="newpw2" autoComplete="new-password" value={form.confirm} invalid={!!errors.confirm} onChange={(e) => setForm({ ...form, confirm: e.target.value })} testId="confirm-new-password-input" /></Field>
       <button type="submit" className="btn-navy" data-testid="change-password-button"><KeyRound className="h-4 w-4" /> Update password</button>
     </form>
   );

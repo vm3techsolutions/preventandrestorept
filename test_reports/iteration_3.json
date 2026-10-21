@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 3 tested the admin password reset (API and UI), the eye toggle on every password field, the 'Last updated by' list column and the admin CLI, plus a regression check. Backend: the new file test_admin_reset_password_cli.py passed 16 of 16. The old file test_admin_mgmt_audit.py passed 27 of 27 with 1 skip, after I fixed its hardcoded QA ID (2 -> 8). Frontend: every requested flow passed in Playwright on prevent-restore.preview.emergentagent.com. No critical or functional bugs found. There are a few minor issues and notes below.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "scripts/admin-cli.js", "issue": "The argument checks run in the wrong order. An unknown command without a strong password (for example `node scripts/admin-cli.js bogus x@example.com`) prints 'Password must be at least 10 characters...' instead of 'Unknown command'. Running with no arguments prints 'Email is required' instead of the usage text. Fix: check cmd against the known list (and print usage) before checking email and password."},
+      {"endpoint": "PUT /api/admin/admins/:id/password", "issue": "Any admin can reset the owner's (ID 1) password; the admin-row-1-reset-password button is shown. This matches the 'all admins are equal' model, but it means one compromised admin account can take over the owner account. Consider protecting the owner or requiring the acting admin's current password. Design note only."},
+      {"endpoint": "GET /api/admin/{blogs,services,conditions}", "issue": "List responses include the full content block arrays for every row, so the payload is heavy. This is a performance note and was not changed this round."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Content lists, 'Last updated by' column", "issues": ["The 'Not recorded' text and the timestamp use text-slate-400 on white. That is low contrast (about 2.6:1, below WCAG AA). Use slate-500 or darker."]},
+      {"screen": "Settings, Change password", "issues": ["There is no confirm-new-password field and no inline validation; it relies on native required/minLength. This is inconsistent with the Reset password and Add admin modals."]}
+    ]
+  },
+  "verified_flows": [
+    "Eye toggle switches password -> text -> password on login-password-input, current-password-input, new-password-input, create-admin-password-input, create-admin-confirm-input, reset-password-input and reset-password-confirm-input. SetupForm.jsx uses PasswordInput for setup-password-input and setup-confirm-input (code review).",
+    "Admins page: the self row (ID 8) has no reset button; other rows have one. The modal shows 'New password is required' when empty, 'At least 10 characters, including letters and numbers' for a weak password and 'Passwords do not match' on mismatch. On success the toast says 'Password reset for test_ui_reset@example.com' and the modal closes. After the UI reset, the target's old password returns 401 and the new one returns 200.",
+    "API PUT /admin/admins/:id/password: 401 without auth; 422 on self with the 'Settings → Change password' message; 422 for a weak or missing password; 404 for an unknown id; the response has no passwordHash or sessionVersion. The target's existing session gets 401 after the reset.",
+    "The blogs, services and conditions lists show the LAST UPDATED BY column; seeded rows show 'Not recorded'. After QA Second edited TEST condition 18 in the editor, row conditions-row-18-updated-by showed 'TEST QA Second | Oct 21, 2026, 11:46 AM'. The pages list has no column; this was confirmed by code review and by the API (no updatedBy). No pages exist, so there was no table to check in the UI.",
+    "CLI: list shows ACTIVE and DEACTIVATED. activate works (with an upper-case email too) and login works again afterwards. reset-password sets the new password, activates the account and invalidates the old password. A weak password gives an error. An unknown email gives 'No admin with that email' for both reset-password and activate.",
+    "Regression: QA Second changed its password via PUT /auth/password and logged in with the new one, then changed it back. Admin create and deactivate, and the audit trail, are covered by test_admin_mgmt_audit.py, which passed."
+  ],
+  "rca of the issue": "ID jumping to 6: setup is only allowed when admin.count() is 0 (authController.setup), so leftover admin rows cannot exist at the same time as a successful setup. The jump comes from the Postgres autoincrement sequence. It does not reset when rows are deleted, and failed inserts also consume IDs. I reproduced the second case: a CLI `create` with a duplicate email used up ID 11. So the ID jump is harmless. The 'deactivated' error has two possible sources: login returns 403 'This account has been deactivated...' and the requireAuth middleware returns 401 'This account has been deactivated'. A freshly created row defaults to is_active=true in both the schema and the migration. The likeliest causes are logging in with a different, older email, or a stale DB/Prisma client. The new `yarn admin list|activate|reset-password` CLI is a working recovery path; verified.",
+  "test_report_links": ["/app/backend/tests/test_admin_reset_password_cli.py", "/app/backend/tests/test_admin_mgmt_audit.py", "/app/test_reports/pytest/pytest_iter3.xml"],
+  "action_items": [
+    "(Minor) admin-cli.js: check the command name before the email and password checks, and print usage when called with no arguments.",
+    "(Minor) Raise the contrast of 'Not recorded' and the timestamp in ContentRow (text-slate-400 -> text-slate-500 or darker).",
+    "(Optional) Add a confirm field and inline validation to Settings → Change password.",
+    "(Optional) Decide whether the owner account should be protected from resets by other admins.",
+    "Update /app/memory/test_credentials.md. It still says 'No QA admin exists', but QA admin ID 8 and QA second ID 9 exist."
+  ],
+  "critical_code_review_comments": [
+    "resetPassword increments sessionVersion and clears loginAttempts for the email. Good.",
+    "CLI 'activate' does not increment sessionVersion. That is fine because deactivation already incremented it.",
+    "The pytest.ini adds '-n ... --dist loadscope'. Run single files with '-n 0' when module-scoped fixtures must be shared."
+  ],
+  "updated_files": ["/app/backend/tests/test_admin_reset_password_cli.py (new)", "/app/backend/tests/test_admin_mgmt_audit.py (QA_ID=8 instead of the hardcoded 2, which pointed at a non-existent admin and could target a real admin)"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Created TEST admins 10, 12, 13, 14 and 15 (test_reset_*, test_second_*, test_ui_reset@example.com); all are now deactivated. ID 11 was used up by the failed duplicate CLI create. Created TEST condition 18 and moved it to the trash. Admins 1, 6 and 7 (real users) were not touched. The QA second password was restored to TestQaSecond2026x.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "QA admin ID 8 (test_qa_admin@example.com / TestQaAdmin2026x) and QA second ID 9 (test_qa_second@example.com / TestQaSecond2026x). Run: REACT_APP_BACKEND_URL=$(grep REACT_APP_BACKEND_URL /app/frontend/.env|cut -d= -f2) python -m pytest /app/backend/tests/test_admin_reset_password_cli.py -n 0. Each run creates and then deactivates a TEST admin. Admins 6 and 7 are real people; do not touch them."
+}

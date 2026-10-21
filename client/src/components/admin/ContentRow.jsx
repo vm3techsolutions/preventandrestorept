@@ -41,9 +41,9 @@ export default function ContentRow({ item, type, trashed, dragDisabled, onAction
           {item.updatedBy ? (
             <>
               <span className="block font-medium text-navy">{item.updatedBy.name || item.updatedBy.email}</span>
-              <span className="text-slate-400">{formatDateTime(item.updatedAt)}</span>
+              <span className="text-slate-500">{formatDateTime(item.updatedAt)}</span>
             </>
-          ) : <span className="text-slate-400">Not recorded</span>}
+          ) : <span className="text-slate-500">Not recorded</span>}
         </td>
       )}
       <td className="td">

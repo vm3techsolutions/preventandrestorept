@@ -28,6 +28,7 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Login: password eye toggle, required/format validation, server error cleared on edit
 - Admin management: /admin/admins list (ID, name, email, status, created), add admin (validated, unique email, bcrypt 12), activate/deactivate others (deactivation bumps sessionVersion; cannot change self or deactivate the last active admin, checked in a serializable transaction). requireAuth rejects inactive admins; login returns 403 for deactivated
 - Audit trail on blogs/services/treatments: created_by_id/updated_by_id from the session only (migration 20261021105132_admin_management_audit), shown in the editor sidebar. Testing iteration_2: 100% backend + frontend
+- "Last updated by" column in blog/service/condition lists; admin password reset for other admins (PUT /api/admin/admins/:id/password, signs the target out); eye toggle on every password field; Change password has confirm + inline validation; admin recovery CLI `yarn admin list|activate|reset-password|create`. Testing iteration_3: 100%
 
 ## Backlog
 - P0 (Part 2): public website pages using /api/public, Next middleware for redirects, sitemap.xml route, robots
