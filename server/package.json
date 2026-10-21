@@ -11,6 +11,7 @@
     "migrate:deploy": "prisma migrate deploy",
     "seed": "node prisma/seed.js",
     "setup:token": "node scripts/create-setup-token.js",
+    "admin": "node scripts/admin-cli.js",
     "scrape:legacy": "python3 scripts/scrape_legacy.py"
   },
   "prisma": {

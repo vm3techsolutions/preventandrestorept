@@ -6,7 +6,7 @@ import { Save, KeyRound, Cloud, HardDrive } from 'lucide-react';
 import { api } from '@/lib/api';
 import { changePassword } from '@/store/slices/authSlice';
 import { useToast } from './Toast';
-import { Field, LoadingState, PageHeader, Spinner } from './ui';
+import { Field, LoadingState, PageHeader, PasswordInput, Spinner } from './ui';
 import TaxonomyManager from './TaxonomyManager';
 
 function GeneralSettings({ initial }) {
@@ -55,8 +55,8 @@ function PasswordForm() {
   return (
     <form onSubmit={submit} className="card space-y-4 p-6" data-testid="password-form">
       <h2 className="text-lg font-semibold">Change password</h2>
-      <Field label="Current password" htmlFor="curpw"><input id="curpw" type="password" required className="input" value={form.currentPassword} onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} data-testid="current-password-input" /></Field>
-      <Field label="New password" htmlFor="newpw" hint="At least 10 characters with letters and numbers."><input id="newpw" type="password" required minLength={10} className="input" value={form.newPassword} onChange={(e) => setForm({ ...form, newPassword: e.target.value })} data-testid="new-password-input" /></Field>
+      <Field label="Current password" htmlFor="curpw"><PasswordInput id="curpw" required value={form.currentPassword} onChange={(e) => setForm({ ...form, currentPassword: e.target.value })} testId="current-password-input" /></Field>
+      <Field label="New password" htmlFor="newpw" hint="At least 10 characters with letters and numbers."><PasswordInput id="newpw" autoComplete="new-password" required minLength={10} value={form.newPassword} onChange={(e) => setForm({ ...form, newPassword: e.target.value })} testId="new-password-input" /></Field>
       <button type="submit" className="btn-navy" data-testid="change-password-button"><KeyRound className="h-4 w-4" /> Update password</button>
     </form>
   );

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { KeyRound } from 'lucide-react';
 import { checkSetup, setupAdmin } from '@/store/slices/authSlice';
-import { LoadingState, Spinner } from './ui';
+import { LoadingState, PasswordInput, Spinner } from './ui';
 import AuthLayout from './AuthLayout';
 
 export default function SetupForm() {
@@ -48,8 +48,8 @@ export default function SetupForm() {
         <div><label className="label" htmlFor="token">Setup token</label><input id="token" required className="input font-mono" {...field('token')} data-testid="setup-token-input" /></div>
         <div><label className="label" htmlFor="name">Name</label><input id="name" className="input" {...field('name')} data-testid="setup-name-input" /></div>
         <div><label className="label" htmlFor="semail">Email</label><input id="semail" type="email" required className="input" {...field('email')} data-testid="setup-email-input" /></div>
-        <div><label className="label" htmlFor="spw">Password</label><input id="spw" type="password" required minLength={10} className="input" {...field('password')} data-testid="setup-password-input" /></div>
-        <div><label className="label" htmlFor="spw2">Confirm password</label><input id="spw2" type="password" required className="input" {...field('confirm')} data-testid="setup-confirm-input" /></div>
+        <div><label className="label" htmlFor="spw">Password</label><PasswordInput id="spw" autoComplete="new-password" required minLength={10} {...field('password')} testId="setup-password-input" /></div>
+        <div><label className="label" htmlFor="spw2">Confirm password</label><PasswordInput id="spw2" autoComplete="new-password" required {...field('confirm')} testId="setup-confirm-input" /></div>
         <p className="text-xs text-slate-500">At least 10 characters, including letters and numbers.</p>
         {(localError || error) && <p data-testid="setup-error" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{localError || error}</p>}
         <button type="submit" className="btn-primary w-full py-3" disabled={submitting} data-testid="setup-submit-button">

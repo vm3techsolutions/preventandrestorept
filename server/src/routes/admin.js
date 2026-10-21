@@ -54,6 +54,7 @@ router.delete('/media/:id', h(media.remove));
 router.get('/admins', h(adminUsers.list));
 router.post('/admins', h(adminUsers.create));
 router.put('/admins/:id/status', h(adminUsers.setStatus));
+router.put('/admins/:id/password', h(adminUsers.resetPassword));
 
 router.get('/settings', h(admin.getSettings));
 router.put('/settings', h(admin.updateSettings));

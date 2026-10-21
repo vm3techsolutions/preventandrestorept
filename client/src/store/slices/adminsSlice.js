@@ -12,6 +12,7 @@ const thunk = (type, fn) => createAsyncThunk(`admins/${type}`, async (arg, { rej
 export const fetchAdmins = thunk('fetch', (query) => api.admins.list(query));
 export const createAdmin = thunk('create', (body) => api.admins.create(body).then((r) => r.data));
 export const setAdminStatus = thunk('setStatus', ({ id, isActive }) => api.admins.setStatus(id, isActive).then((r) => r.data));
+export const resetAdminPassword = thunk('resetPassword', ({ id, newPassword }) => api.admins.resetPassword(id, newPassword).then((r) => r.data));
 
 const slice = createSlice({
   name: 'admins',

@@ -5,7 +5,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Pencil, Eye, Send, EyeOff, Archive, Trash2, RotateCcw } from 'lucide-react';
 import { StatusBadge } from './ui';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatDateTime } from '@/lib/utils';
 
 function IconButton({ label, onClick, href, icon: Icon, testId, danger }) {
   const cls = `inline-flex h-8 w-8 items-center justify-center rounded-md transition-colors ${danger ? 'text-slate-400 hover:bg-rose-50 hover:text-rose-600' : 'text-slate-500 hover:bg-teal-50 hover:text-teal'}`;
@@ -36,6 +36,16 @@ export default function ContentRow({ item, type, trashed, dragDisabled, onAction
       {isBlog && <td className="td hidden md:table-cell">{item.author?.name || '—'}</td>}
       {isBlog && <td className="td hidden lg:table-cell text-xs">{item.categories?.map((c) => c.name).join(', ') || '—'}</td>}
       <td className="td hidden whitespace-nowrap text-xs sm:table-cell">{formatDate(isBlog ? item.publishedAt : item.updatedAt)}</td>
+      {type.kind !== 'page' && (
+        <td className="td hidden text-xs md:table-cell" data-testid={`${t}-updated-by`}>
+          {item.updatedBy ? (
+            <>
+              <span className="block font-medium text-navy">{item.updatedBy.name || item.updatedBy.email}</span>
+              <span className="text-slate-400">{formatDateTime(item.updatedAt)}</span>
+            </>
+          ) : <span className="text-slate-400">Not recorded</span>}
+        </td>
+      )}
       <td className="td">
         <div className="flex items-center justify-end gap-0.5">
           {trashed ? (

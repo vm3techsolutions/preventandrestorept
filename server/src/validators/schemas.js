@@ -102,9 +102,10 @@ const adminCreateSchema = z.object({
   password,
 });
 const adminStatusSchema = z.object({ isActive: z.boolean() });
+const adminPasswordResetSchema = z.object({ newPassword: password });
 const settingsSchema = z.object({ siteName: z.string().trim().min(1).max(120), defaultMetaDescription: z.string().max(500).default(''), defaultOgImage: z.string().max(2000).default('') });
 
 module.exports = {
   blogSchema, serviceSchema, pageSchema, taxonomySchema, authorSchema, redirectSchema, reorderSchema,
-  loginSchema, setupSchema, changePasswordSchema, settingsSchema, adminCreateSchema, adminStatusSchema,
+  loginSchema, setupSchema, changePasswordSchema, settingsSchema, adminCreateSchema, adminStatusSchema, adminPasswordResetSchema,
 };
