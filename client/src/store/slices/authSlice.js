@@ -27,6 +27,9 @@ const slice = createSlice({
   name: 'auth',
   initialState: { admin: null, expiresAt: null, status: 'idle', error: null, setupRequired: null, submitting: false },
   reducers: {
+    clearAuthError(state) {
+      state.error = null;
+    },
     sessionExpired(state) {
       state.admin = null;
       state.status = 'unauthenticated';
@@ -48,5 +51,5 @@ const slice = createSlice({
   },
 });
 
-export const { sessionExpired } = slice.actions;
+export const { sessionExpired, clearAuthError } = slice.actions;
 export default slice.reducer;

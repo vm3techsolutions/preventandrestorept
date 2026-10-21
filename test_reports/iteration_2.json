@@ -1,0 +1,47 @@
+{
+  "summary": "Tested the new features on the backend and frontend: login eye toggle and validation, admin management (list, create, activate/deactivate) and the content audit trail for blogs, services and conditions. Backend: 27 of 27 pytest tests passed. One test was skipped because psql is not installed. The bcrypt check was done separately with Prisma and every hash starts with $2b$12$. Frontend: every requested flow passed in Playwright on the c6816511 host. Login also works on prevent-restore.preview.emergentagent.com now, so the cross-origin issue from iteration_1 is resolved. No functional bugs found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PUT /api/admin/admins/:id/status", "issue": "The 'last active admin' check (count, then update) does not run in a transaction. If two admins deactivate each other at the same moment, both requests can pass the check and leave zero active admins. Fix: do the count and the update inside prisma.$transaction (serializable), or use a conditional update. Found by code review only."},
+      {"endpoint": "POST /api/auth/login", "issue": "A deactivated account returns 403 only when the password is correct; a wrong password returns 401. This reveals whether the password is correct for deactivated accounts. Low risk and acceptable, but worth noting."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "LoginForm", "issue": "The server error 'Invalid email or password' (login-error) stays on screen while the user retypes the email or password. It only clears on the next submit. Low priority UX issue.", "selector": "[data-testid=login-error]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_flows": [
+    "Login: eye toggle switches the password field between password and text, and its aria-label changes. Empty submit shows 'Email is required' and 'Password is required' with no API call. A bad email shows 'Enter a valid email address' with no API call. A wrong password shows 'Invalid email or password'. A valid login redirects to /admin.",
+    "Sidebar nav-admins goes to /admin/admins. admins-table shows ID, name, email, Active/Deactivated status and created date. The current user's row has the 'You' badge and no toggle button.",
+    "Create admin modal: required-field errors for name, email and password; bad email; password under 10 characters; password with no digits; password mismatch. The eye toggle works on both password fields. Duplicate email shows create-admin-email-error 'An admin with this email address already exists'. A successful create closes the modal, adds the row and shows a toast.",
+    "Deactivate via UI: confirm dialog, then status shows Deactivated. The other admin's open session is redirected to /admin/login?next=. Their login shows 'This account has been deactivated. Contact another administrator.' After reactivation, login works again.",
+    "API: 401 without a cookie. 422 for invalid payloads and for changing your own status. 404 for an unknown id. 409 for a duplicate email, including a different-case version of the same email. passwordHash is never in responses.",
+    "Audit trail on blog 8 (editor), a new TEST service and a new TEST condition: created-by stays 'TEST QA Admin (ID 2)' and updated-by changes to the second admin after their edit. Publish and unpublish set updatedBy to the admin who acted. The panel is hidden on /new.",
+    "Override attempt: createdById, updatedById and createdBy sent in the request body are ignored; the session admin is recorded.",
+    "Seeded services show 'Not recorded' with the note 'Created before audit tracking (seeded content).'",
+    "Pages: create and update work and the response has no createdBy field. The UI check for pages was not run because no pages exist.",
+    "Public list and detail APIs for blogs, services and conditions contain no createdBy, updatedBy or admin emails."
+  ],
+  "test_report_links": ["/app/backend/tests/test_admin_mgmt_audit.py", "/app/test_reports/pytest/pytest_admin_audit.xml"],
+  "action_items": [
+    "(Optional) Run the last-active-admin check and the status update inside one transaction.",
+    "(Optional) Clear login-error when the user edits the email or password fields.",
+    "Update /app/memory/test_credentials.md to add the QA admin (test_qa_admin@example.com / TestQaAdmin2026x, ID 2). The file currently lists only the owner, and the existing test_cms_api.py logs in as the owner (v3mtechnology@gmail.com). Switch that regression suite to the QA admin, since the owner must not be used."
+  ],
+  "critical_code_review_comments": [
+    "adminUsersController.setStatus: the last-active-admin guard is not atomic (race condition).",
+    "Deactivation increments sessionVersion, so old tokens stay invalid even after reactivation. This is good.",
+    "requireAuth checks isActive on every request. This is good.",
+    "Audit fields are applied after cfg.toData, so the body cannot override them. This is correct."
+  ],
+  "updated_files": ["/app/backend/tests/test_admin_mgmt_audit.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Created admins id 3 and 4 (test_second_*@example.com) and id 5 (test_ui_ed6b24@example.com / UiAdminPass2026). All three are now deactivated; there is no delete endpoint. TEST blogs, services and conditions created by pytest, plus service 9 and condition 15, were moved to the trash. Blog 8 'TEST audit' is DRAFT; its excerpt was changed to 'TEST excerpt edited by UI admin' and it was last updated by QA admin 2. The owner admin (id 1) was not touched.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=<frontend/.env> pytest /app/backend/tests/test_admin_mgmt_audit.py. It creates a new TEST second admin per xdist worker each run and deactivates one of them at the end. Use the QA admin (ID 2). Client routes: /admin/what-we-treat (API key 'conditions'), /admin/services, /admin/blogs, /admin/admins. psql is not installed; check DB hashes with node and /app/server/src/lib/prisma."
+}

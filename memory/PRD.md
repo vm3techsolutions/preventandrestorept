@@ -24,6 +24,11 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Seed data from the legacy WordPress site (scripts/scrape_legacy.py → prisma/seed-data/legacy.json) plus 9 legacy redirects
 - Testing: backend 33/33 pass, all frontend flows pass (iteration_1). Fixed afterwards: cross-domain login (relative /api base + CLIENT_URL), javascript: URL rejection in blocks, toggle styling, pages publishing panel
 
+## Implemented (2026-10-21)
+- Login: password eye toggle, required/format validation, server error cleared on edit
+- Admin management: /admin/admins list (ID, name, email, status, created), add admin (validated, unique email, bcrypt 12), activate/deactivate others (deactivation bumps sessionVersion; cannot change self or deactivate the last active admin, checked in a serializable transaction). requireAuth rejects inactive admins; login returns 403 for deactivated
+- Audit trail on blogs/services/treatments: created_by_id/updated_by_id from the session only (migration 20261021105132_admin_management_audit), shown in the editor sidebar. Testing iteration_2: 100% backend + frontend
+
 ## Backlog
 - P0 (Part 2): public website pages using /api/public, Next middleware for redirects, sitemap.xml route, robots
 - P1: client credentials (AWS, prod DB, fonts), content for the 8 draft conditions, featured images

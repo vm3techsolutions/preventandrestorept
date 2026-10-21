@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Lock } from 'lucide-react';
-import { checkSetup, fetchMe, login } from '@/store/slices/authSlice';
+import { checkSetup, clearAuthError, fetchMe, login } from '@/store/slices/authSlice';
 import { PasswordInput, Spinner } from './ui';
 import AuthLayout from './AuthLayout';
 
@@ -40,6 +40,7 @@ export default function LoginForm() {
   const update = (k) => (e) => {
     setForm({ ...form, [k]: e.target.value });
     if (errors[k]) setErrors({ ...errors, [k]: undefined });
+    if (error) dispatch(clearAuthError());
   };
 
   return (

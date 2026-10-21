@@ -32,14 +32,16 @@ async function setStatus(req, res) {
   if (id === req.admin.id) throw new HttpError(422, 'You cannot change the status of your own account');
   const target = await prisma.admin.findUnique({ where: { id } });
   if (!target) throw new HttpError(404, 'Admin not found');
-  if (!isActive && target.isActive && (await prisma.admin.count({ where: { isActive: true } })) <= 1) {
-    throw new HttpError(422, 'At least one active admin is required');
-  }
-  const admin = await prisma.admin.update({
-    where: { id },
-    data: { isActive, ...(isActive ? {} : { sessionVersion: { increment: 1 } }) },
-    select: SELECT,
-  });
+  const admin = await prisma.$transaction(async (tx) => {
+    if (!isActive && target.isActive && (await tx.admin.count({ where: { isActive: true } })) <= 1) {
+      throw new HttpError(422, 'At least one active admin is required');
+    }
+    return tx.admin.update({
+      where: { id },
+      data: { isActive, ...(isActive ? {} : { sessionVersion: { increment: 1 } }) },
+      select: SELECT,
+    });
+  }, { isolationLevel: 'Serializable' });
   res.json({ data: admin });
 }
 

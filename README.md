@@ -73,7 +73,13 @@ All routes are also available under `/api/v1/...`.
 
 Slug rules: auto-generated from title, editable, unique per type. Changing the slug of a published item creates a 301 from the old path and re-points existing redirects (no chains). Manual redirects reject loops and chains. CMS page slugs cannot use reserved routes (home, about-us, blog, services, what-we-treat, admin, api, …) or a path that already has a redirect.
 
-## 6. Media / Amazon S3
+## 6. Admin accounts and audit trail
+- Admins → Add admin creates more admin accounts (full name, unique email, password with at least 10 characters including letters and numbers, hashed with bcrypt). API: `GET/POST /api/admin/admins`, `PUT /api/admin/admins/:id/status`.
+- An admin can activate or deactivate other admins. Deactivating signs that admin out immediately and blocks login. You can't change your own status or deactivate the last active admin.
+- Blogs, services and conditions record `created_by_id` / `updated_by_id` from the logged-in session (request bodies can't set them). The editor sidebar shows who created and last updated each item. Content created before this feature shows "Not recorded".
+- Local machines: run `yarn migrate:deploy` in `server/` after pulling this update.
+
+## 7. Media / Amazon S3
 - Allowed: JPEG, PNG, WebP, GIF, AVIF up to 5 MB (`MAX_UPLOAD_MB`), validated by MIME type **and** file signature. Only URLs + metadata are stored in PostgreSQL (`media` table).
 - When all four `AWS_*` variables are real values, uploads go to S3 with server-side credentials. Otherwise they fall back to local disk (`server/uploads`, served at `/api/uploads/...`) — fine for development, not for multi-instance production.
 - S3 setup: create a bucket in the chosen region; allow public read for the `blogs/ services/ treatments/ pages/ general/` prefixes (bucket policy) or put CloudFront in front and set `AWS_S3_PUBLIC_BASE_URL`; create an IAM user limited to `s3:PutObject` and `s3:DeleteObject` on that bucket.
