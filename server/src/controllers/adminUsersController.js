@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const prisma = require('../lib/prisma');
 const { HttpError, pagination, paged, parseId } = require('../lib/http');
-const { adminCreateSchema, adminStatusSchema } = require('../validators/schemas');
+const { adminCreateSchema, adminStatusSchema, adminPasswordResetSchema } = require('../validators/schemas');
 
 const SELECT = { id: true, name: true, email: true, isActive: true, createdAt: true, lastLoginAt: true, createdById: true };
 
@@ -45,4 +45,19 @@ async function setStatus(req, res) {
   res.json({ data: admin });
 }
 
-module.exports = { list, create, setStatus };
+// Another admin sets a new password; the target is signed out everywhere.
+async function resetPassword(req, res) {
+  const id = parseId(req.params.id);
+  const { newPassword } = adminPasswordResetSchema.parse(req.body);
+  if (id === req.admin.id) throw new HttpError(422, 'Use Settings → Change password for your own account');
+  if (!(await prisma.admin.findUnique({ where: { id } }))) throw new HttpError(404, 'Admin not found');
+  const admin = await prisma.admin.update({
+    where: { id },
+    data: { passwordHash: await bcrypt.hash(newPassword, 12), sessionVersion: { increment: 1 } },
+    select: SELECT,
+  });
+  await prisma.loginAttempt.deleteMany({ where: { identifier: { endsWith: `|${admin.email}` } } });
+  res.json({ data: admin });
+}
+
+module.exports = { list, create, setStatus, resetPassword };

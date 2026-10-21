@@ -9,6 +9,7 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL').rstrip('/')
 API = f"{BASE_URL}/api"
 QA_EMAIL = "test_qa_admin@example.com"
 QA_PW = "TestQaAdmin2026x"
+QA_ID = 8
 UID = uuid.uuid4().hex[:6]
 SECOND_EMAIL = f"test_second_{UID}@example.com"
 SECOND_PW = "SecondAdmin2026x"
@@ -25,7 +26,7 @@ def qa():
     s, r = login(QA_EMAIL, QA_PW)
     if r.status_code != 200:
         pytest.skip(f"QA login failed {r.status_code} {r.text}")
-    assert r.json()["data"]["admin"]["id"] == 2
+    assert r.json()["data"]["admin"]["id"] == QA_ID
     return s
 
 
@@ -50,7 +51,7 @@ class TestAdmins:
         assert r.status_code == 200
         rows = r.json()["data"]
         ids = [a["id"] for a in rows]
-        assert 1 in ids and 2 in ids
+        assert 1 in ids and QA_ID in ids
         for a in rows:
             assert "passwordHash" not in a and "sessionVersion" not in a
             assert {"id", "name", "email", "isActive", "createdAt"} <= set(a)
@@ -68,7 +69,7 @@ class TestAdmins:
 
     def test_create_and_duplicate(self, qa, second):
         a = second["admin"]
-        assert a["email"] == SECOND_EMAIL and a["isActive"] is True and a["createdById"] == 2
+        assert a["email"] == SECOND_EMAIL and a["isActive"] is True and a["createdById"] == QA_ID
         assert "passwordHash" not in a
         r = qa.post(f"{API}/admin/admins", json={"name": "TEST dup", "email": SECOND_EMAIL.upper(), "password": SECOND_PW})
         assert r.status_code == 409
@@ -82,12 +83,12 @@ class TestAdmins:
         assert out.stdout.strip().startswith("$2b$12$")
 
     def test_self_status_422(self, qa):
-        r = qa.put(f"{API}/admin/admins/2/status", json={"isActive": False})
+        r = qa.put(f"{API}/admin/admins/{QA_ID}/status", json={"isActive": False})
         assert r.status_code == 422
 
     def test_status_404_and_validation(self, qa):
         assert qa.put(f"{API}/admin/admins/999999/status", json={"isActive": False}).status_code == 404
-        assert qa.put(f"{API}/admin/admins/2/status", json={"isActive": "no"}).status_code == 422
+        assert qa.put(f"{API}/admin/admins/{QA_ID}/status", json={"isActive": "no"}).status_code == 422
 
     def test_deactivate_flow(self, qa, second):
         aid = second["admin"]["id"]
@@ -126,8 +127,8 @@ class TestAudit:
         r = qa.post(f"{API}/admin/{kind}", json=body)
         assert r.status_code == 201, r.text
         d = r.json()["data"]
-        assert d["createdById"] == 2 and d["updatedById"] == 2
-        assert d["createdBy"]["id"] == 2 and d["createdBy"]["name"] == "TEST QA Admin"
+        assert d["createdById"] == QA_ID and d["updatedById"] == QA_ID
+        assert d["createdBy"]["id"] == QA_ID and d["createdBy"]["name"] == "TEST QA Admin"
         assert "passwordHash" not in d["createdBy"]
         TestAudit.created[kind] = d
 
@@ -138,7 +139,7 @@ class TestAudit:
         r = second["session"].put(f"{API}/admin/{kind}/{item['id']}", json=body)
         assert r.status_code == 200, r.text
         g = qa.get(f"{API}/admin/{kind}/{item['id']}").json()["data"]
-        assert g["createdBy"]["id"] == 2
+        assert g["createdBy"]["id"] == QA_ID
         assert g["updatedBy"]["id"] == second["admin"]["id"]
 
     @pytest.mark.parametrize("kind", list(TYPES))
@@ -146,7 +147,7 @@ class TestAudit:
         item = TestAudit.created[kind]
         r = qa.post(f"{API}/admin/{kind}/{item['id']}/publish")
         assert r.status_code == 200, r.text
-        assert r.json()["data"]["updatedBy"]["id"] == 2
+        assert r.json()["data"]["updatedBy"]["id"] == QA_ID
         r = second["session"].post(f"{API}/admin/{kind}/{item['id']}/unpublish")
         assert r.status_code == 200 and r.json()["data"]["updatedBy"]["id"] == second["admin"]["id"]
         r = qa.post(f"{API}/admin/{kind}/{item['id']}/publish")

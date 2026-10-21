@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { UserPlus, UserCheck, UserX } from 'lucide-react';
+import { UserPlus, UserCheck, UserX, KeyRound } from 'lucide-react';
 import { fetchAdmins, setAdminStatus } from '@/store/slices/adminsSlice';
 import { formatDate } from '@/lib/utils';
 import { useToast } from './Toast';
 import { ConfirmDialog, EmptyState, ErrorState, LoadingState, Modal, PageHeader, Pagination } from './ui';
 import CreateAdminForm from './CreateAdminForm';
+import ResetPasswordForm from './ResetPasswordForm';
 
 function StatusPill({ active, testId }) {
   return (
@@ -25,6 +26,7 @@ export default function AdminsManager() {
   const [page, setPage] = useState(1);
   const [creating, setCreating] = useState(false);
   const [toggle, setToggle] = useState(null);
+  const [resetting, setResetting] = useState(null);
 
   useEffect(() => {
     dispatch(fetchAdmins({ page, limit: 25 }));
@@ -61,9 +63,14 @@ export default function AdminsManager() {
                     <td className="td hidden text-xs md:table-cell" data-testid={`admin-row-${a.id}-created`}>{formatDate(a.createdAt)}</td>
                     <td className="td text-right">
                       {a.id !== me?.id && (
-                        <button type="button" className={`btn-ghost ${a.isActive ? 'hover:text-rose-600' : 'text-teal'}`} onClick={() => setToggle(a)} data-testid={`admin-row-${a.id}-toggle-status`}>
-                          {a.isActive ? <><UserX className="h-4 w-4" /> Deactivate</> : <><UserCheck className="h-4 w-4" /> Activate</>}
-                        </button>
+                        <div className="flex justify-end gap-1">
+                          <button type="button" className="btn-ghost" onClick={() => setResetting(a)} data-testid={`admin-row-${a.id}-reset-password`}>
+                            <KeyRound className="h-4 w-4" /> Reset password
+                          </button>
+                          <button type="button" className={`btn-ghost ${a.isActive ? 'hover:text-rose-600' : 'text-teal'}`} onClick={() => setToggle(a)} data-testid={`admin-row-${a.id}-toggle-status`}>
+                            {a.isActive ? <><UserX className="h-4 w-4" /> Deactivate</> : <><UserCheck className="h-4 w-4" /> Activate</>}
+                          </button>
+                        </div>
                       )}
                     </td>
                   </tr>
@@ -76,6 +83,9 @@ export default function AdminsManager() {
       </div>
       <Modal open={creating} onClose={() => setCreating(false)} title="Add admin" testId="create-admin-modal">
         {creating && <CreateAdminForm onCancel={() => setCreating(false)} onDone={(a) => { setCreating(false); toast(`Admin ${a.email} created`); }} />}
+      </Modal>
+      <Modal open={!!resetting} onClose={() => setResetting(null)} title="Reset password" testId="reset-password-modal">
+        {resetting && <ResetPasswordForm admin={resetting} onCancel={() => setResetting(null)} onDone={(a) => { setResetting(null); toast(`Password reset for ${a.email}`); }} />}
       </Modal>
       <ConfirmDialog open={!!toggle} danger={toggle?.isActive} title={toggle?.isActive ? 'Deactivate admin?' : 'Activate admin?'}
         confirmLabel={toggle?.isActive ? 'Deactivate' : 'Activate'} onConfirm={confirmToggle} onCancel={() => setToggle(null)}

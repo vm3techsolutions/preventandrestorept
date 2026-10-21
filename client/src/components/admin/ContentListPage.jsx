@@ -123,6 +123,7 @@ export default function ContentListPage({ typeKey }) {
                     {isBlog && <th className="th hidden md:table-cell">Author</th>}
                     {isBlog && <th className="th hidden lg:table-cell">Categories</th>}
                     <th className="th hidden sm:table-cell">{isBlog ? 'Published' : 'Updated'}</th>
+                    {type.kind !== 'page' && <th className="th hidden md:table-cell">Last updated by</th>}
                     <th className="th text-right">Actions</th>
                   </tr>
                 </thead>

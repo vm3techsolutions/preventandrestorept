@@ -78,6 +78,17 @@ Slug rules: auto-generated from title, editable, unique per type. Changing the s
 - An admin can activate or deactivate other admins. Deactivating signs that admin out immediately and blocks login. You can't change your own status or deactivate the last active admin.
 - Blogs, services and conditions record `created_by_id` / `updated_by_id` from the logged-in session (request bodies can't set them). The editor sidebar shows who created and last updated each item. Content created before this feature shows "Not recorded".
 - Local machines: run `yarn migrate:deploy` in `server/` after pulling this update.
+- Admins → Reset password lets an admin set a new password for another admin (that admin is signed out everywhere). Use Settings → Change password for your own account.
+- Every password field has a show/hide (eye) toggle.
+
+### Recovering admin accounts from the command line (folder: `server/`)
+```bash
+yarn admin list                                   # shows every admin with ID and ACTIVE/DEACTIVATED
+yarn admin activate you@example.com               # re-activates an account and clears login lockouts
+yarn admin reset-password you@example.com NewPass2026x   # sets a new password and activates the account
+yarn admin create you@example.com NewPass2026x Your Name # creates an extra active admin
+```
+Admin IDs come from a PostgreSQL sequence. IDs are never reused after rows are deleted or after a failed insert, so a new admin can be #6 even if the table looks empty. This is normal and harmless.
 
 ## 7. Media / Amazon S3
 - Allowed: JPEG, PNG, WebP, GIF, AVIF up to 5 MB (`MAX_UPLOAD_MB`), validated by MIME type **and** file signature. Only URLs + metadata are stored in PostgreSQL (`media` table).
