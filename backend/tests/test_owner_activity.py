@@ -7,8 +7,14 @@ import requests
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL').rstrip('/')
 API = f"{BASE_URL}/api"
-QA_EMAIL, QA_PW, QA_ID = "test_qa_admin@example.com", "TestQaAdmin2026x", 17
-SECOND_EMAIL, SECOND_PW, SECOND_ID = "test_qa_second@example.com", "TestQaSecond2026x", 18
+from _admin_ids import admin_id
+QA_EMAIL, QA_PW = "test_qa_admin@example.com", "TestQaAdmin2026x"
+QA_ID = admin_id(QA_EMAIL)
+SECOND_EMAIL, SECOND_PW = "test_qa_second@example.com", "TestQaSecond2026x"
+import subprocess as _sp
+if not admin_id(SECOND_EMAIL):
+    _sp.run(["node", "scripts/admin-cli.js", "create", SECOND_EMAIL, SECOND_PW, "TEST", "QA", "Second"], cwd="/app/server", capture_output=True)
+SECOND_ID = admin_id(SECOND_EMAIL)
 UID = uuid.uuid4().hex[:6]
 OWNER_MSG = "The owner account can only be changed by the owner"
 

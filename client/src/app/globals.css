@@ -44,7 +44,18 @@
   .card { @apply rounded-xl border border-slate-200 bg-white shadow-xs; }
   .th { @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 bg-slate-100/70 border-b border-slate-200; }
   .td { @apply px-4 py-3 text-sm text-slate-700 border-b border-slate-100 align-middle; }
-  .rich a { @apply text-teal underline underline-offset-2; }
+  .rich a { @apply text-teal underline underline-offset-2 hover:text-teal-hover; }
+  /* Public site */
+  .container-site { @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10; }
+  .display { @apply font-heading font-bold uppercase leading-[1.08] tracking-[0.02em]; }
+  .eyebrow { @apply font-body text-xs font-semibold uppercase tracking-[0.22em]; }
+  .btn-site { @apply inline-flex items-center gap-2 rounded-full bg-teal px-6 py-3 text-sm font-semibold text-white shadow-sm transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-teal-hover hover:shadow-lg hover:shadow-teal/25 active:translate-y-0; }
+  .btn-site-outline { @apply inline-flex items-center gap-2 rounded-full border border-navy/20 px-6 py-3 text-sm font-semibold text-navy transition-[background-color,border-color,color] duration-200 hover:border-teal hover:bg-teal-50 hover:text-teal; }
+  .btn-site-light { @apply inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-navy transition-[background-color,transform] duration-200 hover:-translate-y-0.5 hover:bg-teal-50; }
+  .btn-site-ghost-light { @apply inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-[background-color,border-color] duration-200 hover:border-white hover:bg-white/10; }
+  .nav-link { @apply relative py-2 text-[15px] font-medium transition-colors hover:text-teal after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-teal after:transition-transform after:duration-300 hover:after:scale-x-100; }
+  .footer-link { @apply text-slate-300 transition-colors hover:text-white; }
+  .card-site { @apply rounded-2xl border border-slate-200 bg-white transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-xl hover:shadow-navy/10; }
   .rich strong, .rich b { @apply font-semibold text-navy; }
 }
 

@@ -31,7 +31,19 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - "Last updated by" column in blog/service/condition lists; admin password reset for other admins (PUT /api/admin/admins/:id/password, signs the target out); eye toggle on every password field; Change password has confirm + inline validation; admin recovery CLI `yarn admin list|activate|reset-password|create`. Testing iteration_3: 100%
 - Owner protection (is_owner, migration 20261022100631_owner_and_activity_log marks the lowest-ID admin; setup and the first CLI-created admin become owner; non-owners get 403 on owner reset/deactivate) and Activity Log (activity_logs table, logActivity service on all admin mutations, /admin/activity page with admin/area/action/date/search filters)
 
+## Part 2 request (2026-10-22, user's words, abridged)
+"Continue in the same Emergent project from Part 1... Now build the complete public-facing website and connect it to the existing backend APIs." Pages: Home, About Us, Services (+detail), What We Treat (+detail), Blogs (+detail, pagination, category/tag filter), Contact (keep the existing GoHighLevel form), CMS pages /[slug]/. SEO via Metadata API, canonical, OG, sitemap, robots, 404s, 301 legacy redirects. Reuse the Redux store and api.js. No Reviews. Do not invent credentials, testimonials or claims. Assets supplied: logo, Dr. Ray headshot, VALD flyer.
+
+## Implemented (2026-10-22) - Part 2 public site
+- client/src/app/(site): home, about-us, services, what-we-treat, blogs, contact, [slug] (reserved guard), not-found, error. Root not-found, sitemap.js, robots.js, admin/layout.js (noindex)
+- components/site: Header (Redux site slice for the mobile nav), Footer, ui (PageHero, CtaBand, Breadcrumbs+JSON-LD, ArcMotif), Cards, ContentDetail, FaqList (FAQPage JSON-LD), GhlForm (form BEGJvO6gNANPojCjlhqB), SmartImage (next/image)
+- lib: site.js (clinic details), seo.js (metadata, canonicals with trailing slash), siteData.js; api.js gets API_INTERNAL_URL for SSR plus revalidate 60 on public calls
+- middleware.js: 301s from the CMS redirects table (cached 60s), plus /blog -> /blogs. next.config: trailingSlash, image remotePatterns from env
+- Server: blog public path /blog -> /blogs (types.js, seed, DB redirects), sitemap static routes; 7 new legacy redirects (form pages -> /contact, team/why pages -> /about-us)
+- Logo lockups generated in client/public/images
+- Testing iteration_5: backend 145/145, frontend all flows pass. Fixed afterwards: home shows all services, footer has its own conditions column, blog cards are fully clickable, /blog/ 301s, out-of-range blog pages return 404, credentials made consistent
+
 ## Backlog
-- P0 (Part 2): public website pages using /api/public, Next middleware for redirects, sitemap.xml route, robots
+- P1: clinic hours (unverified), separate GHL form IDs for Speak with a PT / Discovery Call, service images, licensed fonts, remove the leftover authoring line in the IT band post, NEXT_PUBLIC_SITE_URL/MEDIA_HOSTS for prod
 - P1: client credentials (AWS, prod DB, fonts), content for the 8 draft conditions, featured images
 - P2: block manual redirects that shadow live content, media library browser, scheduled-publish indicator

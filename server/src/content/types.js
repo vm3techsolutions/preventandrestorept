@@ -33,7 +33,7 @@ const blogs = {
   folder: 'blogs',
   newOnTop: true,
   audit: true,
-  path: (slug) => `/blog/${slug}`,
+  path: (slug) => `/blogs/${slug}`,
   schema: blogSchema,
   searchFields: ['title', 'slug', 'excerpt'],
   include: {

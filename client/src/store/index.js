@@ -3,6 +3,7 @@ import auth from './slices/authSlice';
 import dashboard from './slices/dashboardSlice';
 import admins from './slices/adminsSlice';
 import activity from './slices/activitySlice';
+import site from './slices/siteSlice';
 import { blogs, services, conditions, pages } from './slices/contentSlices';
 import { categories, tags, authors } from './slices/taxonomySlices';
 
@@ -13,6 +14,7 @@ export const makeStore = () =>
       dashboard,
       admins,
       activity,
+      site,
       blogs: blogs.reducer,
       services: services.reducer,
       conditions: conditions.reducer,

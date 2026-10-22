@@ -9,7 +9,8 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL').rstrip('/')
 API = f"{BASE_URL}/api"
 QA_EMAIL = "test_qa_admin@example.com"
 QA_PW = "TestQaAdmin2026x"
-QA_ID = 17
+from _admin_ids import admin_id
+QA_ID = admin_id('test_qa_admin@example.com')
 UID = uuid.uuid4().hex[:6]
 SECOND_EMAIL = f"test_second_{UID}@example.com"
 SECOND_PW = "SecondAdmin2026x"

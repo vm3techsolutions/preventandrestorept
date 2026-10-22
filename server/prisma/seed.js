@@ -79,9 +79,16 @@ async function main() {
 
   const legacy = [
     ...data.conditions.filter((c) => c.legacyPath).map((c) => [c.legacyPath, `/what-we-treat/${c.slug}`]),
-    ...data.blogs.map((b) => [b.legacyPath, `/blog/${b.slug}`]),
+    ...data.blogs.map((b) => [b.legacyPath, `/blogs/${b.slug}`]),
     ['/physical-therapy-services/', '/services'],
     ['/other-conditions/', '/what-we-treat'],
+    ['/meet-the-team/', '/about-us'],
+    ['/why-prevent-restore-physical-therapy/', '/about-us'],
+    ['/request-appointment/', '/contact'],
+    ['/speak-with-a-pt/', '/contact'],
+    ['/availability-and-pricing/', '/contact'],
+    ['/discovery-call/', '/contact'],
+    ['/contact-us/', '/contact'],
   ];
   for (const [from, to] of legacy) {
     await createOnce('urlRedirect', { fromPath: from.replace(/\/+$/, '').toLowerCase() }, { toPath: to, statusCode: 301, note: 'Legacy WordPress URL' });

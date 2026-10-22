@@ -1,6 +1,9 @@
 // Centralized REST client for the Express API. All browser <-> server communication goes through here.
 // Absolute (http://localhost:5000/api) or same-origin relative (/api) base URL.
 const BASE = (process.env.NEXT_PUBLIC_API_BASE_URL || '').replace(/\/$/, '');
+// Server-only override so SSR can reach the API directly when the public base is relative (/api).
+const SERVER_BASE = (process.env.API_INTERNAL_URL || '').replace(/\/$/, '');
+const base = () => (typeof window === 'undefined' && SERVER_BASE ? SERVER_BASE : BASE);
 const API_ORIGIN = /^https?:\/\//i.test(BASE) ? new URL(BASE).origin : '';
 const origin = () => (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
 
@@ -12,8 +15,8 @@ export class ApiError extends Error {
   }
 }
 
-async function request(path, { method = 'GET', body, query, form } = {}) {
-  const url = new URL(`${BASE}${path}`, origin());
+async function request(path, { method = 'GET', body, query, form, revalidate } = {}) {
+  const url = new URL(`${base()}${path}`, origin());
   Object.entries(query || {}).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, v);
   });
@@ -22,7 +25,7 @@ async function request(path, { method = 'GET', body, query, form } = {}) {
     res = await fetch(url, {
       method,
       credentials: 'include',
-      cache: 'no-store',
+      ...(revalidate !== undefined ? { next: { revalidate } } : { cache: 'no-store' }),
       headers: body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
       body: form || (body !== undefined ? JSON.stringify(body) : undefined),
     });
@@ -60,9 +63,11 @@ const crud = (resource) => ({
   remove: (id) => request(`/admin/${resource}/${id}`, { method: 'DELETE' }),
 });
 
+const PUBLIC_TTL = 60;
+const pub = (path, query) => request(path, { query, revalidate: PUBLIC_TTL });
 const publicContent = (resource) => ({
-  list: (query) => request(`/public/${resource}`, { query }),
-  get: (slug) => request(`/public/${resource}/${encodeURIComponent(slug)}`),
+  list: (query) => pub(`/public/${resource}`, query),
+  get: (slug) => pub(`/public/${resource}/${encodeURIComponent(slug)}`),
 });
 
 export const api = {
@@ -104,14 +109,14 @@ export const api = {
     update: (body) => request('/admin/settings', { method: 'PUT', body }),
   },
   public: {
-    blogs: { ...publicContent('blogs'), categories: () => request('/public/blogs/categories'), tags: () => request('/public/blogs/tags') },
+    blogs: { ...publicContent('blogs'), categories: () => pub('/public/blogs/categories'), tags: () => pub('/public/blogs/tags') },
     services: publicContent('services'),
     conditions: publicContent('conditions'),
     pages: publicContent('pages'),
     resolveRedirect: (path) => request('/public/redirects/resolve', { query: { path } }),
     redirects: (query) => request('/public/redirects', { query }),
-    sitemap: () => request('/public/sitemap'),
-    settings: () => request('/public/settings'),
+    sitemap: () => pub('/public/sitemap'),
+    settings: () => pub('/public/settings'),
   },
 };
 

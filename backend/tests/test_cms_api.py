@@ -118,14 +118,14 @@ class TestBlogs:
         # slug change -> 301
         r = s.put(f"{API}/admin/blogs/{bid}", json={"title": title, "slug": f"test-blog-{UID}-b"})
         assert r.status_code == 200
-        res = s.get(f"{API}/public/redirects/resolve", params={"path": f"/blog/test-blog-{UID}"}).json()["data"]
-        assert res["toPath"] == f"/blog/test-blog-{UID}-b" and res["statusCode"] == 301
+        res = s.get(f"{API}/public/redirects/resolve", params={"path": f"/blogs/test-blog-{UID}"}).json()["data"]
+        assert res["toPath"] == f"/blogs/test-blog-{UID}-b" and res["statusCode"] == 301
         r = s.put(f"{API}/admin/blogs/{bid}", json={"title": title, "slug": f"test-blog-{UID}-c"})
         assert r.status_code == 200
-        res = s.get(f"{API}/public/redirects/resolve", params={"path": f"/blog/test-blog-{UID}"}).json()["data"]
-        assert res["toPath"] == f"/blog/test-blog-{UID}-c", "chain not flattened"
-        res2 = s.get(f"{API}/public/redirects/resolve", params={"path": f"/blog/test-blog-{UID}-b"}).json()["data"]
-        assert res2["toPath"] == f"/blog/test-blog-{UID}-c"
+        res = s.get(f"{API}/public/redirects/resolve", params={"path": f"/blogs/test-blog-{UID}"}).json()["data"]
+        assert res["toPath"] == f"/blogs/test-blog-{UID}-c", "chain not flattened"
+        res2 = s.get(f"{API}/public/redirects/resolve", params={"path": f"/blogs/test-blog-{UID}-b"}).json()["data"]
+        assert res2["toPath"] == f"/blogs/test-blog-{UID}-c"
         # unpublish
         r = s.post(f"{API}/admin/blogs/{bid}/unpublish")
         assert r.json()["data"]["status"] == "DRAFT"
@@ -274,7 +274,7 @@ class TestPublic:
         r = anon.get(f"{API}/public/sitemap.xml")
         assert r.status_code == 200 and "xml" in r.headers["content-type"]
         assert "tennis-elbow" not in r.text
-        assert r.text.count("<url>") == 4 + 2 + 7 + 5
+        assert r.text.count("<url>") == 6 + 2 + 7 + 5
 
     def test_public_settings(self, anon):
         assert anon.get(f"{API}/public/settings").status_code == 200
