@@ -109,12 +109,16 @@ async function listActivity(req, res) {
   if (q.adminId) where.adminId = parseId(q.adminId);
   ACTIVITY_FILTERS.forEach((k) => { if (q[k]) where[k] = String(q[k]); });
   const range = {};
-  for (const [k, v, suffix] of [['gte', q.from, 'T00:00:00.000Z'], ['lte', q.to, 'T23:59:59.999Z']]) {
+  const offsetMin = Number.isFinite(Number(q.tzOffset)) ? Math.max(-840, Math.min(840, Number(q.tzOffset))) : 0;
+  for (const [k, v, endOfDay] of [['gte', q.from, false], ['lte', q.to, true]]) {
     if (!v) continue;
-    const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(v) ? `${v}${suffix}` : v);
-    if (Number.isNaN(d.getTime())) throw new HttpError(422, 'Invalid date filter');
-    range[k] = d;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v));
+    const utc = m ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : NaN;
+    if (!m || new Date(utc).toISOString().slice(0, 10) !== v) throw new HttpError(422, 'Dates must be real calendar dates in YYYY-MM-DD format');
+    // Day boundaries follow the admin's local timezone (tzOffset = minutes from Date#getTimezoneOffset).
+    range[k] = new Date(utc + offsetMin * 60000 + (endOfDay ? 86400000 - 1 : 0));
   }
+  if (range.gte && range.lte && range.gte > range.lte) throw new HttpError(422, '"From" date must be on or before the "To" date');
   if (Object.keys(range).length) where.createdAt = range;
   if (q.search) {
     const s = { contains: String(q.search), mode: 'insensitive' };

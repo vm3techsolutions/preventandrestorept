@@ -9,8 +9,8 @@ import requests
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL').rstrip('/')
 API = f"{BASE_URL}/api"
-ADMIN_EMAIL = "v3mtechnology@gmail.com"
-ADMIN_PW = "PRestore-Admin-2026x"
+ADMIN_EMAIL = "test_qa_admin@example.com"
+ADMIN_PW = "TestQaAdmin2026x"
 UID = uuid.uuid4().hex[:6]
 
 

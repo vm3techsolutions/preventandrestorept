@@ -1,0 +1,44 @@
+{
+  "summary": "Iteration 4: tested owner-account protection and the new Activity Log (API and UI), plus a regression check. Backend: the new test_owner_activity.py passed 20 of 20. The full suite passed 96 of 96 with 1 skip, after I fixed 2 stale tests. Frontend Playwright on prevent-restore.preview.emergentagent.com, logged in as the non-owner QA admin (ID 17): the owner badge and 'Protected owner account' show, and the owner row has no reset or toggle buttons. Each Activity Log filter works (search, admin, area, action, from/to), as do Reset, the empty state, pagination, editor links (and no link on delete entries), and the details text. The Admins create/reset/deactivate flow writes the matching 3 activity entries, and the Blogs 'Last updated by' column still works. No critical or functional bugs found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/admin/activity?from=2026-02-30", "issue": "Impossible calendar dates (Feb 30/31) are accepted: JS Date rolls them over to Mar 2/3 and returns 200 instead of 422. Values like '2026-01-01T10:00' that are not YYYY-MM-DD are accepted too."},
+      {"endpoint": "GET /api/admin/activity", "issue": "from > to is not checked and just returns an empty list. The from/to day boundaries are UTC (T00:00Z to T23:59Z), not the admin's local day, so entries near midnight can land on the 'wrong' day."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/admin/activity filters", "issues": ["From/To use the browser's native date input (mm/dd/yyyy) instead of a styled calendar component", "The tiny inline 'From'/'To' labels sit beside the inputs, are not aligned with the other filters and look cramped"]},
+      {"screen": "/admin/admins", "issues": ["Leftover deactivated TEST admins created by test runs (IDs 19-26) clutter the list. Clean up with the CLI snippet in test_credentials.md."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_owner_activity.py", "/app/backend/tests/test_admin_mgmt_audit.py", "/app/backend/tests/test_admin_reset_password_cli.py", "/app/backend/tests/test_cms_api.py", "/app/test_reports/pytest/pytest_iter4.xml", "/app/test_reports/pytest/pytest_all_iter4.xml"],
+  "action_items": [
+    "Optional: return 422 for impossible dates in the activity filters, e.g. check that new Date(v).toISOString().slice(0,10) === v",
+    "Optional: decide whether the from/to filters should use the admin's timezone, or document that they are UTC",
+    "Optional: replace the native date inputs on the Activity Log with the app's styled date picker and tidy the From/To labels",
+    "Clean up the TEST_ admins, blogs (trashed TEST_Act Blog entries) and activity rows before going live"
+  ],
+  "critical_code_review_comments": [
+    "test_cms_api.py logged in as the REAL OWNER (v3mtechnology@gmail.com) with an outdated password. Every run counted as failed logins against the owner and could trigger the 5-attempt lockout. I changed it to the QA admin.",
+    "Owner protection is checked before the transaction in setStatus/resetPassword. That is fine, because isOwner cannot be changed through the API. There is no way to transfer ownership (CLI or API), which you may want to note for operations.",
+    "The reorder log has no entityId or entityLabel (only details.count), so the log can't show which items moved. Consider storing the before/after id order.",
+    "Deleting an already-trashed item logs a second 'delete' entry (remove() doesn't check deletedAt)",
+    "listActivity passes action/entityType through as free strings, which is fine (Prisma parameterises them). The limit is silently capped at 100."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_owner_activity.py (new)",
+    "/app/backend/tests/test_admin_mgmt_audit.py (QA_ID 8 -> 17)",
+    "/app/backend/tests/test_cms_api.py (login switched from real owner to QA admin)",
+    "/app/backend/tests/test_admin_reset_password_cli.py (unknown-command assertion now also accepts the 'Usage' output)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "QA admin test_qa_admin@example.com / TestQaAdmin2026x (ID 17, non-owner); QA second test_qa_second@example.com / TestQaSecond2026x (ID 18). Owner ID 1 was never logged into and is verified active and isOwner=true.",
+  "seed_data_creation": "TEST_Act Blog * (left in the trash), TEST_Act categories/tags/redirects (deleted), TEST Act/TEST UI admins (deactivated). The services order was restored after the reorder test.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=$(grep REACT_APP_BACKEND_URL /app/frontend/.env|cut -d= -f2) python -m pytest /app/backend/tests/ -n 0 -p no:cacheprovider. Every suite now logs in as the QA admin (ID 17). Never log in as v3mtechnology@gmail.com (owner) or as admins 6/7. Each run creates and then deactivates a few TEST admins."
+}

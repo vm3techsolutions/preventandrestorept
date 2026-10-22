@@ -22,7 +22,7 @@ export default function ActivityLog() {
     api.admins.list({ limit: 100 }).then((r) => setAdmins(r.data)).catch(() => setAdmins([]));
   }, []);
   useEffect(() => {
-    dispatch(fetchActivity(query));
+    dispatch(fetchActivity({ ...query, tzOffset: new Date().getTimezoneOffset() }));
   }, [dispatch, query]);
   useEffect(() => {
     const t = setTimeout(() => setQuery((q) => (q.search === search ? q : { ...q, search, page: 1 })), 300);
@@ -54,12 +54,16 @@ export default function ActivityLog() {
             <option value="">All actions</option>
             {Object.entries(ACTIONS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select>
-          <label className="text-xs text-slate-500">From<input type="date" className="input mt-1 w-auto" value={query.from} onChange={set('from')} data-testid="activity-from-filter" /></label>
-          <label className="text-xs text-slate-500">To<input type="date" className="input mt-1 w-auto" value={query.to} onChange={set('to')} data-testid="activity-to-filter" /></label>
+          <label className="flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">From
+            <input type="date" max={query.to || undefined} className="input w-auto font-normal normal-case tracking-normal" value={query.from} onChange={set('from')} data-testid="activity-from-filter" />
+          </label>
+          <label className="flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">To
+            <input type="date" min={query.from || undefined} className="input w-auto font-normal normal-case tracking-normal" value={query.to} onChange={set('to')} data-testid="activity-to-filter" />
+          </label>
           {filtered && <button type="button" className="btn-ghost" onClick={reset} data-testid="activity-reset-filters"><RotateCcw className="h-4 w-4" /> Reset</button>}
         </div>
         {status === 'loading' && !items.length && <LoadingState />}
-        {status === 'failed' && <ErrorState message={error} onRetry={() => dispatch(fetchActivity(query))} />}
+        {status === 'failed' && <ErrorState message={error} onRetry={() => dispatch(fetchActivity({ ...query, tzOffset: new Date().getTimezoneOffset() }))} />}
         {status === 'empty' && <EmptyState title="No activity found" text={filtered ? 'Try different filters.' : 'Changes made in the CMS will appear here.'} />}
         {items.length > 0 && status !== 'failed' && (
           <div className="overflow-x-auto">
