@@ -40,7 +40,7 @@ export function ContentCard({ item, index = 0, testPrefix }) {
 
 export function BlogCard({ post, priority = false }) {
   return (
-    <article className="card-site group flex flex-col overflow-hidden" data-testid={`blog-card-${post.slug}`}>
+    <article className="card-site group relative flex flex-col overflow-hidden" data-testid={`blog-card-${post.slug}`}>
       <Link href={withSlash(post.path)} className="relative block aspect-[16/9] overflow-hidden bg-navy" tabIndex={-1} aria-hidden>
         {post.featuredImage
           ? <SmartImage src={post.featuredImage.url} alt="" priority={priority} sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
@@ -49,7 +49,7 @@ export function BlogCard({ post, priority = false }) {
       <div className="flex flex-1 flex-col p-7">
         {post.categories?.[0] && <p className="eyebrow text-teal">{post.categories[0].name}</p>}
         <h3 className="mt-3 font-heading text-lg font-semibold leading-snug text-navy">
-          <Link href={withSlash(post.path)} className="hover:text-teal">{post.title}</Link>
+          <Link href={withSlash(post.path)} className="after:absolute after:inset-0 after:content-[''] group-hover:text-teal">{post.title}</Link>
         </h3>
         {post.excerpt && <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-slate-600">{post.excerpt}</p>}
         <p className="mt-auto pt-6 text-sm text-slate-500">

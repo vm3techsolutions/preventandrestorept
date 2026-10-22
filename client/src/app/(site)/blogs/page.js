@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { BlogCard } from '@/components/site/Cards';
 import { CtaBand, EmptyState, PageHero } from '@/components/site/ui';
 import { api } from '@/lib/api';
@@ -55,6 +56,7 @@ export default async function BlogsPage({ searchParams }) {
     safeTax(api.public.blogs.categories),
     safeTax(api.public.blogs.tags),
   ]);
+  if (page > (posts.pagination?.totalPages || 1)) notFound();
   const showFilters = categories.length > 1 || tags.length > 0;
   return (
     <>

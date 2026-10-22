@@ -1,0 +1,52 @@
+{
+  "summary": "Iteration 5: tested the public Next.js site (Part 2) end to end, plus an admin regression check. New file test_public_site.py: 25 of 25 passed. It covers SEO (title, description, canonical, og) on 8 pages, 404s, 7 legacy 301 redirects, sitemap.xml and robots.txt, the CMS dynamic page lifecycle (draft 404 -> publish -> 200 with canonical -> delete), the reserved slug 'contact' not overriding /contact/, and blog category/tag filter chips using TEST_ taxonomy. The full regression suite passed 120 of 120 with 1 skip, after I fixed stale tests. Playwright checks passed: header nav (exactly 6 items, no Reviews, active state), home sections, services/conditions list and detail, knee-pain featured image and related services, blog detail (blocks in order: 11 h2, 8 lists, disclaimer, no raw JSON), byline 'Ray Waters, PT, DPT, CSCS, CEAS' with Published/Updated dates, related articles, BlogPosting and BreadcrumbList JSON-LD, contact page (phone, email, address, Google map, GHL iframe with the correct src), and the mobile hamburger at 390px (opens, then closes after navigating). There is no horizontal overflow at 390px on home, blog detail or contact. Admin login, dashboard, blog list and editor preview (BlockRenderer) all work. One spec deviation: the home page shows 6 service cards, not 7.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/public/sitemap.xml", "issue": "The API's own sitemap emits URLs without a trailing slash (e.g. /about-us). The canonicals and the Next /sitemap.xml use trailing slashes. Not used by the site, but if this endpoint is ever exposed it would list 308-redirecting URLs."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Home services section", "issue": "Only 6 of the 7 published services render. app/(site)/page.js uses listSafe('services', {limit: 6}), so 'Pain Prevention Seminars' (service-card-pain-prevention-seminars) is missing. The spec says 7.", "selector": "[data-testid^=service-card-]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "BlogCard (home, /blogs/, related)", "issues": ["Only the image and the title are links. Clicking the excerpt, author or empty card area does nothing, although the whole card has hover styling. Consider a stretched-link overlay."]},
+      {"screen": "Footer", "issues": ["The 'SERVICES' column lists 6 services and then 2 conditions (Back & Sciatica Pain, Shoulder & Neck Pain) under the same Services heading. This is confusing: give conditions their own heading or remove them."]},
+      {"screen": "Blog detail content (CMS data)", "issues": ["The IT band post contains a leftover authoring instruction rendered as body text: 'Invite readers to schedule a discovery visit or call for a personalized assessment.' This is content, not code, but it is visible to the public."]},
+      {"screen": "About Us vs author byline", "issues": ["About shows credentials 'DPT, CSCS, CEAS' but the author byline and hero card show 'PT, DPT, CSCS, CEAS'. Minor inconsistency."]},
+      {"screen": "/blog/ (legacy index)", "issues": ["/blog/ returns 404. Only /blog/<slug>/ redirects. Consider a 301 from /blog/ to /blogs/."]},
+      {"screen": "/blogs/?page=N beyond range", "issues": ["/blogs/?page=2 with 1 total page returns 200 with an empty state and a self-canonical ?page=2. Consider returning 404 (notFound()) when the page is past totalPages."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_public_site.py", "/app/backend/tests/_admin_ids.py", "/app/test_reports/pytest/pytest_iter5.xml", "/app/test_reports/pytest/pytest_all_iter5.xml"],
+  "action_items": [
+    "Home: show all published services (raise the limit in app/(site)/page.js listSafe('services', {limit: 6}) or use no limit). The spec expects 7 service cards.",
+    "Optional: make BlogCard fully clickable (stretched link)",
+    "Optional: separate the conditions from the Services column in the footer",
+    "Optional: 301 /blog/ -> /blogs/ in middleware (path === '/blog')",
+    "Optional: notFound() for /blogs/?page beyond totalPages",
+    "Content: remove the 'Invite readers to schedule...' instruction from the IT band blog via the CMS"
+  ],
+  "critical_code_review_comments": [
+    "middleware.js fetches /public/redirects?limit=1000 and caches it for 60s per instance. That is fine, but redirects beyond 1000 are silently ignored and nothing logs a fetch failure. Consider logging, or paginating.",
+    "[slug]/page.js RESERVED set protects the developer routes. It works: a CMS page with slug 'contact' does not override /contact/.",
+    "Blog filters only appear when categories.length > 1 or tags.length > 0 (taxonomies with published posts). With live data (only 'Uncategorized') no chips show. This is expected behaviour, and I verified the chips with TEST_ data.",
+    "Taxonomy delete is blocked while a trashed blog still references the term. Tests must clear categoryIds/tagIds before trashing. This is intended behaviour, but the admin UI should explain it (it already returns a clear 409 message).",
+    "Previous tests hardcoded QA admin IDs (17/18), which broke once the QA admin was recreated. I changed them to resolve IDs dynamically (_admin_ids.py). test_cms_api.py still checked the old /blog/ path and the 4 static sitemap entries; I updated these to /blogs/ and 6."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_public_site.py (new)",
+    "/app/backend/tests/_admin_ids.py (new helper)",
+    "/app/backend/tests/test_admin_mgmt_audit.py (dynamic QA_ID)",
+    "/app/backend/tests/test_owner_activity.py (dynamic QA_ID/SECOND_ID, auto-creates the second QA admin)",
+    "/app/backend/tests/test_cms_api.py (blog redirect path /blog/ -> /blogs/, sitemap static count 4 -> 6)"
+  ],
+  "success_rate": {"backend": "100% (145/145 incl. regression, 1 skip)", "frontend": "95% (all flows pass; the home page shows 6 of 7 services)"},
+  "test_credentials": "test_qa_admin@example.com / TestQaAdmin2026x was created via the CLI for the tests and DELETED afterwards, together with all test_ activity rows. Only real admins 1, 6 and 7 remain; they were untouched (ID 7 was already inactive).",
+  "seed_data_creation": "Everything was cleaned up. TEST_ CMS pages and TEST Cat/Tag were deleted, and the TEST_Blog/TEST_Filter blogs were trashed (soft-deleted, not public). Three TEST_Blog posts published by the stale regression run were trashed right away.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=$(grep REACT_APP_BACKEND_URL /app/frontend/.env|cut -d= -f2) python -m pytest /app/backend/tests/ -n 0 -p no:cacheprovider. The QA admin must exist first (test_public_site.py creates it via the CLI; run it first or create it manually). Afterwards, delete test_ admins and activity rows. The /contact/ page never reaches networkidle because of the GHL and Maps iframes, so use domcontentloaded. Blog cards: click 'h3 a', not the card. The system date is Oct 2026."
+}

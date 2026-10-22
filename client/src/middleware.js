@@ -23,7 +23,8 @@ export async function middleware(req) {
   const path = req.nextUrl.pathname.replace(/\/+$/, '').toLowerCase() || '/';
   let to = null;
   let status = 301;
-  if (path.startsWith('/blog/')) to = `/blogs/${path.slice(6)}`;
+  if (path === '/blog') to = '/blogs';
+  else if (path.startsWith('/blog/')) to = `/blogs/${path.slice(6)}`;
   else {
     const hit = (await redirectMap(req.nextUrl.origin)).get(path);
     if (hit) {

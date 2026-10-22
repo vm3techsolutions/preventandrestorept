@@ -23,13 +23,13 @@ function FounderSection() {
       <div className="relative mx-auto w-full max-w-md">
         <div className="absolute -inset-3 -translate-x-4 translate-y-4 rounded-3xl bg-teal-50" aria-hidden />
         <div className="relative aspect-[4/5] overflow-hidden rounded-3xl">
-          <Image src="/images/ray-waters.webp" alt="Dr. Ray Waters, DPT, CSCS, CEAS" fill priority sizes="(min-width:1024px) 420px, 90vw" className="object-cover object-top" />
+          <Image src="/images/ray-waters.webp" alt="Dr. Ray Waters, PT, DPT, CSCS, CEAS" fill priority sizes="(min-width:1024px) 420px, 90vw" className="object-cover object-top" />
         </div>
       </div>
       <div>
         <p className="eyebrow text-teal">Owner and founder</p>
         <h2 className="display mt-3 text-3xl text-navy sm:text-4xl">Dr. Ray Waters</h2>
-        <p className="mt-2 font-medium text-slate-500">DPT, CSCS, CEAS</p>
+        <p className="mt-2 font-medium text-slate-500">PT, DPT, CSCS, CEAS</p>
         <div className="mt-6 space-y-4 text-base leading-relaxed text-slate-600 md:text-lg">
           <p>Dr. Ray Waters is an outpatient orthopedic physical therapist with a passion for helping people move better and reducing pain. He specializes in the treatment of musculoskeletal injuries, improving athletic performance, and using preventative techniques to stop pain before it starts.</p>
           <p>Dr. Ray has acquired a variety of physical therapy techniques such as practicing a unique Stecco fascial manipulation method, plus certifications in Certified Strength and Conditioning Specialist (CSCS), Functional Movement Screening (FMS) and Certified Ergonomic Assessment Specialist (CEAS).</p>

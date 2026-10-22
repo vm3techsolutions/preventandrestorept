@@ -27,7 +27,7 @@ const clinicLd = {
 
 export default async function HomePage() {
   const [services, conditions, blogs] = await Promise.all([
-    listSafe('services', { limit: 6 }),
+    listSafe('services', { limit: 9 }),
     listSafe('conditions', { limit: 8 }),
     listSafe('blogs', { limit: 3 }),
   ]);
