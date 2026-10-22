@@ -1,7 +1,7 @@
 import { uid } from './utils';
 
 export const CONTENT_TYPES = {
-  blogs: { key: 'blogs', kind: 'blog', label: 'Blog', plural: 'Blogs', adminPath: '/admin/blogs', publicPrefix: '/blog/', folder: 'blogs', blocksField: 'blocks' },
+  blogs: { key: 'blogs', kind: 'blog', label: 'Blog', plural: 'Blogs', adminPath: '/admin/blogs', publicPrefix: '/blogs/', folder: 'blogs', blocksField: 'blocks' },
   services: {
     key: 'services', kind: 'service', label: 'Service', plural: 'Services', adminPath: '/admin/services', publicPrefix: '/services/', folder: 'services',
     blocksField: 'content', relatedLabel: 'Related conditions', relatedResource: 'conditions',

@@ -1,6 +1,6 @@
-import { mediaUrl } from '@/lib/api';
+import SmartImage from '@/components/site/SmartImage';
 
-// Renders structured content blocks. Shared by admin preview now and the public site in Part 2.
+// Renders structured content blocks. Shared by the admin preview and the public site.
 export default function BlockRenderer({ blocks = [] }) {
   return (
     <div className="space-y-5 text-[17px] leading-[1.75] text-slate-700" data-testid="block-renderer">
@@ -10,8 +10,8 @@ export default function BlockRenderer({ blocks = [] }) {
         switch (b.type) {
           case 'heading':
             return d.level === 2
-              ? <h2 key={key} className="pt-4 font-heading text-2xl font-semibold text-navy">{d.text}</h2>
-              : <h3 key={key} className="pt-2 font-heading text-xl font-semibold text-navy">{d.text}</h3>;
+              ? <h2 key={key} className="scroll-mt-28 pt-6 font-heading text-2xl font-semibold text-navy">{d.text}</h2>
+              : <h3 key={key} className="scroll-mt-28 pt-3 font-heading text-xl font-semibold text-navy">{d.text}</h3>;
           case 'paragraph':
             return <p key={key} className="rich" dangerouslySetInnerHTML={{ __html: d.html }} />;
           case 'list': {
@@ -25,7 +25,7 @@ export default function BlockRenderer({ blocks = [] }) {
           case 'image':
             return d.url ? (
               <figure key={key}>
-                <img src={mediaUrl(d.url)} alt={d.alt} className="w-full rounded-xl object-cover" />
+                <SmartImage src={d.url} alt={d.alt} width={1200} height={800} sizes="(min-width:768px) 768px, 100vw" className="h-auto w-full rounded-xl object-cover" />
                 {d.caption && <figcaption className="mt-2 text-center text-sm text-slate-500">{d.caption}</figcaption>}
               </figure>
             ) : null;
