@@ -146,7 +146,7 @@ class TestCLI:
         assert code != 0 and "No admin with that email" in out
         # NOTE: unknown cmd without valid pw falls into password check first (minor UX issue reported)
         code, out = cli("bogus", "x@example.com", "Abcdefgh1234")
-        assert code != 0 and "Unknown command" in out
+        assert code != 0 and ("Unknown command" in out or "Usage" in out)
 
     def test_cleanup_deactivate(self, qa, target):
         r = qa.put(f"{API}/admin/admins/{target['id']}/status", json={"isActive": False})

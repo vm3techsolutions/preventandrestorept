@@ -3,6 +3,7 @@ const prisma = require('../lib/prisma');
 const env = require('../config/env');
 const { HttpError, pagination, paged, parseId } = require('../lib/http');
 const { MIME_EXT, FOLDERS, sniffMime, putObject, deleteObject, storageMode } = require('../services/storage');
+const { logActivity } = require('../services/activity');
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -26,6 +27,7 @@ async function create(req, res) {
       caption: req.body.caption ? String(req.body.caption).slice(0, 500) : null,
     },
   });
+  await logActivity(req, { action: 'upload', entityType: 'media', entityId: media.id, entityLabel: media.originalName, details: { folder, size: media.size } });
   res.status(201).json({ data: media });
 }
 
@@ -45,6 +47,7 @@ async function remove(req, res) {
   if (!media) throw new HttpError(404, 'Media not found');
   await deleteObject(media);
   await prisma.media.delete({ where: { id } });
+  await logActivity(req, { action: 'delete', entityType: 'media', entityId: id, entityLabel: media.originalName });
   res.json({ data: { id, deleted: true } });
 }
 

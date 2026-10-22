@@ -4,6 +4,7 @@ const { HttpError } = require('../lib/http');
 const { loginSchema, setupSchema, changePasswordSchema } = require('../validators/schemas');
 const { hashToken } = require('../services/setupToken');
 const { issueSession, clearSession, publicAdmin } = require('../middleware/auth');
+const { logActivity } = require('../services/activity');
 
 const ROUNDS = 12;
 const MAX_ATTEMPTS = 5;
@@ -22,7 +23,7 @@ async function setup(req, res) {
   const passwordHash = await bcrypt.hash(body.password, ROUNDS);
   const admin = await prisma.$transaction(async (tx) => {
     if ((await tx.admin.count()) > 0) throw new HttpError(403, 'Setup has already been completed');
-    const created = await tx.admin.create({ data: { email: body.email, name: body.name, passwordHash, lastLoginAt: new Date() } });
+    const created = await tx.admin.create({ data: { email: body.email, name: body.name, passwordHash, isOwner: true, lastLoginAt: new Date() } });
     await tx.setupToken.deleteMany({});
     return created;
   });
@@ -72,6 +73,7 @@ async function changePassword(req, res) {
     data: { passwordHash: await bcrypt.hash(newPassword, ROUNDS), sessionVersion: { increment: 1 } },
   });
   const expiresAt = issueSession(res, updated);
+  await logActivity(req, { action: 'change_password', entityType: 'admins', entityId: updated.id, entityLabel: updated.email });
   res.json({ data: { admin: publicAdmin(updated), expiresAt } });
 }
 

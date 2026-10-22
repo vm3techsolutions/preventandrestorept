@@ -57,12 +57,16 @@ export default function AdminsManager() {
                     <td className="td font-mono text-xs" data-testid={`admin-row-${a.id}-id`}>{a.id}</td>
                     <td className="td font-medium text-navy" data-testid={`admin-row-${a.id}-name`}>
                       {a.name || '—'}{a.id === me?.id && <span className="ml-2 rounded bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-teal">You</span>}
+                      {a.isOwner && <span className="ml-2 rounded bg-navy px-1.5 py-0.5 text-[10px] font-semibold uppercase text-white" data-testid={`admin-row-${a.id}-owner-badge`}>Owner</span>}
                     </td>
                     <td className="td" data-testid={`admin-row-${a.id}-email`}>{a.email}</td>
                     <td className="td"><StatusPill active={a.isActive} testId={`admin-row-${a.id}-status`} /></td>
                     <td className="td hidden text-xs md:table-cell" data-testid={`admin-row-${a.id}-created`}>{formatDate(a.createdAt)}</td>
                     <td className="td text-right">
-                      {a.id !== me?.id && (
+                      {a.id !== me?.id && a.isOwner && !me?.isOwner && (
+                        <span className="text-xs text-slate-500" data-testid={`admin-row-${a.id}-owner-protected`}>Protected owner account</span>
+                      )}
+                      {a.id !== me?.id && (!a.isOwner || me?.isOwner) && (
                         <div className="flex justify-end gap-1">
                           <button type="button" className="btn-ghost" onClick={() => setResetting(a)} data-testid={`admin-row-${a.id}-reset-password`}>
                             <KeyRound className="h-4 w-4" /> Reset password
