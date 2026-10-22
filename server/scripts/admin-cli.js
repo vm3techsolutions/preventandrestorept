@@ -35,8 +35,9 @@ async function run() {
     console.log(`Password reset and account activated for #${a.id} ${a.email}`);
     return;
   }
-  const a = await prisma.admin.create({ data: { email, passwordHash, name: nameParts.join(' ') || null } });
-  console.log(`Created active admin #${a.id} ${a.email}`);
+    const isOwner = (await prisma.admin.count()) === 0;
+    const a = await prisma.admin.create({ data: { email, passwordHash, isOwner, name: nameParts.join(' ') || null } });
+    console.log(`Created active admin #${a.id} ${a.email}${isOwner ? ' (owner)' : ''}`);
 }
 
 run()

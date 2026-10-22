@@ -3,6 +3,7 @@ const { HttpError, pagination, paged, parseId } = require('../lib/http');
 const { resolveSlug } = require('../lib/slug');
 const { applySlugChange } = require('../services/redirects');
 const { reorderSchema } = require('../validators/schemas');
+const { logActivity, changedFields } = require('../services/activity');
 
 const STATUSES = ['DRAFT', 'PUBLISHED', 'ARCHIVED'];
 
@@ -34,6 +35,7 @@ function createContentController(cfg) {
     return item;
   };
   const respond = async (res, id, status = 200) => res.status(status).json({ data: cfg.serializeAdmin(await load(id)) });
+  const log = (req, action, item, details) => logActivity(req, { action, entityType: cfg.key, entityId: item.id, entityLabel: item.title, details });
 
   async function list(req, res) {
     const p = pagination(req.query);
@@ -57,6 +59,7 @@ function createContentController(cfg) {
       if (cfg.afterSave) await cfg.afterSave(tx, created.id, body);
       return created;
     });
+    await log(req, 'create', row);
     await respond(res, row.id, 201);
   }
 
@@ -72,10 +75,14 @@ function createContentController(cfg) {
       if (slugChanged) await applySlugChange(tx, cfg.path(existing.slug), cfg.path(slug));
     });
     res.set('X-Redirect-Created', slugChanged ? `${cfg.path(existing.slug)} -> ${cfg.path(slug)}` : '');
-    await respond(res, existing.id);
+    const before = cfg.serializeAdmin(existing);
+    const after = cfg.serializeAdmin(await load(existing.id));
+    const changed = changedFields(before, after, [...Object.keys(body), 'slug']);
+    await log(req, 'update', after, { changed, ...(slug !== existing.slug ? { slug: { from: existing.slug, to: slug } } : {}) });
+    res.json({ data: after });
   }
 
-  const setStatus = (status) => async (req, res) => {
+  const setStatus = (status, action) => async (req, res) => {
     const existing = await load(parseId(req.params.id));
     if (existing.deletedAt) throw new HttpError(409, `This ${cfg.label.toLowerCase()} is in the trash`);
     if (status === 'PUBLISHED') {
@@ -89,20 +96,23 @@ function createContentController(cfg) {
       // A live item takes precedence over any redirect from its own URL (prevents loops).
       if (status === 'PUBLISHED' && !cfg.isPage) await tx.urlRedirect.deleteMany({ where: { fromPath: cfg.path(existing.slug) } });
     });
+    await log(req, action, existing, { from: existing.status, to: status });
     await respond(res, existing.id);
   };
 
   async function remove(req, res) {
     const id = parseId(req.params.id);
-    await load(id);
+    const item = await load(id);
     await db().update({ where: { id }, data: { deletedAt: new Date(), ...audit(req) } });
+    await log(req, 'delete', item);
     res.json({ data: { id, deleted: true } });
   }
 
   async function restore(req, res) {
     const id = parseId(req.params.id);
-    await load(id);
+    const item = await load(id);
     await db().update({ where: { id }, data: { deletedAt: null, status: 'DRAFT', ...audit(req) } });
+    await log(req, 'restore', item);
     await respond(res, id);
   }
 
@@ -113,6 +123,7 @@ function createContentController(cfg) {
     const orders = rows.map((r) => r.displayOrder).sort((a, b) => a - b);
     for (let i = 1; i < orders.length; i += 1) if (orders[i] <= orders[i - 1]) orders[i] = orders[i - 1] + 1;
     await prisma.$transaction(ids.map((id, i) => db().update({ where: { id }, data: { displayOrder: orders[i] } })));
+    await logActivity(req, { action: 'reorder', entityType: cfg.key, details: { count: ids.length } });
     res.json({ data: ids.map((id, i) => ({ id, displayOrder: orders[i] })) });
   }
 
@@ -123,7 +134,7 @@ function createContentController(cfg) {
 
   return {
     list, get, create, update, remove, restore, reorder, preview,
-    publish: setStatus('PUBLISHED'), unpublish: setStatus('DRAFT'), archive: setStatus('ARCHIVED'),
+    publish: setStatus('PUBLISHED', 'publish'), unpublish: setStatus('DRAFT', 'unpublish'), archive: setStatus('ARCHIVED', 'archive'),
   };
 }
 

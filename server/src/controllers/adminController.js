@@ -5,6 +5,10 @@ const { redirectSchema, settingsSchema } = require('../validators/schemas');
 const { normalizePath, validateRedirect } = require('../services/redirects');
 const { getGeneralSettings, saveGeneralSettings } = require('../services/settings');
 const { storageMode } = require('../services/storage');
+const { logActivity, changedFields } = require('../services/activity');
+
+const redirectLabel = (r) => `${r.fromPath} → ${r.toPath}`;
+const logRedirect = (req, action, r, details) => logActivity(req, { action, entityType: 'redirects', entityId: r.id, entityLabel: redirectLabel(r), details });
 
 async function dashboard(_req, res) {
   const nd = { deletedAt: null };
@@ -58,19 +62,25 @@ async function parseRedirect(body, id) {
 
 async function createRedirect(req, res) {
   const data = await parseRedirect(req.body);
-  res.status(201).json({ data: await prisma.urlRedirect.create({ data }) });
+  const row = await prisma.urlRedirect.create({ data });
+  await logRedirect(req, 'create', row);
+  res.status(201).json({ data: row });
 }
 
 async function updateRedirect(req, res) {
   const id = parseId(req.params.id);
-  if (!(await prisma.urlRedirect.findUnique({ where: { id } }))) throw new HttpError(404, 'Redirect not found');
+  const before = await prisma.urlRedirect.findUnique({ where: { id } });
+  if (!before) throw new HttpError(404, 'Redirect not found');
   const data = await parseRedirect(req.body, id);
-  res.json({ data: await prisma.urlRedirect.update({ where: { id }, data }) });
+  const row = await prisma.urlRedirect.update({ where: { id }, data });
+  await logRedirect(req, 'update', row, { changed: changedFields(before, row, ['fromPath', 'toPath', 'statusCode', 'isActive', 'note']) });
+  res.json({ data: row });
 }
 
 async function deleteRedirect(req, res) {
   const id = parseId(req.params.id);
-  await prisma.urlRedirect.delete({ where: { id } });
+  const row = await prisma.urlRedirect.delete({ where: { id } });
+  await logRedirect(req, 'delete', row);
   res.json({ data: { id, deleted: true } });
 }
 
@@ -84,7 +94,37 @@ async function getSettings(_req, res) {
 }
 
 async function updateSettings(req, res) {
-  res.json({ data: { general: await saveGeneralSettings(settingsSchema.parse(req.body)) } });
+  const before = await getGeneralSettings();
+  const general = await saveGeneralSettings(settingsSchema.parse(req.body));
+  await logActivity(req, { action: 'update', entityType: 'settings', entityLabel: 'SEO defaults', details: { changed: changedFields(before, general, Object.keys(general)) } });
+  res.json({ data: { general } });
 }
 
-module.exports = { dashboard, listRedirects, createRedirect, updateRedirect, deleteRedirect, getSettings, updateSettings };
+const ACTIVITY_FILTERS = ['action', 'entityType'];
+
+async function listActivity(req, res) {
+  const p = pagination(req.query);
+  const q = req.query;
+  const where = {};
+  if (q.adminId) where.adminId = parseId(q.adminId);
+  ACTIVITY_FILTERS.forEach((k) => { if (q[k]) where[k] = String(q[k]); });
+  const range = {};
+  for (const [k, v, suffix] of [['gte', q.from, 'T00:00:00.000Z'], ['lte', q.to, 'T23:59:59.999Z']]) {
+    if (!v) continue;
+    const d = new Date(/^\d{4}-\d{2}-\d{2}$/.test(v) ? `${v}${suffix}` : v);
+    if (Number.isNaN(d.getTime())) throw new HttpError(422, 'Invalid date filter');
+    range[k] = d;
+  }
+  if (Object.keys(range).length) where.createdAt = range;
+  if (q.search) {
+    const s = { contains: String(q.search), mode: 'insensitive' };
+    where.OR = [{ entityLabel: s }, { adminName: s }, { adminEmail: s }];
+  }
+  const [rows, total] = await Promise.all([
+    prisma.activityLog.findMany({ where, orderBy: { createdAt: 'desc' }, skip: p.skip, take: p.limit }),
+    prisma.activityLog.count({ where }),
+  ]);
+  res.json(paged(rows, total, p));
+}
+
+module.exports = { dashboard, listRedirects, createRedirect, updateRedirect, deleteRedirect, getSettings, updateSettings, listActivity };

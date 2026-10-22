@@ -37,9 +37,9 @@ const crud = (path, ctrl) => {
   router.put(`${path}/:id`, h(ctrl.update));
   router.delete(`${path}/:id`, h(ctrl.remove));
 };
-crud('/categories', createTaxonomyController({ model: 'blogCategory', label: 'Category', schema: taxonomySchema }));
-crud('/tags', createTaxonomyController({ model: 'blogTag', label: 'Tag', schema: taxonomySchema }));
-crud('/authors', createTaxonomyController({ model: 'author', label: 'Author', schema: authorSchema }));
+crud('/categories', createTaxonomyController({ model: 'blogCategory', label: 'Category', schema: taxonomySchema, activityType: 'categories' }));
+crud('/tags', createTaxonomyController({ model: 'blogTag', label: 'Tag', schema: taxonomySchema, activityType: 'tags' }));
+crud('/authors', createTaxonomyController({ model: 'author', label: 'Author', schema: authorSchema, activityType: 'authors' }));
 
 router.get('/redirects', h(admin.listRedirects));
 router.post('/redirects', h(admin.createRedirect));
@@ -55,6 +55,8 @@ router.get('/admins', h(adminUsers.list));
 router.post('/admins', h(adminUsers.create));
 router.put('/admins/:id/status', h(adminUsers.setStatus));
 router.put('/admins/:id/password', h(adminUsers.resetPassword));
+
+router.get('/activity', h(admin.listActivity));
 
 router.get('/settings', h(admin.getSettings));
 router.put('/settings', h(admin.updateSettings));

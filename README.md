@@ -80,6 +80,8 @@ Slug rules: auto-generated from title, editable, unique per type. Changing the s
 - Local machines: run `yarn migrate:deploy` in `server/` after pulling this update.
 - Admins → Reset password lets an admin set a new password for another admin (that admin is signed out everywhere). Use Settings → Change password for your own account.
 - Every password field has a show/hide (eye) toggle.
+- **Owner account**: the first admin (created through initial setup, or the lowest ID when upgrading) is the owner, marked with an Owner badge. Other admins cannot reset the owner's password or deactivate the owner (API returns 403). The owner manages their own password in Settings.
+- **Activity Log** (`/admin/activity`, API `GET /api/admin/activity?adminId=&entityType=&action=&from=&to=&search=&page=`): every create, update (with the list of changed fields), publish/unpublish/archive, delete/restore, reorder, upload, redirect, category/tag/author, settings and admin-account change is recorded with the admin's name, email, ID and time. Entries keep the admin's name even if that admin is later removed.
 
 ### Recovering admin accounts from the command line (folder: `server/`)
 ```bash

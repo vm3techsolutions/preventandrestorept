@@ -20,6 +20,8 @@ model Admin {
   passwordHash   String    @map("password_hash")
   sessionVersion Int       @default(1) @map("session_version")
   isActive       Boolean   @default(true) @map("is_active")
+  isOwner        Boolean   @default(false) @map("is_owner")
+  activities     ActivityLog[]
   createdById    Int?      @map("created_by_id")
   blogsCreated      Blog[]      @relation("BlogCreatedBy")
   blogsUpdated      Blog[]      @relation("BlogUpdatedBy")
@@ -320,4 +322,24 @@ model Setting {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("settings")
+}
+
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  adminId     Int?     @map("admin_id")
+  admin       Admin?   @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  adminName   String   @map("admin_name")
+  adminEmail  String   @map("admin_email")
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    Int?     @map("entity_id")
+  entityLabel String?  @map("entity_label")
+  details     Json?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([adminId])
+  @@index([entityType])
+  @@index([action])
+  @@map("activity_logs")
 }

@@ -54,6 +54,6 @@ function originGuard(req, _res, next) {
   return next();
 }
 
-const publicAdmin = (a) => ({ id: a.id, email: a.email, name: a.name, isActive: a.isActive, lastLoginAt: a.lastLoginAt, createdAt: a.createdAt });
+const publicAdmin = (a) => ({ id: a.id, email: a.email, name: a.name, isActive: a.isActive, isOwner: a.isOwner, lastLoginAt: a.lastLoginAt, createdAt: a.createdAt });
 
 module.exports = { requireAuth, originGuard, issueSession, clearSession, publicAdmin, COOKIE_NAME };

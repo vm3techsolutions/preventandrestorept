@@ -86,6 +86,7 @@ export const api = {
     setStatus: (id, isActive) => request(`/admin/admins/${id}/status`, { method: 'PUT', body: { isActive } }),
     resetPassword: (id, newPassword) => request(`/admin/admins/${id}/password`, { method: 'PUT', body: { newPassword } }),
   },
+  activity: { list: (query) => request('/admin/activity', { query }) },
   media: {
     status: () => request('/admin/media/status'),
     list: (query) => request('/admin/media', { query }),

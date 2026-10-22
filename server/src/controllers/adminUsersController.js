@@ -2,8 +2,12 @@ const bcrypt = require('bcrypt');
 const prisma = require('../lib/prisma');
 const { HttpError, pagination, paged, parseId } = require('../lib/http');
 const { adminCreateSchema, adminStatusSchema, adminPasswordResetSchema } = require('../validators/schemas');
+const { logActivity } = require('../services/activity');
 
-const SELECT = { id: true, name: true, email: true, isActive: true, createdAt: true, lastLoginAt: true, createdById: true };
+const OWNER_ONLY = 'The owner account can only be changed by the owner';
+const logAdmin = (req, action, a) => logActivity(req, { action, entityType: 'admins', entityId: a.id, entityLabel: a.email });
+
+const SELECT = { id: true, name: true, email: true, isActive: true, isOwner: true, createdAt: true, lastLoginAt: true, createdById: true };
 
 async function list(req, res) {
   const p = pagination(req.query);
@@ -23,6 +27,7 @@ async function create(req, res) {
     data: { name: body.name, email: body.email, passwordHash: await bcrypt.hash(body.password, 12), createdById: req.admin.id },
     select: SELECT,
   });
+  await logAdmin(req, 'create', admin);
   res.status(201).json({ data: admin });
 }
 
@@ -32,6 +37,7 @@ async function setStatus(req, res) {
   if (id === req.admin.id) throw new HttpError(422, 'You cannot change the status of your own account');
   const target = await prisma.admin.findUnique({ where: { id } });
   if (!target) throw new HttpError(404, 'Admin not found');
+  if (target.isOwner && !req.admin.isOwner) throw new HttpError(403, OWNER_ONLY);
   const admin = await prisma.$transaction(async (tx) => {
     if (!isActive && target.isActive && (await tx.admin.count({ where: { isActive: true } })) <= 1) {
       throw new HttpError(422, 'At least one active admin is required');
@@ -42,6 +48,7 @@ async function setStatus(req, res) {
       select: SELECT,
     });
   }, { isolationLevel: 'Serializable' });
+  if (target.isActive !== admin.isActive) await logAdmin(req, admin.isActive ? 'activate' : 'deactivate', admin);
   res.json({ data: admin });
 }
 
@@ -50,13 +57,16 @@ async function resetPassword(req, res) {
   const id = parseId(req.params.id);
   const { newPassword } = adminPasswordResetSchema.parse(req.body);
   if (id === req.admin.id) throw new HttpError(422, 'Use Settings → Change password for your own account');
-  if (!(await prisma.admin.findUnique({ where: { id } }))) throw new HttpError(404, 'Admin not found');
+  const target = await prisma.admin.findUnique({ where: { id } });
+  if (!target) throw new HttpError(404, 'Admin not found');
+  if (target.isOwner && !req.admin.isOwner) throw new HttpError(403, OWNER_ONLY);
   const admin = await prisma.admin.update({
     where: { id },
     data: { passwordHash: await bcrypt.hash(newPassword, 12), sessionVersion: { increment: 1 } },
     select: SELECT,
   });
   await prisma.loginAttempt.deleteMany({ where: { identifier: { endsWith: `|${admin.email}` } } });
+  await logAdmin(req, 'reset_password', admin);
   res.json({ data: admin });
 }
 
