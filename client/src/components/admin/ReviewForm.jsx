@@ -22,7 +22,7 @@ export default function ReviewForm({ initial, onSaved, onCancel }) {
       const r = initial?.id ? await api.reviews.update(initial.id, body) : await api.reviews.create(body);
       onSaved(r.data);
     } catch (err) {
-      setError(err.message);
+      setError(err.message.replace(/(^|; )[\w.]+: /g, '$1'));
     } finally {
       setSaving(false);
     }

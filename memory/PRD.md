@@ -43,7 +43,16 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Logo lockups generated in client/public/images
 - Testing iteration_5: backend 145/145, frontend all flows pass. Fixed afterwards: home shows all services, footer has its own conditions column, blog cards are fully clickable, /blog/ 301s, out-of-range blog pages return 404, credentials made consistent
 
+## Implemented (2026-10-24) - Homepage refinement, reviews, legal pages
+- Homepage re-ordered into 12 sections plus the footer: hero with a stock video, About Dr. Ray, Metrics (PLACEHOLDER numbers the client asked for), Who We Treat, Services (stock photos as a fallback), What We Treat (titles only), Approach, What We Offer, Testimonials (CMS Reviews), Latest Blogs, full-width CTA. The 3 option cards were removed
+- Header: Services and What We Treat dropdowns (mouse, keyboard, touch, Escape, ArrowDown), sticky with a shadow on scroll, mobile submenus
+- Footer: Explore, Services, What We Treat and contact columns; social icons (Instagram, LinkedIn, Yelp search link); Privacy, Terms and CMS Login; appointment button and disclaimer sentence removed
+- /privacy-policy (existing live text) and /terms-and-conditions (draft, noindex)
+- New Review model and migration, admin /admin/reviews CRUD with activity log, public /api/public/reviews. Dashboard "New blog" button removed
+- Testing iteration_6: backend 21/21 (full suite 142/143, 1 skip). The dropdown click/touch bug it found is fixed and was verified with Playwright
+
 ## Backlog
+- P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
 - P1: clinic hours (unverified), separate GHL form IDs for Speak with a PT / Discovery Call, service images, licensed fonts, remove the leftover authoring line in the IT band post, NEXT_PUBLIC_SITE_URL/MEDIA_HOSTS for prod
 - P1: client credentials (AWS, prod DB, fonts), content for the 8 draft conditions, featured images
 - P2: block manual redirects that shadow live content, media library browser, scheduled-publish indicator
