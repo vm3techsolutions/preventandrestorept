@@ -18,7 +18,26 @@ export const SITE = {
     height: 1077,
   },
   appointmentHref: '/contact/#request-appointment',
+  // Google Business listing; used for "Read more reviews on Google".
+  googleReviewsUrl: 'https://www.google.com/maps/place/Prevent+%26+Restore+Physical+Therapy/@33.9694882,-84.4093158,17z/data=!4m8!3m7!1s0x88f50d63be7e0237:0x10b0a78bd09939aa!8m2!3d33.9694882!4d-84.4093158!9m1!1b1!16s%2Fg%2F11wtmf6kxp',
 };
+
+// Only platforms with a URL are shown. Yelp is a temporary Yelp search link until the client sends the profile URL.
+export const SOCIALS = [
+  { key: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/preventandrestorept' },
+  { key: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/company/prevent-restore-physical-therapy' },
+  { key: 'yelp', label: 'Yelp', url: 'https://www.yelp.com/search?find_desc=Prevent+%26+Restore+Physical+Therapy&find_loc=Marietta%2C+GA' },
+  { key: 'facebook', label: 'Facebook', url: '' },
+  { key: 'youtube', label: 'YouTube', url: '' },
+].filter((s) => s.url);
+
+// PLACEHOLDER metrics requested by the client until verified numbers are supplied. Edit here.
+export const METRICS = [
+  { value: 60, suffix: ' min', label: 'One-on-one sessions with a Doctor of Physical Therapy' },
+  { value: 10, suffix: '+', label: 'Years of clinical experience' },
+  { value: 1000, suffix: '+', label: 'Patients helped' },
+  { value: 100, suffix: '%', label: 'Personalised treatment plans' },
+];
 
 export const NAV = [
   { label: 'Home', href: '/' },
@@ -27,6 +46,11 @@ export const NAV = [
   { label: 'What We Treat', href: '/what-we-treat/' },
   { label: 'Blogs', href: '/blogs/' },
   { label: 'Contact', href: '/contact/' },
+];
+
+export const LEGAL = [
+  { label: 'Privacy Policy', href: '/privacy-policy/' },
+  { label: 'Terms & Conditions', href: '/terms-and-conditions/' },
 ];
 
 export const fullAddress = () => `${SITE.address.street}, ${SITE.address.city}, ${SITE.address.region} ${SITE.address.postal}`;

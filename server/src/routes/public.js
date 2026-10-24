@@ -24,5 +24,6 @@ router.get('/redirects', h(pub.listRedirects));
 router.get('/sitemap.xml', h(pub.sitemapXml));
 router.get('/sitemap', h(pub.sitemapJson));
 router.get('/settings', h(pub.settings));
+router.get('/reviews', h(require('../controllers/reviewsController').publicList));
 
 module.exports = router;

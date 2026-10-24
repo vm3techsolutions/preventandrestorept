@@ -5,7 +5,8 @@ const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 // Routes owned by the developer-managed frontend; CMS pages may never claim them.
 const RESERVED_PAGE_SLUGS = new Set([
-  'home', 'index', 'about', 'about-us', 'blog', 'blogs', 'services', 'what-we-treat', 'conditions',
+  'home', 'index', 'about', 'about-us', 'blog', 'blogs', 'services', 'what-we-treat', 'conditions', 'contact',
+  'privacy-policy', 'terms-and-conditions',
   'admin', 'api', 'login', 'logout', 'setup', 'preview', 'search', 'sitemap', 'sitemap-xml', 'robots',
   'robots-txt', 'favicon-ico', 'static', 'uploads', 'media', '_next', 'next', 'assets', 'public',
   'category', 'tag', 'author', 'feed', 'rss', 'contact', 'contact-us', '404', '500',

@@ -90,6 +90,17 @@ const redirectSchema = z.object({
   note: optStr(500),
 });
 const reorderSchema = z.object({ ids: z.array(z.coerce.number().int().positive()).min(1).max(500) });
+const reviewSchema = z.object({
+  reviewerName: z.string().trim().min(1, 'Reviewer name is required').max(120),
+  text: z.string().trim().min(1, 'Review text is required').max(5000),
+  rating: z.coerce.number().int().min(1).max(5).nullable().optional(),
+  reviewDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD').nullable().optional().or(z.literal('').transform(() => null)),
+  source: z.string().trim().min(1).max(60).default('Google'),
+  sourceUrl: optStr(2000).refine((v) => !v || /^https:\/\//i.test(v), 'Source link must start with https://'),
+  isPublished: z.boolean().default(false),
+  isFeatured: z.boolean().default(false),
+  displayOrder: z.coerce.number().int().min(0).max(100000).default(0),
+});
 
 const password = z.string().min(10, 'Password must be at least 10 characters').max(200)
   .refine((v) => /[A-Za-z]/.test(v) && /\d/.test(v), 'Password must include letters and numbers');
@@ -106,6 +117,6 @@ const adminPasswordResetSchema = z.object({ newPassword: password });
 const settingsSchema = z.object({ siteName: z.string().trim().min(1).max(120), defaultMetaDescription: z.string().max(500).default(''), defaultOgImage: z.string().max(2000).default('') });
 
 module.exports = {
-  blogSchema, serviceSchema, pageSchema, taxonomySchema, authorSchema, redirectSchema, reorderSchema,
+  blogSchema, serviceSchema, pageSchema, taxonomySchema, authorSchema, redirectSchema, reorderSchema, reviewSchema,
   loginSchema, setupSchema, changePasswordSchema, settingsSchema, adminCreateSchema, adminStatusSchema, adminPasswordResetSchema,
 };

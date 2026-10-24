@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { FileText, CheckCircle2, PencilLine, Stethoscope, HeartPulse, Files, ArrowRightLeft, Plus } from 'lucide-react';
+import { FileText, CheckCircle2, PencilLine, Stethoscope, HeartPulse, Files, ArrowRightLeft } from 'lucide-react';
 import { fetchDashboard } from '@/store/slices/dashboardSlice';
 import { ErrorState, LoadingState, PageHeader, StatusBadge } from './ui';
 import { formatDate } from '@/lib/utils';
@@ -35,7 +35,6 @@ export default function Dashboard() {
       <PageHeader
         title="Dashboard"
         subtitle="Live overview of the website content stored in PostgreSQL."
-        actions={<Link href="/admin/blogs/new" className="btn-primary" data-testid="dashboard-new-blog-button"><Plus className="h-4 w-4" /> New blog</Link>}
       />
       {status === 'loading' && !stats && <LoadingState />}
       {status === 'failed' && <ErrorState message={error} onRetry={() => dispatch(fetchDashboard())} />}

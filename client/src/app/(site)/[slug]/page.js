@@ -8,7 +8,7 @@ import { cmsMetadata, withSlash } from '@/lib/seo';
 export const revalidate = 60;
 
 // Developer-managed routes a CMS page can never take over.
-const RESERVED = new Set(['about-us', 'services', 'what-we-treat', 'blogs', 'blog', 'contact', 'admin', 'api']);
+const RESERVED = new Set(['about-us', 'services', 'what-we-treat', 'blogs', 'blog', 'contact', 'admin', 'api', 'privacy-policy', 'terms-and-conditions']);
 
 async function load(slug) {
   if (RESERVED.has(slug)) return null;

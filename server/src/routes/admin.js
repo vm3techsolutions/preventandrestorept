@@ -7,6 +7,7 @@ const { createTaxonomyController } = require('../controllers/taxonomyController'
 const media = require('../controllers/mediaController');
 const admin = require('../controllers/adminController');
 const adminUsers = require('../controllers/adminUsersController');
+const reviews = require('../controllers/reviewsController');
 const { taxonomySchema, authorSchema } = require('../validators/schemas');
 
 const router = express.Router();
@@ -40,6 +41,7 @@ const crud = (path, ctrl) => {
 crud('/categories', createTaxonomyController({ model: 'blogCategory', label: 'Category', schema: taxonomySchema, activityType: 'categories' }));
 crud('/tags', createTaxonomyController({ model: 'blogTag', label: 'Tag', schema: taxonomySchema, activityType: 'tags' }));
 crud('/authors', createTaxonomyController({ model: 'author', label: 'Author', schema: authorSchema, activityType: 'authors' }));
+crud('/reviews', reviews);
 
 router.get('/redirects', h(admin.listRedirects));
 router.post('/redirects', h(admin.createRedirect));
