@@ -1,5 +1,6 @@
 import { Mail, MapPin, Navigation, Phone } from 'lucide-react';
 import GhlForm from '@/components/site/GhlForm';
+import ContactOptions from '@/components/site/ContactOptions';
 import { PageHero } from '@/components/site/ui';
 import { SITE, fullAddress } from '@/lib/site';
 import { staticMetadata } from '@/lib/seo';
@@ -23,6 +24,7 @@ export default function ContactPage() {
   return (
     <>
       <PageHero eyebrow="Contact" title="Let’s get you moving again" intro="Request an appointment, ask about availability and pricing, or call to speak with a physical therapist." crumbs={[{ label: 'Home', href: '/' }, { label: 'Contact', href: '/contact/' }]} />
+      <ContactOptions />
       <section className="container-site grid gap-12 py-16 lg:grid-cols-[1fr_1.35fr] lg:py-20">
         <div className="space-y-8" data-testid="contact-details">
           <InfoItem icon={Phone} title="Call us" testId="contact-phone"><a href={SITE.phoneHref} className="text-lg font-medium text-teal hover:text-teal-hover">{SITE.phone}</a></InfoItem>
