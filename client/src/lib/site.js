@@ -2,7 +2,8 @@
 export const SITE = {
   name: 'Prevent & Restore Physical Therapy',
   shortName: 'Prevent & Restore PT',
-  url: String(process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, ''),
+  // url: String(process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, ''),
+  url: (String(process.env.NEXT_PUBLIC_SITE_URL || '').trim() || 'http://localhost:3000').replace(/\/$/, ''),
   phone: '(404) 907-2734',
   phoneHref: 'tel:+14049072734',
   email: 'raywaters@preventandrestorept.com',
