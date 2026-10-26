@@ -57,6 +57,11 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Footer socials: Facebook (hidden until a URL is provided), Instagram, Google Business Profile and Yelp; LinkedIn removed. CMS Login opens in a new tab
 - Testing iteration_7: frontend about 97%; optional focus-ring and duplicate-image notes were fixed afterwards
 
+## Implemented (2026-10-26) - About, Contact and footer credit
+- About: Meet the Team section (TEAM array; members without a photo get a neutral placeholder) replaces the old founder block; Why section now shows 7 icon points from verified copy; the VALD flyer was replaced with a licensed stock photo (performance-testing.webp)
+- Contact: "Wondering If..." section with 3 option cards (Speak With a PT = phone; Availability & Pricing and Discovery Call = the existing GHL Request Appointment form; a dedicated Discovery Call form ID is still needed)
+- Footer credit: "Designed and developed by VM3 Tech Solutions LLP"
+
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
 - P1: clinic hours (unverified), separate GHL form IDs for Speak with a PT / Discovery Call, service images, licensed fonts, remove the leftover authoring line in the IT band post, NEXT_PUBLIC_SITE_URL/MEDIA_HOSTS for prod
