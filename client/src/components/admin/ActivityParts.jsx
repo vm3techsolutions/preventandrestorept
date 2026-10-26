@@ -10,7 +10,7 @@ export const ACTIONS = {
 };
 export const TYPES = {
   blogs: 'Blog', services: 'Service', conditions: 'Condition', pages: 'Page', categories: 'Category', tags: 'Tag',
-  authors: 'Author', redirects: 'Redirect', media: 'Media', settings: 'Settings', admins: 'Admin',
+  authors: 'Author', redirects: 'Redirect', media: 'Media', settings: 'Settings', admins: 'Admin', reviews: 'Review',
 };
 const FIELDS = {
   authorId: 'author', publishedAt: 'publication date', featuredImageUrl: 'featured image', featuredImageAlt: 'image alt text',

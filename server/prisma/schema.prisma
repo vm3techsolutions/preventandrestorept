@@ -29,6 +29,8 @@ model Admin {
   servicesUpdated   Service[]   @relation("ServiceUpdatedBy")
   treatmentsCreated Treatment[] @relation("TreatmentCreatedBy")
   treatmentsUpdated Treatment[] @relation("TreatmentUpdatedBy")
+  reviewsCreated    Review[]    @relation("ReviewCreatedBy")
+  reviewsUpdated    Review[]    @relation("ReviewUpdatedBy")
   lastLoginAt    DateTime? @map("last_login_at")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
@@ -342,4 +344,27 @@ model ActivityLog {
   @@index([entityType])
   @@index([action])
   @@map("activity_logs")
+}
+
+// Approved client reviews (copied by admins from Google or another approved source).
+model Review {
+  id           Int       @id @default(autoincrement())
+  reviewerName String    @map("reviewer_name")
+  text         String    @db.Text
+  rating       Int?
+  reviewDate   DateTime? @map("review_date") @db.Date
+  source       String    @default("Google")
+  sourceUrl    String?   @map("source_url")
+  isPublished  Boolean   @default(false) @map("is_published")
+  isFeatured   Boolean   @default(false) @map("is_featured")
+  displayOrder Int       @default(0) @map("display_order")
+  createdById  Int?      @map("created_by_id")
+  updatedById  Int?      @map("updated_by_id")
+  createdBy    Admin?    @relation("ReviewCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy    Admin?    @relation("ReviewUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@index([isPublished, displayOrder])
+  @@map("reviews")
 }

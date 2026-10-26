@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, FileText, Stethoscope, HeartPulse, Files, FolderTree, Tags, ArrowRightLeft, Settings, LogOut, X, UserCog, History,
+  LayoutDashboard, FileText, Stethoscope, HeartPulse, Files, FolderTree, Tags, ArrowRightLeft, Settings, LogOut, X, UserCog, History, Star,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -13,6 +13,7 @@ export const NAV = [
   { href: '/admin/services', label: 'Services', icon: Stethoscope },
   { href: '/admin/what-we-treat', label: 'What We Treat', icon: HeartPulse },
   { href: '/admin/pages', label: 'Pages', icon: Files },
+  { href: '/admin/reviews', label: 'Reviews', icon: Star },
   { href: '/admin/categories', label: 'Categories', icon: FolderTree },
   { href: '/admin/tags', label: 'Tags', icon: Tags },
   { href: '/admin/redirects', label: 'URL Redirects', icon: ArrowRightLeft },

@@ -1,0 +1,44 @@
+{
+  "summary": "Iteration 6 covered the homepage restructure, the header, footer, legal pages, the admin Reviews CMS and a regression pass. Backend: the new test_reviews_and_legal.py passed 21 of 21. It covers 401 without auth, validation (empty or blank name, rating 0 or 6, http:// link, empty text, bad date gives 400 or 422), optional rating, the create, update and delete flow with public visibility, the featured filter, 404 and 400 cases, activity log create/update/delete, /privacy-policy/ (200, indexable), /terms-and-conditions/ (noindex with draft notice), sitemap (has privacy, no terms), 404 for unknown paths and the /knee-pain/ 301. The full suite passed 142 of 143 with 1 skip, after I updated 2 stale assertions. Frontend (Playwright): the 12 homepage sections are in the right order and home-options is gone. Condition cards show titles only. 7 service cards. The full-width CTA is 1920px wide with no gap to the footer. With TEST_ reviews seeded (2 featured, 2 normal, 1 unpublished), testimonial-featured, next/prev, the counter, client-reviews (2 cards) and read-more-reviews-link (new tab, noopener) all work, and the unpublished review is hidden. The footer passes every check. Mobile nav and submenu work at 390px and 768px with no overflow. Admin passes: no dashboard new-blog button; /admin/blogs still has one; full Reviews CRUD in the UI. One real bug: the desktop dropdown toggle closes on mouse click and on touch tap.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST/PUT /api/admin/reviews", "issue": "The validation message keeps the field key prefix, e.g. 'sourceUrl: Source link must start with https://'. Admins see it in review-form-error. Use friendlier text without the key."},
+      {"endpoint": "OPTIONS preflight from a foreign origin", "issue": "Returns access-control-allow-origin: * (without allow-credentials). This is probably the ingress layer, not Express, so it is not exploitable for cookie auth. Only noting it."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "NavDropdown.jsx (desktop Services / What We Treat)", "issue": "The chevron toggle cannot open the menu with a mouse or by touch. The wrapper's onMouseEnter opens the menu, and then the button's onClick runs setOpen(o => !o), which closes it straight away. Results: hovering opens it (OK), but clicking the chevron while hovering closes it. A touch tap fires the emulated mouseenter and then click, so it opens and closes immediately; I reproduced this with has_touch at 1280px and it ends closed. Keyboard Enter works because no mouseenter fires. Fix: only open on hover for pointerType==='mouse' (onPointerEnter/onPointerLeave with an e.pointerType check). Or make onClick set open to true when it was opened by hover within the last ~300ms. Or ignore the click toggle when the pointer is a mouse and the menu is already open from hover.", "selector": "[data-testid=nav-services-toggle], [data-testid=nav-what-we-treat-toggle]", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Live CMS data (not code)", "issues": ["The service title is 'Manual Therapy Testing'. It shows in the header dropdown, the footer, the mobile nav and the home card.", "The IT band blog is in the category 'test-vm3-with-vasanti-maam'. Both look like leftover tests by the real admins on live data. Ask the user to rename or clean them up."]},
+      {"screen": "Header dropdown a11y", "issues": ["ArrowDown on the toggle does not open the menu or move focus (Enter, Tab and Escape all work). Optional improvement."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_reviews_and_legal.py", "/app/backend/tests/seed_test_reviews.py", "/app/test_reports/pytest/pytest_iter6.xml", "/app/test_reports/pytest/pytest_all_iter6.xml"],
+  "action_items": [
+    "Fix the NavDropdown hover + click toggle conflict so that mouse clicks and touch taps on nav-*-toggle open the dropdown (HIGH)",
+    "Strip the 'field:' prefix from Zod error messages shown in the admin forms (minor)",
+    "Optional: ArrowDown opens the dropdown and focuses the first item"
+  ],
+  "critical_code_review_comments": [
+    "NavDropdown: onMouseEnter on the wrapper plus a toggle onClick on the button is the root cause of the click and touch bug (see ui_bugs).",
+    "The homepage uses revalidate=60, so new or unpublished reviews show up only after about 60s plus one extra request. The admin page states this ('within about a minute'). That is acceptable, but on-demand revalidatePath('/') after review CRUD would be better.",
+    "Testimonials: if no review is featured, the first published review becomes the lead and is left out of the cards. Good. Cards are capped at 6.",
+    "reviewsController.publicList selects only public fields; no audit fields leak (verified).",
+    "There is no GET /api/admin/reviews/:id. That is fine, because the edit form uses the list row."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_reviews_and_legal.py (new)",
+    "/app/backend/tests/seed_test_reviews.py (new seed/clean helper)",
+    "/app/backend/tests/test_cms_api.py (sitemap static count 6 -> 7 for /privacy-policy; the uncategorized blog count >=2 -> >=1 because live data recategorised one blog)"
+  ],
+  "success_rate": {"backend": "100% (21/21 new; 142/143 full suite, 1 skip)", "frontend": "95% (all flows pass except the dropdown click/touch toggle)"},
+  "test_credentials": "test_qa_admin@example.com / TestQaAdmin2026x was created via the CLI and then DELETED, along with all test_ activity rows. Real admins 1, 6 and 7 were not touched. ID 7 is active because the owner reactivated it on Oct 23; that is in the activity log and was not us.",
+  "seed_data_creation": "All TEST_ reviews were deleted (reviews table count = 0). /api/public/reviews returns []. After revalidation the homepage no longer renders home-testimonials (verified).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Create the QA admin via the CLI first. Seed reviews with: python backend/tests/seed_test_reviews.py seed|clean. The homepage is ISR (60s): after changing reviews, request /, wait 65s, then request again. To retest the dropdown, use page.hover then page.click on nav-services-toggle (it must stay open), and a context with has_touch=True and tap(). /contact/ never reaches networkidle (iframes)."
+}

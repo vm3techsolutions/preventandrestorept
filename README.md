@@ -83,6 +83,16 @@ Client environment (`client/.env.example`):
 | `API_INTERNAL_URL` | Optional, server-only. Absolute API URL for server rendering when the public base is relative |
 | `NEXT_PUBLIC_MEDIA_HOSTS` | Optional, comma-separated image origins to optimize, e.g. `https://bucket.s3.us-east-1.amazonaws.com` |
 
+## 4c. Homepage refinement, reviews and legal pages (Oct 2026)
+- Homepage order: Hero (background video `public/videos/hero.mp4`, poster image), About Dr. Ray, Metrics, Who We Treat, Our Services, What We Treat (titles only), Our Approach, What We Offer, Testimonials, Latest Blogs, full-width CTA (`public/videos/cta.mp4`), Footer.
+- Stock media: the videos (Pexels) and photos in `public/images/stock/` (Unsplash/Pexels, free licences) are temporary. Replace the files with clinic footage and photos. A service's own CMS featured image always takes priority over the stock photo.
+- Metrics: the numbers in `METRICS` in `client/src/lib/site.js` are **placeholders requested by the client**. Replace them with verified figures.
+- Social links: `SOCIALS` in `client/src/lib/site.js`. Icons show only for entries with a URL. Yelp is a temporary Yelp search link until the profile URL is supplied.
+- Reviews: Admin, then Reviews (`/admin/reviews`; API `GET/POST/PUT/DELETE /api/admin/reviews`, public `GET /api/public/reviews?limit=&featured=true`). Reviews are entered by hand and must be genuine (copy them from the Google Business Profile). Featured reviews show as the large testimonial carousel; others show as review cards. The section stays hidden until a review is published. "Read More Reviews on Google" uses `SITE.googleReviewsUrl`.
+- Legal pages: `/privacy-policy/` reuses the existing live policy text. The placeholder company address was replaced with the clinic address and the broken email with the real one. "Country: Wisconsin" is kept as written on the live site and needs review. `/terms-and-conditions/` is a draft outline marked noindex and excluded from the sitemap until approved text is supplied.
+- Footer: Explore, Services, What We Treat and contact columns, social icons, Privacy, Terms and CMS Login (`/admin/login`).
+- Migration `20261024060000_reviews`: run `yarn migrate:deploy` in `server/`.
+
 ## 5. Admin API (cookie-authenticated)
 `/api/auth`: `GET setup/status`, `POST setup`, `POST login`, `POST logout`, `GET me`, `PUT password`
 

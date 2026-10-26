@@ -65,7 +65,7 @@ async function listRedirects(req, res) {
   res.json(paged(rows, total, p));
 }
 
-const STATIC_ROUTES = ['/', '/about-us', '/services', '/what-we-treat', '/blogs', '/contact'];
+const STATIC_ROUTES = ['/', '/about-us', '/services', '/what-we-treat', '/blogs', '/contact', '/privacy-policy'];
 
 async function sitemapEntries() {
   const entries = STATIC_ROUTES.map((path) => ({ loc: `${env.siteUrl}${path === '/' ? '' : path}` || env.siteUrl, lastmod: null }));

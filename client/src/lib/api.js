@@ -85,6 +85,7 @@ export const api = {
   tags: crud('tags'),
   authors: crud('authors'),
   redirects: crud('redirects'),
+  reviews: crud('reviews'),
   admins: {
     list: (query) => request('/admin/admins', { query }),
     create: (body) => request('/admin/admins', { method: 'POST', body }),
@@ -117,6 +118,7 @@ export const api = {
     redirects: (query) => request('/public/redirects', { query }),
     sitemap: () => pub('/public/sitemap'),
     settings: () => pub('/public/settings'),
+    reviews: (query) => pub('/public/reviews', query),
   },
 };
 

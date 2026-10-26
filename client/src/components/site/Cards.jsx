@@ -38,7 +38,7 @@ export function ContentCard({ item, index = 0, testPrefix }) {
   );
 }
 
-export function BlogCard({ post, priority = false }) {
+export function BlogCard({ post, priority = false, cta }) {
   return (
     <article className="card-site group relative flex flex-col overflow-hidden" data-testid={`blog-card-${post.slug}`}>
       <Link href={withSlash(post.path)} className="relative block aspect-[16/9] overflow-hidden bg-navy" tabIndex={-1} aria-hidden>
@@ -57,6 +57,7 @@ export function BlogCard({ post, priority = false }) {
           {post.author?.name && post.publishedAt && ' · '}
           {post.publishedAt && <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>}
         </p>
+        {cta && <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-teal group-hover:text-teal-hover" aria-hidden>{cta} <ArrowUpRight className="h-4 w-4" /></span>}
       </div>
     </article>
   );
