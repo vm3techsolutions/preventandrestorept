@@ -1,4 +1,4 @@
-// Brand marks (Lucide ships no brand icons). 24x24, currentColor.
+// Brand marks (Lucide ships no brand icons, so these are inline SVGs). 24x24, currentColor.
 const P = { width: 20, height: 20, viewBox: '0 0 24 24', 'aria-hidden': true };
 
 const ICONS = {
@@ -10,6 +10,9 @@ const ICONS = {
   ),
   facebook: (
     <svg {...P} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
+  ),
+  google: (
+    <svg {...P} fill="currentColor"><path d="M12.24 10.29v3.6h5.04c-.21 1.32-1.55 3.87-5.04 3.87-3.03 0-5.5-2.51-5.5-5.6s2.47-5.6 5.5-5.6c1.73 0 2.88.73 3.54 1.37l2.42-2.33C16.65 4.15 14.65 3.2 12.24 3.2 7.33 3.2 3.36 7.17 3.36 12.08s3.97 8.88 8.88 8.88c5.13 0 8.53-3.6 8.53-8.68 0-.58-.06-1.03-.14-1.47h-8.39z" /></svg>
   ),
   youtube: (
     <svg {...P} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 17a24 24 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.6 49.6 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24 24 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.6 49.6 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" /></svg>

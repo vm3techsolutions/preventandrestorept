@@ -56,6 +56,8 @@
   .nav-link { @apply relative py-2 text-[15px] font-medium transition-colors hover:text-teal after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-teal after:transition-transform after:duration-300 hover:after:scale-x-100; }
   .footer-link { @apply text-slate-300 transition-colors hover:text-white; }
   .card-site { @apply rounded-2xl border border-slate-200 bg-white transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-teal/40 hover:shadow-xl hover:shadow-navy/10; }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
   /* Scroll reveal: only hidden once JS has enabled it (RevealInit). */
   .js-reveal .reveal { opacity: 0; transform: translateY(16px); transition: opacity 600ms ease-out, transform 600ms ease-out; }
   .js-reveal .reveal.is-visible { opacity: 1; transform: none; }

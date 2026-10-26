@@ -22,12 +22,12 @@ export const SITE = {
   googleReviewsUrl: 'https://www.google.com/maps/place/Prevent+%26+Restore+Physical+Therapy/@33.9694882,-84.4093158,17z/data=!4m8!3m7!1s0x88f50d63be7e0237:0x10b0a78bd09939aa!8m2!3d33.9694882!4d-84.4093158!9m1!1b1!16s%2Fg%2F11wtmf6kxp',
 };
 
-// Only platforms with a URL are shown. Yelp is a temporary Yelp search link until the client sends the profile URL.
+// Only platforms with a URL are shown. Facebook needs the client's profile URL; Yelp is a temporary Yelp search link.
 export const SOCIALS = [
-  { key: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/preventandrestorept' },
-  { key: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/company/prevent-restore-physical-therapy' },
-  { key: 'yelp', label: 'Yelp', url: 'https://www.yelp.com/search?find_desc=Prevent+%26+Restore+Physical+Therapy&find_loc=Marietta%2C+GA' },
   { key: 'facebook', label: 'Facebook', url: '' },
+  { key: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/preventandrestorept' },
+  { key: 'google', label: 'Google Business Profile', url: SITE.mapsUrl },
+  { key: 'yelp', label: 'Yelp', url: 'https://www.yelp.com/search?find_desc=Prevent+%26+Restore+Physical+Therapy&find_loc=Marietta%2C+GA' },
   { key: 'youtube', label: 'YouTube', url: '' },
 ].filter((s) => s.url);
 
