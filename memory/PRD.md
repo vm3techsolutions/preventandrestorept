@@ -51,6 +51,12 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - New Review model and migration, admin /admin/reviews CRUD with activity log, public /api/public/reviews. Dashboard "New blog" button removed
 - Testing iteration_6: backend 21/21 (full suite 142/143, 1 skip). The dropdown click/touch bug it found is fixed and was verified with Playwright
 
+## Implemented (2026-10-26) - Carousels and footer socials
+- Home Services and What We Treat are now carousels (CardCarousel.jsx): 3 cards from 1024px up, 2 on tablet, about 1 on mobile; arrows disable at each end; native touch swipe. Conditions show image, title, description and Read More, with licensed stock images where the CMS has none
+- Latest Blogs cards are equal height with clamped text
+- Footer socials: Facebook (hidden until a URL is provided), Instagram, Google Business Profile and Yelp; LinkedIn removed. CMS Login opens in a new tab
+- Testing iteration_7: frontend about 97%; optional focus-ring and duplicate-image notes were fixed afterwards
+
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
 - P1: clinic hours (unverified), separate GHL form IDs for Speak with a PT / Discovery Call, service images, licensed fonts, remove the leftover authoring line in the IT band post, NEXT_PUBLIC_SITE_URL/MEDIA_HOSTS for prod

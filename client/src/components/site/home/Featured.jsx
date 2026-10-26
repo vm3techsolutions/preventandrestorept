@@ -16,7 +16,7 @@ const STOCK = {
   'exercise-performance-and-programming': '/images/stock/barbell.webp',
   'pain-prevention-seminars': '/images/stock/rehab-gym.webp',
 };
-const FALLBACK = Object.values(STOCK);
+const FALLBACK = ['/images/stock/kettlebell.webp', '/images/stock/lift-woman.webp', '/images/stock/assess.webp'];
 // Licensed stock photos for conditions without a CMS image (illustrative, not patients of the clinic).
 const CONDITION_STOCK = {
   'back-sciatica-pain': '/images/stock/desk.webp',

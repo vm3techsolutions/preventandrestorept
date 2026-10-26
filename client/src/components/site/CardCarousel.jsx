@@ -36,7 +36,7 @@ export default function CardCarousel({ children, label, testId }) {
         onScroll={update}
         tabIndex={0}
         aria-label={`${label}, scroll horizontally`}
-        className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-5 px-5 pb-2 focus-visible:outline-none sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0"
+        className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-6 overflow-x-auto scroll-px-5 px-5 pb-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-teal sm:-mx-8 sm:scroll-px-8 sm:px-8 lg:mx-0 lg:scroll-px-0 lg:px-0"
         data-testid={`${testId}-track`}
       >
         {Children.map(children, (child) => (
