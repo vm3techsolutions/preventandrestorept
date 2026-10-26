@@ -34,10 +34,17 @@ export default function SocialLinks({ items, className = '' }) {
     <ul className={`flex flex-wrap gap-3 ${className}`} data-testid="social-links">
       {items.map((s) => (
         <li key={s.key}>
+          {!s.url ? (
+            <span role="img" aria-label={`${s.label} (link coming soon)`} title={`${s.label} — coming soon`} data-testid={`social-${s.key}`}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-slate-300">
+              {ICONS[s.key]}
+            </span>
+          ) : (
           <a href={s.url} target="_blank" rel="noopener noreferrer" aria-label={`${s.label} (opens in a new tab)`} data-testid={`social-${s.key}`}
             className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-slate-300 transition-colors hover:border-teal-hover hover:bg-teal hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-hover">
             {ICONS[s.key]}
           </a>
+          )}
         </li>
       ))}
     </ul>
