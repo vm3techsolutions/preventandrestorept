@@ -1,0 +1,37 @@
+{
+  "summary": "Frontend-only testing of homepage carousels (Services, What We Treat), Latest Blogs equal-height cards, footer socials and CMS Login in a new tab, at viewports 1920/1024/768/390. Almost everything passed. One spec deviation: at 1024px the carousels show 3 cards instead of 2, because the lg breakpoint starts at 1024. Read-only tests, no data was changed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Home carousels @1024px", "issues": ["Shows 3 cards per view (card width 299px) because the lg:w-[calc((100%-3rem)/3)] breakpoint starts at 1024. The review request expected 2 cards at 1024/768. 768 correctly shows 2 cards. If 1024 should count as tablet, switch to the xl breakpoint; otherwise ignore."]},
+      {"screen": "Home services carousel", "issues": ["The 'functional' (CMS) and 'blood-flow-restriction-therapy' cards both fall back to the same stock image (knee-device.webp), so two cards next to each other look identical. Cosmetic only."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: decide whether 1024px should show 2 cards. If yes, change the lg: width classes in CardCarousel.jsx to xl:.",
+    "Optional a11y: the carousel track (tabIndex=0) has focus-visible:outline-none, so keyboard users see no focus ring on it. Add a visible focus style.",
+    "Optional a11y: tabbing through the cards scrolls the track to the end, which disables the Next button and takes it out of the tab order. Acceptable, but worth knowing."
+  ],
+  "critical_code_review_comments": [
+    "CardCarousel only re-checks the arrow states on scroll and window resize. A ResizeObserver on the track would handle layout and font shifts more reliably.",
+    "Featured.jsx uses the fallback stock image by index modulo, so neighbouring CMS-only services can get the same image."
+  ],
+  "verified": [
+    "services-carousel at 1920: 8 cards, all 481px high, CTA 'Learn More' bottom-aligned at the same offset (452px). Prev disabled at start. Next scrolls to 1224 and then 2040, where Next becomes disabled and Prev enabled. Prev returns to 0. aria-labels are 'Previous services' / 'Next services'.",
+    "conditions-carousel: 6 cards, equal heights, every card has an image that loads, 'Read More', and href /what-we-treat/<slug>/. All 6 detail pages return 200. Arrows have the same boundary behaviour.",
+    "Keyboard: focused Next + Enter scrolls the track; Shift+Tab moves to Prev; Space on Prev scrolls back.",
+    "768: 2 cards per view; 390: 1 card plus a peek of the next. Setting scrollLeft enables Prev. No horizontal page overflow at 1920/1024/768/390.",
+    "home-blogs: 3 cards all 539px high, images all 215px, title and date at the same offsets. home-full-cta present.",
+    "Footer: social-google (maps URL), social-instagram and social-yelp each have target=_blank and rel='noopener noreferrer'. linkedin, facebook and youtube are absent. footer-cms-login opens /admin/login/ in a new tab.",
+    "Regression: Services header dropdown opens; /services/ and /what-we-treat/ return 200. No page errors."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "~97% (1 spec ambiguity at 1024px)"},
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Next.js app at /app/client. Carousel testids: services-carousel(-track/-prev/-next), conditions-carousel(...), cards service-card-<slug> and condition-card-<slug>. CMS data belongs to real admins; do not modify it."
+}
