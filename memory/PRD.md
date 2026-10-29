@@ -62,6 +62,13 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Contact: "Wondering If..." section with 3 option cards (Speak With a PT = phone; Availability & Pricing and Discovery Call = the existing GHL Request Appointment form; a dedicated Discovery Call form ID is still needed)
 - Footer credit: "Designed and developed by VM3 Tech Solutions LLP"
 
+## Implemented (2026-10-29) - Body regions, 8 services, case studies, auto-slug
+- 11 body-region pages (/what-we-treat/{neck-pain, shoulder-pain, elbow-pain, low-back-pain, hip-pain, knee-pain, ankle-foot-pain, headaches, tmj, muscle-strains, nerve-pain}) with CMS condition sections; published with needsReview per the client
+- Records reused: back-sciatica-pain becomes low-back-pain, shoulder-neck-pain becomes shoulder-pain, foot-ankle-pain becomes ankle-foot-pain, knee-pain kept, headaches kept, jaw-pain becomes tmj, numbness-and-tingling becomes nerve-pain; sports-injuries archived with a 301 to muscle-strains
+- Services merged: functional-dry-needling becomes dry-needling, pain-prevention-seminars becomes injury-prevention-workshops, exercise-performance-and-programming becomes remote-strength-and-conditioning; new physical-therapy, in-person-personal-training, shockwave-therapy and injury-prevention-screening (needsReview)
+- Case studies CMS and public pages; one DRAFT example (noindex)
+- Reviews admin module removed (table kept)
+
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
 - P1: clinic hours (unverified), separate GHL form IDs for Speak with a PT / Discovery Call, service images, licensed fonts, remove the leftover authoring line in the IT band post, NEXT_PUBLIC_SITE_URL/MEDIA_HOSTS for prod

@@ -1,0 +1,36 @@
+{
+  "summary": "Tested body-region What We Treat, SEO, legacy 301s, services order, the admin SectionsEditor, slug auto-generation and 301 creation, Case Studies CMS, Reviews removal, preview, sitemap and mobile overflow. Backend: 35 of 36 pytest cases pass. The one failure: the public conditions list has 12 items, not 11, because a real published condition 'testing treatement' (id 25, created by owner admin id 1) appears as a 12th card on /what-we-treat/ and in the header. All other UI flows passed. All TEST_ data and the temporary admin were removed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/public/conditions", "issue": "Returns 12 published conditions. The extra one is the real record 'testing-treatement' (id 25, owner-created, PUBLISHED). The spec expects exactly 11 body-region cards. The tester did not touch it because it is real content. The client or E1 should unpublish or archive it."},
+      {"endpoint": "DELETE /api/admin/:type/:id", "issue": "Delete is a soft delete. If a published item is renamed and then trashed, the auto 301 still points to its URL, which now 404s. Consider handling redirects when an item is trashed."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "PreviewView (condition)", "issue": "Admin preview renders the sections but not the RegionAnchors nav, which the public page shows. This was seen with 2 sections. Minor parity gap.", "selector": "[data-testid=region-anchors]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/what-we-treat/ and header What We Treat dropdown", "issues": ["A 12th card 'testing treatement' (a test record with a typo) is visible to the public"]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_regions_case_studies.py", "/app/test_reports/pytest/pytest_regions.xml"],
+  "action_items": [
+    "Unpublish or archive the real condition 'testing-treatement' (id 25) so /what-we-treat/ shows exactly 11 regions, after confirming with the client",
+    "Optional: render RegionAnchors in the admin preview for conditions",
+    "Optional: on trash, deactivate or retarget auto-created redirects that point to the trashed URL"
+  ],
+  "critical_code_review_comments": [
+    "publicSections anchor dedupe appends '-2' repeatedly (a-2-2) instead of incrementing. Cosmetic.",
+    "ContentEditorPage: slug auto-follows the title in edit mode until the slug field is touched. This is intended, but an admin editing only a published title will change its URL without meaning to. The warning (slug-redirect-warning) does make this visible.",
+    "Case study and condition default SEO suffix is '| Prevent & Restore Physical Therapy'. Region pages use explicit seoTitle '| Prevent & Restore PT'. Check that this mix is acceptable."
+  ],
+  "updated_files": ["/app/backend/tests/test_regions_case_studies.py"],
+  "success_rate": {"backend": "97% (35/36)", "frontend": "100% of requested flows (1 content issue)"},
+  "seed_data_creation": "Temp admin test_qa_admin@example.com (id 52) plus TEST_ conditions and case studies were created and then hard-deleted, along with their redirects and activity rows. Also removed leftover TEST_ conditions and /blogs/test-blog-* redirects from earlier iterations. Real Neck Pain record was verified unchanged (updatedAt identical).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Regression file: /app/backend/tests/test_regions_case_studies.py. It needs the temp admin from /app/memory/test_credentials.md and REACT_APP_BACKEND_URL exported. Admin URLs end with a trailing slash (e.g. /admin/what-we-treat/31/). Toast testids: toast-success and toast-error. Admin delete is a soft delete (deletedAt), so hard-delete TEST_ rows via prisma afterwards. Real condition Neck Pain has id 26. The draft example case study has id 1, slug example-case-study-draft."
+}

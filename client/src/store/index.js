@@ -4,7 +4,7 @@ import dashboard from './slices/dashboardSlice';
 import admins from './slices/adminsSlice';
 import activity from './slices/activitySlice';
 import site from './slices/siteSlice';
-import { blogs, services, conditions, pages } from './slices/contentSlices';
+import { blogs, services, conditions, pages, caseStudies } from './slices/contentSlices';
 import { categories, tags, authors } from './slices/taxonomySlices';
 
 export const makeStore = () =>
@@ -19,6 +19,7 @@ export const makeStore = () =>
       services: services.reducer,
       conditions: conditions.reducer,
       pages: pages.reducer,
+      caseStudies: caseStudies.reducer,
       categories: categories.reducer,
       tags: tags.reducer,
       authors: authors.reducer,

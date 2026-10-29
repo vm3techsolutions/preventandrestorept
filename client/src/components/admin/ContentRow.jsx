@@ -30,6 +30,7 @@ export default function ContentRow({ item, type, trashed, dragDisabled, onAction
       </td>
       <td className="td max-w-[420px]">
         <Link href={`${type.adminPath}/${item.id}`} className="line-clamp-2 font-medium text-navy hover:text-teal" data-testid={`${t}-title`}>{item.title}</Link>
+        {item.needsReview && <span className="mt-1 inline-block rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700" data-testid={`${t}-needs-review`}>Needs review</span>}
         <p className="mt-0.5 truncate text-xs text-slate-400">{item.path}</p>
       </td>
       <td className="td"><StatusBadge status={trashed ? 'TRASHED' : item.status} testId={`${t}-status`} /></td>

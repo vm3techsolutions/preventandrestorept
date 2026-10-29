@@ -56,7 +56,8 @@ export default function EditorSidebar({ type, form, set, item }) {
   const tags = useSelector((s) => s.tags.items);
   const authors = useSelector((s) => s.authors.items);
   const [siteName, setSiteName] = useState('Prevent & Restore Physical Therapy');
-  const related = useRelatedOptions(isBlog ? 'blogs' : type.relatedResource, item?.id);
+  const related = useRelatedOptions(isBlog ? 'blogs' : type.relatedResource || 'services', item?.id);
+  const relatedConditions = useRelatedOptions('conditions', null);
 
   useEffect(() => {
     if (isBlog) Object.values(taxonomySlices).forEach((s) => dispatch(s.actions.fetchAll()));
@@ -96,6 +97,12 @@ export default function EditorSidebar({ type, form, set, item }) {
           <Field label="Categories"><MultiSelect options={categories.map((c) => ({ id: c.id, label: c.name }))} value={form.categoryIds} onChange={(v) => set({ categoryIds: v })} testId="editor-categories" /></Field>
           <Field label="Tags"><MultiSelect options={tags.map((t) => ({ id: t.id, label: t.name }))} value={form.tagIds} onChange={(v) => set({ tagIds: v })} testId="editor-tags" emptyText="No tags yet. Create them under Tags." /></Field>
           <Field label="Related articles"><MultiSelect options={related} value={form.relatedBlogIds} onChange={(v) => set({ relatedBlogIds: v })} testId="editor-related-blogs" /></Field>
+        </Panel>
+      )}
+      {type.kind === 'case' && (
+        <Panel title="Related content" testId="related-panel">
+          <Field label="Related services"><MultiSelect options={related} value={form.relatedServiceIds} onChange={(v) => set({ relatedServiceIds: v })} testId="editor-related-services" /></Field>
+          <Field label="Related conditions"><MultiSelect options={relatedConditions} value={form.relatedConditionIds} onChange={(v) => set({ relatedConditionIds: v })} testId="editor-related-conditions" /></Field>
         </Panel>
       )}
       {type.kind === 'service' && (

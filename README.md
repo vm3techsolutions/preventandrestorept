@@ -93,6 +93,15 @@ Client environment (`client/.env.example`):
 - Footer: Explore, Services, What We Treat and contact columns, social icons, Privacy, Terms and CMS Login (`/admin/login`).
 - Migration `20261024060000_reviews`: run `yarn migrate:deploy` in `server/`.
 
+## 4d. Body regions, services alignment, case studies (Oct 2026)
+- Migration `20261027090000_body_regions_case_studies`: adds `treatments.sections` (JSON condition sections), `target_keyword` and `needs_review` on treatments and services, and a new `case_studies` table. It only adds; nothing is dropped. Apply with `cd server && yarn migrate:deploy`.
+- Before changing data, back up with `node scripts/backup-content.js` (JSON snapshot in `server/backups/`, which is git-ignored).
+- One-time content restructure: `node scripts/body-regions.js`. It is idempotent and creates the 11 body-region pages, the 8 services, the reuses and renames, and the 301s. The draft copy lives in `prisma/seed-data/body-regions.js` and is flagged `needsReview`.
+- Condition editor: Admin, then What We Treat. Each condition section has a heading, description, symptoms, how PT may help, image, FAQs, related services and a CTA, and can be added, removed or reordered without editing JSON.
+- Case Studies: Admin, then Case Studies. The public pages are `/case-studies/` and `/case-studies/[slug]/`; the public API is `/api/public/caseStudies`.
+- Slugs follow the title automatically on create and edit. Changing a published slug auto-creates a 301 and updates existing redirects so there are no chains.
+- The Reviews admin module was removed at the client's request. The `reviews` table is kept, and the homepage testimonials stay hidden while it is empty.
+
 ## 5. Admin API (cookie-authenticated)
 `/api/auth`: `GET setup/status`, `POST setup`, `POST login`, `POST logout`, `GET me`, `PUT password`
 

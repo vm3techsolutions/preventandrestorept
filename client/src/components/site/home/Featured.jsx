@@ -8,22 +8,27 @@ import { withSlash } from '@/lib/seo';
 
 // Stock photos (Unsplash/Pexels) shown only until a service has its own CMS image.
 const STOCK = {
+  'physical-therapy': '/images/stock/neck.webp',
   'manual-therapy': '/images/stock/neck.webp',
-  'functional-dry-needling': '/images/stock/knee-exam.webp',
+  'dry-needling': '/images/stock/knee-exam.webp',
   'blood-flow-restriction-therapy': '/images/stock/knee-device.webp',
+  'shockwave-therapy': '/images/stock/knee-device.webp',
   cupping: '/images/stock/stretch.webp',
   'functional-movement-screening': '/images/stock/assess.webp',
-  'exercise-performance-and-programming': '/images/stock/barbell.webp',
-  'pain-prevention-seminars': '/images/stock/rehab-gym.webp',
+  'injury-prevention-screening': '/images/stock/performance-testing.webp',
+  'remote-strength-and-conditioning': '/images/stock/barbell.webp',
+  'in-person-personal-training': '/images/stock/kettlebell.webp',
+  'injury-prevention-workshops': '/images/stock/rehab-gym.webp',
 };
 const FALLBACK = ['/images/stock/kettlebell.webp', '/images/stock/lift-woman.webp', '/images/stock/assess.webp'];
 // Licensed stock photos for conditions without a CMS image (illustrative, not patients of the clinic).
 const CONDITION_STOCK = {
-  'back-sciatica-pain': '/images/stock/desk.webp',
-  'shoulder-neck-pain': '/images/stock/neck.webp',
+  'low-back-pain': '/images/stock/desk.webp',
+  'neck-pain': '/images/stock/neck.webp',
+  'shoulder-pain': '/images/stock/stretch.webp',
   'knee-pain': '/images/stock/knee-exam.webp',
-  'sports-injuries': '/images/stock/lift-woman.webp',
-  'foot-ankle-pain': '/images/stock/stretch.webp',
+  'muscle-strains': '/images/stock/lift-woman.webp',
+  'hip-pain': '/images/stock/kettlebell.webp',
 };
 const CONDITION_FALLBACK = ['/images/stock/assess.webp', '/images/stock/rehab-gym.webp', '/images/stock/knee-device.webp', '/images/stock/kettlebell.webp'];
 

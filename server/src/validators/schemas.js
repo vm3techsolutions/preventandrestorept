@@ -62,8 +62,49 @@ const serviceLike = {
   ctaLabel: optStr(120),
   ctaUrl: urlOrPath,
   relatedIds: ids,
+  targetKeyword: optStr(120),
+  needsReview: z.boolean().default(false),
 };
 const serviceSchema = z.object(serviceLike);
+
+const section = z.object({
+  id: z.string().max(60).optional(),
+  heading: z.string().trim().min(1, 'Every condition section needs a heading').max(200),
+  description: optStr(10000),
+  symptoms: optStr(5000),
+  howPtHelps: optStr(5000),
+  imageUrl: urlOrPath,
+  imageAlt: optStr(300),
+  faqs: z.array(faq).max(30).default([]),
+  relatedServiceIds: ids,
+  ctaLabel: optStr(120),
+  ctaUrl: urlOrPath,
+});
+const conditionSchema = z.object({ ...serviceLike, sections: z.array(section).max(60).default([]) });
+
+const longText = optStr(20000);
+const caseStudySchema = z.object({
+  ...base,
+  ...seo,
+  summary: z.string().trim().min(1, 'Short summary is required').max(1000),
+  featuredImageUrl: urlOrPath,
+  featuredImageAlt: optStr(300),
+  primaryConcern: optStr(300),
+  patientGoal: optStr(300),
+  careApproach: optStr(300),
+  outcomeSummary: optStr(1000),
+  challenge: longText,
+  assessment: longText,
+  plan: longText,
+  showApproach: z.boolean().default(true),
+  progress: longText,
+  outcome: longText,
+  takeaways: longText,
+  clinician: optStr(200),
+  relatedServiceIds: ids,
+  relatedConditionIds: ids,
+  needsReview: z.boolean().default(false),
+});
 
 const pageSchema = z.object({
   ...base,
@@ -117,6 +158,6 @@ const adminPasswordResetSchema = z.object({ newPassword: password });
 const settingsSchema = z.object({ siteName: z.string().trim().min(1).max(120), defaultMetaDescription: z.string().max(500).default(''), defaultOgImage: z.string().max(2000).default('') });
 
 module.exports = {
-  blogSchema, serviceSchema, pageSchema, taxonomySchema, authorSchema, redirectSchema, reorderSchema, reviewSchema,
+  blogSchema, serviceSchema, conditionSchema, caseStudySchema, pageSchema, taxonomySchema, authorSchema, redirectSchema, reorderSchema, reviewSchema,
   loginSchema, setupSchema, changePasswordSchema, settingsSchema, adminCreateSchema, adminStatusSchema, adminPasswordResetSchema,
 };

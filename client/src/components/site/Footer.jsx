@@ -9,6 +9,7 @@ const EXPLORE = [
   { label: 'Home', href: '/' },
   { label: 'About Us', href: '/about-us/' },
   { label: 'Blogs', href: '/blogs/' },
+  { label: 'Case Studies', href: '/case-studies/' },
   { label: 'Contact', href: '/contact/' },
 ];
 

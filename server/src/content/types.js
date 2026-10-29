@@ -1,4 +1,5 @@
-const { blogSchema, serviceSchema, pageSchema } = require('../validators/schemas');
+const { blogSchema, serviceSchema, conditionSchema, caseStudySchema, pageSchema } = require('../validators/schemas');
+const prisma = require('../lib/prisma');
 const { sanitizeBlocks, cleanText } = require('../lib/sanitize');
 const { buildSeo } = require('../lib/seo');
 
@@ -122,7 +123,39 @@ const blogs = {
   },
 };
 
-function serviceLike({ key, model, label, folder, prefix, relation, relKey, relPrefix, relatedName }) {
+const anchor = (s) => String(s).toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
+const cleanSections = (list = []) => list.map((s, i) => ({
+  id: s.id || `s${Date.now().toString(36)}${i}`,
+  heading: cleanText(s.heading),
+  description: s.description, symptoms: s.symptoms, howPtHelps: s.howPtHelps,
+  imageUrl: s.imageUrl, imageAlt: s.imageAlt,
+  faqs: (s.faqs || []).map((f) => ({ question: cleanText(f.question), answer: cleanText(f.answer) })),
+  relatedServiceIds: unique(s.relatedServiceIds || []),
+  ctaLabel: s.ctaLabel, ctaUrl: s.ctaUrl,
+}));
+
+const liveRefs = async (model, ids, prefix) => {
+  if (!ids.length) return [];
+  const rows = await prisma[model].findMany({ where: { id: { in: unique(ids) }, status: 'PUBLISHED', deletedAt: null }, select: { id: true, title: true, slug: true } });
+  return ids.map((id) => rows.find((r) => r.id === id)).filter(Boolean).map((x) => ({ title: x.title, slug: x.slug, path: `${prefix}/${x.slug}` }));
+};
+
+async function publicSections(list = []) {
+  const seen = new Set();
+  return Promise.all(list.map(async (s) => {
+    let a = anchor(s.heading) || s.id;
+    while (seen.has(a)) a = `${a}-2`;
+    seen.add(a);
+    return {
+      anchor: a, heading: s.heading, description: s.description, symptoms: s.symptoms, howPtHelps: s.howPtHelps,
+      image: image(s.imageUrl, s.imageAlt), faqs: s.faqs || [],
+      relatedServices: await liveRefs('service', s.relatedServiceIds || [], '/services'),
+      cta: s.ctaLabel && s.ctaUrl ? { label: s.ctaLabel, url: s.ctaUrl } : null,
+    };
+  }));
+}
+
+function serviceLike({ key, model, label, folder, prefix, relation, relKey, relPrefix, relatedName, schema = serviceSchema }) {
   const cfg = {
     key,
     model,
@@ -130,7 +163,7 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
     folder,
     audit: true,
     path: (slug) => `${prefix}/${slug}`,
-    schema: serviceSchema,
+    schema,
     searchFields: ['title', 'slug', 'shortDescription'],
     include: { ...auditInclude, [relation]: { include: { [relKey]: relatedSelect } } },
     listInclude: { ...auditInclude, [relation]: { include: { [relKey]: relatedSelect } } },
@@ -145,6 +178,9 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
       ctaHeading: b.ctaHeading,
       ctaLabel: b.ctaLabel,
       ctaUrl: b.ctaUrl,
+      targetKeyword: b.targetKeyword,
+      needsReview: b.needsReview,
+      ...(model === 'treatment' ? { sections: cleanSections(b.sections) } : {}),
       ...seoData(b),
     }),
     async afterSave(tx, id, b) {
@@ -169,7 +205,8 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
         faqs: r.faqs || [],
         cta: r.ctaLabel && r.ctaUrl ? { heading: r.ctaHeading, label: r.ctaLabel, url: r.ctaUrl } : null,
         [relatedName]: (r[relation] || []).map((m) => m[relKey]).filter(isLive).map((x) => ({ title: x.title, slug: x.slug, path: `${relPrefix}/${x.slug}` })),
-        seo: await buildSeo({ ...r, fallbackDescription: r.shortDescription, path: cfg.path(r.slug), image: r.featuredImageUrl }),
+        seo: await buildSeo({ ...r, fallbackDescription: r.shortDescription, path: cfg.path(r.slug), image: r.featuredImageUrl, keyword: r.targetKeyword }),
+        ...(model === 'treatment' ? { sections: await publicSections(r.sections) } : {}),
       };
     },
   };
@@ -177,7 +214,46 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
 }
 
 const services = serviceLike({ key: 'services', model: 'service', label: 'Service', folder: 'services', prefix: '/services', relation: 'treatments', relKey: 'treatment', relPrefix: '/what-we-treat', relatedName: 'relatedConditions' });
-const conditions = serviceLike({ key: 'conditions', model: 'treatment', label: 'Condition', folder: 'treatments', prefix: '/what-we-treat', relation: 'services', relKey: 'service', relPrefix: '/services', relatedName: 'relatedServices' });
+const conditions = serviceLike({ key: 'conditions', model: 'treatment', label: 'Condition', folder: 'treatments', prefix: '/what-we-treat', relation: 'services', relKey: 'service', relPrefix: '/services', relatedName: 'relatedServices', schema: conditionSchema });
+
+const CASE_TEXT = ['summary', 'primaryConcern', 'patientGoal', 'careApproach', 'outcomeSummary', 'challenge', 'assessment', 'plan', 'progress', 'outcome', 'takeaways', 'clinician'];
+const caseStudies = {
+  key: 'caseStudies',
+  model: 'caseStudy',
+  label: 'Case study',
+  folder: 'case-studies',
+  audit: true,
+  path: (slug) => `/case-studies/${slug}`,
+  schema: caseStudySchema,
+  searchFields: ['title', 'slug', 'summary'],
+  include: auditInclude,
+  listInclude: auditInclude,
+  toData: (b) => ({
+    title: b.title,
+    ...Object.fromEntries(CASE_TEXT.map((k) => [k, b[k]])),
+    featuredImageUrl: b.featuredImageUrl, featuredImageAlt: b.featuredImageAlt, showApproach: b.showApproach,
+    relatedServiceIds: unique(b.relatedServiceIds), relatedConditionIds: unique(b.relatedConditionIds), needsReview: b.needsReview,
+    ...seoData(b),
+  }),
+  serializeAdmin: (r) => ({ ...r, path: caseStudies.path(r.slug) }),
+  publishErrors: (r) => publishErrors(r, []).concat(r.summary ? [] : ['Short summary is required']),
+  publicSummary: (r) => ({
+    id: r.id, title: r.title, slug: r.slug, path: caseStudies.path(r.slug), summary: r.summary, primaryConcern: r.primaryConcern,
+    careApproach: r.careApproach, featuredImage: image(r.featuredImageUrl, r.featuredImageAlt), publishedAt: r.publishedAt, updatedAt: r.updatedAt,
+  }),
+  async publicDetail(r) {
+    const related = await prisma.caseStudy.findMany({ where: { status: 'PUBLISHED', deletedAt: null, NOT: { id: r.id } }, orderBy: [{ displayOrder: 'asc' }], take: 3 });
+    return {
+      ...caseStudies.publicSummary(r),
+      ...Object.fromEntries(CASE_TEXT.map((k) => [k, r[k]])),
+      showApproach: r.showApproach,
+      relatedServices: await liveRefs('service', r.relatedServiceIds, '/services'),
+      relatedConditions: await liveRefs('treatment', r.relatedConditionIds, '/what-we-treat'),
+      related: related.map(caseStudies.publicSummary),
+      seo: await buildSeo({ ...r, fallbackDescription: r.summary, path: caseStudies.path(r.slug), image: r.featuredImageUrl }),
+    };
+  },
+};
 
 const pages = {
   key: 'pages',
@@ -201,4 +277,4 @@ const pages = {
   },
 };
 
-module.exports = { blogs, services, conditions, pages, TYPES: { blogs, services, conditions, pages } };
+module.exports = { blogs, services, conditions, pages, caseStudies, TYPES: { blogs, services, conditions, pages, caseStudies } };
