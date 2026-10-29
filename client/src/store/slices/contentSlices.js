@@ -70,4 +70,5 @@ export const blogs = createContentSlice('blogs');
 export const services = createContentSlice('services');
 export const conditions = createContentSlice('conditions');
 export const pages = createContentSlice('pages');
-export const contentSlices = { blogs, services, conditions, pages };
+export const caseStudies = createContentSlice('caseStudies');
+export const contentSlices = { blogs, services, conditions, pages, caseStudies };

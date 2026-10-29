@@ -13,6 +13,9 @@ import { ErrorState, Field, LoadingState, Spinner, StatusBadge } from './ui';
 import BlockEditor from './editor/BlockEditor';
 import ImageField from './editor/ImageField';
 import FaqEditor from './editor/FaqEditor';
+import SectionsEditor from './editor/SectionsEditor';
+import CaseStudyFields from './editor/CaseStudyFields';
+import { Toggle } from './ui';
 import EditorSidebar from './EditorSidebar';
 
 const Section = ({ title, children, testId }) => (
@@ -58,9 +61,14 @@ export default function ContentEditorPage({ typeKey, id }) {
     setForm((f) => ({ ...f, ...patch }));
     setDirty(true);
   };
-  const onTitle = (title) => set({ title, ...(isNew && !slugTouched ? { slug: slugify(title) } : {}) });
+  // Slug follows the title automatically (create and edit) unless the admin edits it by hand.
+  const onTitle = (title) => set({ title, ...(!slugTouched ? { slug: slugify(title) } : {}) });
 
   const save = async () => {
+    if (type.sections && form.sections.some((s) => !s.heading.trim())) {
+      toast('Every condition section needs a heading', 'error');
+      return null;
+    }
     const r = await dispatch(actions.saveItem({ id: loaded ? current.id : null, body: toPayload(type, form) }));
     if (r.error) {
       toast(r.payload?.message || 'Save failed', 'error');
@@ -117,7 +125,7 @@ export default function ContentEditorPage({ typeKey, id }) {
             <Field label="Title" htmlFor="title">
               <input id="title" className="input text-base" value={form.title} onChange={(e) => onTitle(e.target.value)} data-testid="editor-title-input" />
             </Field>
-            <Field label="Slug" htmlFor="slug" hint={`URL: ${type.publicPrefix}${form.slug || '…'}`}>
+            <Field label="Slug" htmlFor="slug" hint={`Generated from the title. URL: ${type.publicPrefix}${form.slug || '…'}`}>
               <input id="slug" className="input font-mono text-xs" value={form.slug} onChange={(e) => { setSlugTouched(true); set({ slug: e.target.value }); }}
                 onBlur={() => set({ slug: slugify(form.slug) })} data-testid="editor-slug-input" />
             </Field>
@@ -131,7 +139,20 @@ export default function ContentEditorPage({ typeKey, id }) {
                 <textarea id="shortDescription" className="input min-h-[90px]" value={form.shortDescription} onChange={(e) => set({ shortDescription: e.target.value })} data-testid="editor-short-description-input" />
               </Field>
             )}
-            {type.kind !== 'service' && (
+            {type.kind === 'case' && (
+              <Field label="Short summary" htmlFor="summary" hint="Required. Brief and non-identifying.">
+                <textarea id="summary" className="input min-h-[90px]" value={form.summary} onChange={(e) => set({ summary: e.target.value })} data-testid="editor-summary-input" />
+              </Field>
+            )}
+            {(type.kind === 'service' || type.kind === 'case') && (
+              <div className="flex flex-wrap items-end gap-6">
+                {type.kind === 'service' && (
+                  <Field label="Target keyword (optional)" htmlFor="targetKeyword"><input id="targetKeyword" className="input" value={form.targetKeyword || ''} onChange={(e) => set({ targetKeyword: e.target.value })} data-testid="editor-keyword-input" /></Field>
+                )}
+                <Toggle label="Needs client review" checked={!!form.needsReview} onChange={(v) => set({ needsReview: v })} testId="editor-needs-review-toggle" />
+              </div>
+            )}
+            {type.kind === 'page' && (
               <Field label="Excerpt" htmlFor="excerpt" hint="Shown in listings and used as the default meta description.">
                 <textarea id="excerpt" className="input min-h-[80px]" value={form.excerpt} onChange={(e) => set({ excerpt: e.target.value })} data-testid="editor-excerpt-input" />
               </Field>
@@ -154,9 +175,16 @@ export default function ContentEditorPage({ typeKey, id }) {
             )}
           </Section>
 
-          <Section title="Content" testId="editor-content">
-            <BlockEditor blocks={form.blocks} onChange={(blocks) => set({ blocks })} folder={type.folder} />
-          </Section>
+          {type.kind === 'case' ? (
+            <Section title="Case study" testId="editor-case"><CaseStudyFields form={form} set={set} /></Section>
+          ) : (
+            <Section title={type.sections ? 'Introduction content (optional)' : 'Content'} testId="editor-content">
+              <BlockEditor blocks={form.blocks} onChange={(blocks) => set({ blocks })} folder={type.folder} />
+            </Section>
+          )}
+          {type.sections && (
+            <Section title="Condition sections" testId="editor-sections"><SectionsEditor sections={form.sections} onChange={(sections) => set({ sections })} /></Section>
+          )}
 
           {type.kind === 'service' && (
             <>

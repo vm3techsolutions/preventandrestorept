@@ -3,7 +3,7 @@ import { absUrl } from '@/lib/seo';
 
 export const revalidate = 300;
 
-const STATIC = ['/', '/about-us', '/services', '/what-we-treat', '/blogs', '/contact', '/privacy-policy'];
+const STATIC = ['/', '/about-us', '/services', '/what-we-treat', '/blogs', '/case-studies', '/contact', '/privacy-policy'];
 
 // Published, indexable content only (filtered by the Part 1 sitemap API).
 export default async function sitemap() {

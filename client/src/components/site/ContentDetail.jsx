@@ -3,6 +3,7 @@ import { ArrowRight, Phone } from 'lucide-react';
 import BlockRenderer from '@/components/content/BlockRenderer';
 import SmartImage from './SmartImage';
 import FaqList from './FaqList';
+import RegionSections, { RegionAnchors } from './RegionSections';
 import { CtaBand, PageHero } from './ui';
 import { ItemIcon } from './Cards';
 import { SITE } from '@/lib/site';
@@ -51,7 +52,9 @@ export default function ContentDetail({ item, section, related, relatedTitle }) 
           ) : (
             <span className="mb-8 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50 text-teal"><ItemIcon name={item.iconName} className="h-7 w-7" /></span>
           )}
-          {item.content?.length ? <BlockRenderer blocks={item.content} /> : <p className="text-slate-600">{item.shortDescription}</p>}
+          {item.sections?.length > 0 && <RegionAnchors sections={item.sections} />}
+          {item.content?.length ? <div className={item.sections?.length ? 'mt-10' : ''}><BlockRenderer blocks={item.content} /></div> : !item.sections?.length && <p className="text-slate-600">{item.shortDescription}</p>}
+          <RegionSections sections={item.sections} />
           <FaqList faqs={item.faqs} />
         </div>
         <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">

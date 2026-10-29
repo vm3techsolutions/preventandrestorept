@@ -31,6 +31,8 @@ model Admin {
   treatmentsUpdated Treatment[] @relation("TreatmentUpdatedBy")
   reviewsCreated    Review[]    @relation("ReviewCreatedBy")
   reviewsUpdated    Review[]    @relation("ReviewUpdatedBy")
+  caseStudiesCreated CaseStudy[] @relation("CaseStudyCreatedBy")
+  caseStudiesUpdated CaseStudy[] @relation("CaseStudyUpdatedBy")
   lastLoginAt    DateTime? @map("last_login_at")
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
@@ -209,6 +211,8 @@ model Service {
   createdBy        Admin?             @relation("ServiceCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   updatedBy        Admin?             @relation("ServiceUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
   treatments       ServiceTreatment[]
+  targetKeyword    String?            @map("target_keyword")
+  needsReview      Boolean            @default(false) @map("needs_review")
 
   @@index([status])
   @@index([displayOrder])
@@ -244,11 +248,57 @@ model Treatment {
   createdBy        Admin?             @relation("TreatmentCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   updatedBy        Admin?             @relation("TreatmentUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
   services         ServiceTreatment[]
+  sections         Json               @default("[]")
+  targetKeyword    String?            @map("target_keyword")
+  needsReview      Boolean            @default(false) @map("needs_review")
 
   @@index([status])
   @@index([displayOrder])
   @@index([deletedAt])
   @@map("treatments")
+}
+
+// Case studies (non-identifying, approved content only).
+model CaseStudy {
+  id               Int           @id @default(autoincrement())
+  title            String
+  slug             String        @unique
+  summary          String?       @db.Text
+  featuredImageUrl String?       @map("featured_image_url")
+  featuredImageAlt String?       @map("featured_image_alt")
+  primaryConcern   String?       @map("primary_concern")
+  patientGoal      String?       @map("patient_goal")
+  careApproach     String?       @map("care_approach")
+  outcomeSummary   String?       @map("outcome_summary") @db.Text
+  challenge        String?       @db.Text
+  assessment       String?       @db.Text
+  plan             String?       @db.Text
+  showApproach     Boolean       @default(true) @map("show_approach")
+  progress         String?       @db.Text
+  outcome          String?       @db.Text
+  takeaways        String?       @db.Text
+  clinician        String?
+  relatedServiceIds   Int[]      @default([]) @map("related_service_ids")
+  relatedConditionIds Int[]      @default([]) @map("related_condition_ids")
+  needsReview      Boolean       @default(false) @map("needs_review")
+  seoTitle         String?       @map("seo_title")
+  metaDescription  String?       @map("meta_description")
+  canonicalUrl     String?       @map("canonical_url")
+  noindex          Boolean       @default(false)
+  status           ContentStatus @default(DRAFT)
+  publishedAt      DateTime?     @map("published_at")
+  displayOrder     Int           @default(0) @map("display_order")
+  deletedAt        DateTime?     @map("deleted_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+  createdById      Int?          @map("created_by_id")
+  updatedById      Int?          @map("updated_by_id")
+  createdBy        Admin?        @relation("CaseStudyCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy        Admin?        @relation("CaseStudyUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([deletedAt])
+  @@map("case_studies")
 }
 
 model ServiceTreatment {

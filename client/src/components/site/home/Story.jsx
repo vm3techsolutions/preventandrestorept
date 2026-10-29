@@ -5,9 +5,9 @@ import { SectionHeading } from '../ui';
 
 // Audiences named in Dr. Ray's verified bio. Links are dropped if the target is not published.
 const AUDIENCES = [
-  { title: 'Athletes', text: 'From Division 1 athletes to youth sports, get back to competing with less chance of reinjury.', image: '/images/stock/lift-woman.webp', href: '/what-we-treat/sports-injuries/' },
-  { title: 'Weekend warriors', text: 'Keep doing the activities you love with strength and conditioning built into your care.', image: '/images/stock/kettlebell.webp', href: '/services/exercise-performance-and-programming/' },
-  { title: 'Desk workers', text: 'Long days at a desk can lead to back and neck pain. We find the cause and build a plan around it.', image: '/images/stock/desk.webp', href: '/what-we-treat/back-sciatica-pain/' },
+  { title: 'Athletes', text: 'From Division 1 athletes to youth sports, get back to competing with less chance of reinjury.', image: '/images/stock/lift-woman.webp', href: '/what-we-treat/muscle-strains/' },
+  { title: 'Weekend warriors', text: 'Keep doing the activities you love with strength and conditioning built into your care.', image: '/images/stock/kettlebell.webp', href: '/services/remote-strength-and-conditioning/' },
+  { title: 'Desk workers', text: 'Long days at a desk can lead to back and neck pain. We find the cause and build a plan around it.', image: '/images/stock/desk.webp', href: '/what-we-treat/low-back-pain/' },
   { title: 'Recovering from surgery', text: 'Personalised rehab to restore strength and mobility after your procedure.', image: '/images/stock/rehab-gym.webp', href: '/services/blood-flow-restriction-therapy/' },
 ];
 

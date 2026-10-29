@@ -114,6 +114,7 @@ export const api = {
     services: publicContent('services'),
     conditions: publicContent('conditions'),
     pages: publicContent('pages'),
+    caseStudies: publicContent('caseStudies'),
     resolveRedirect: (path) => request('/public/redirects/resolve', { query: { path } }),
     redirects: (query) => request('/public/redirects', { query }),
     sitemap: () => pub('/public/sitemap'),

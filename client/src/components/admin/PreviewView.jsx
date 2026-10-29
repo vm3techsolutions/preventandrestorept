@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { api, mediaUrl } from '@/lib/api';
 import { formatDate } from '@/lib/utils';
 import BlockRenderer from '@/components/content/BlockRenderer';
+import RegionSections from '@/components/site/RegionSections';
+import CaseStudyBody from '@/components/site/CaseStudyBody';
 import { ErrorState, LoadingState, StatusBadge } from './ui';
 
 export default function PreviewView({ type, id }) {
@@ -40,8 +42,10 @@ export default function PreviewView({ type, id }) {
             {d.featuredImage.caption && <figcaption className="mt-2 text-sm text-slate-500">{d.featuredImage.caption}</figcaption>}
           </figure>
         )}
-        {(d.introduction || d.shortDescription || d.excerpt) && <p className="mt-8 text-lg leading-relaxed text-navy">{d.introduction || d.shortDescription || d.excerpt}</p>}
-        <div className="mt-8"><BlockRenderer blocks={d.blocks || d.content} /></div>
+        {(d.introduction || d.shortDescription || d.excerpt || d.summary) && <p className="mt-8 text-lg leading-relaxed text-navy">{d.introduction || d.shortDescription || d.excerpt || d.summary}</p>}
+        {(d.blocks || d.content) && <div className="mt-8"><BlockRenderer blocks={d.blocks || d.content} /></div>}
+        {d.sections && <RegionSections sections={d.sections} />}
+        {type === 'caseStudies' && <div className="mt-8"><CaseStudyBody cs={d} /></div>}
         {d.faqs?.length > 0 && (
           <section className="mt-12">
             <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
