@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { api, mediaUrl } from '@/lib/api';
 import { formatDate } from '@/lib/utils';
 import BlockRenderer from '@/components/content/BlockRenderer';
-import RegionSections from '@/components/site/RegionSections';
+import RegionSections, { RegionAnchors } from '@/components/site/RegionSections';
 import CaseStudyBody from '@/components/site/CaseStudyBody';
 import { ErrorState, LoadingState, StatusBadge } from './ui';
 
@@ -44,6 +44,7 @@ export default function PreviewView({ type, id }) {
         )}
         {(d.introduction || d.shortDescription || d.excerpt || d.summary) && <p className="mt-8 text-lg leading-relaxed text-navy">{d.introduction || d.shortDescription || d.excerpt || d.summary}</p>}
         {(d.blocks || d.content) && <div className="mt-8"><BlockRenderer blocks={d.blocks || d.content} /></div>}
+        {d.sections && <div className="mt-8"><RegionAnchors sections={d.sections} /></div>}
         {d.sections && <RegionSections sections={d.sections} />}
         {type === 'caseStudies' && <div className="mt-8"><CaseStudyBody cs={d} /></div>}
         {d.faqs?.length > 0 && (
