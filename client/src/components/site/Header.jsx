@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { ArrowRight, Menu, Phone, X } from 'lucide-react';
+import { ArrowRight, Menu, X } from 'lucide-react';
 import { NAV, SITE } from '@/lib/site';
 import { toggleMobileNav, closeMobileNav } from '@/store/slices/siteSlice';
 import NavDropdown from './NavDropdown';
@@ -46,20 +46,17 @@ export default function Header({ services = [], conditions = [] }) {
         <Link href="/" className="shrink-0" aria-label={`${SITE.name} home`} data-testid="header-logo-link">
           <Image src="/images/logo-horizontal.png" alt={SITE.name} width={1174} height={272} priority className="h-9 w-auto sm:h-10" />
         </Link>
-        <nav aria-label="Main" className="hidden items-center gap-6 lg:flex xl:gap-7">
+        <nav aria-label="Main" className="hidden flex-1 items-center justify-center gap-6 whitespace-nowrap xl:flex 2xl:gap-8">
           {links.map((n) => {
             const testId = `nav-${n.label.toLowerCase().replace(/\s+/g, '-')}`;
             if (n.items) return <NavDropdown key={n.href} variant={MENUS[n.href].key} label={n.label} href={n.href} items={n.items} allLabel={n.allLabel} active={isActive(n.href)} testId={testId} />;
             return <Link key={n.href} href={n.href} aria-current={isActive(n.href) ? 'page' : undefined} className={`nav-link ${isActive(n.href) ? 'text-teal after:scale-x-100' : 'text-navy'}`} data-testid={testId}>{n.label}</Link>;
           })}
         </nav>
-        <div className="hidden items-center gap-4 lg:flex">
-          <a href={SITE.phoneHref} className="hidden items-center gap-2 text-sm font-medium text-navy hover:text-teal 2xl:flex" data-testid="header-phone-link">
-            <Phone className="h-4 w-4" aria-hidden /> {SITE.phone}
-          </a>
+        <div className="hidden shrink-0 xl:flex">
           <Link href={SITE.appointmentHref} className="inline-flex items-center gap-4 bg-teal px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-white transition-colors hover:bg-teal-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal" data-testid="header-appointment-btn">Book an Appointment <ArrowRight className="h-4 w-4" aria-hidden /></Link>
         </div>
-        <button type="button" className="rounded-lg p-2 text-navy hover:bg-slate-100 lg:hidden" aria-expanded={open} aria-controls="mobile-nav" aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => dispatch(toggleMobileNav())} data-testid="mobile-nav-toggle">
+        <button type="button" className="rounded-lg p-2 text-navy hover:bg-slate-100 xl:hidden" aria-expanded={open} aria-controls="mobile-nav" aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => dispatch(toggleMobileNav())} data-testid="mobile-nav-toggle">
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>

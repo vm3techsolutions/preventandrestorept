@@ -29,4 +29,14 @@ export const REGION_STOCK = {
 
 const POOL = ['/images/stock/rehab-gym.webp', '/images/stock/performance-testing.webp', '/images/stock/knee-device.webp'];
 
+const CONDITION_POOL = ['/images/stock/assess.webp', '/images/stock/stretch.webp', '/images/stock/rehab-gym.webp', '/images/stock/knee-exam.webp', '/images/stock/neck.webp', '/images/stock/knee-device.webp', '/images/stock/performance-testing.webp', '/images/stock/kettlebell.webp', '/images/stock/lift-woman.webp', '/images/stock/barbell.webp'];
+
+// First condition uses the region photo, the rest rotate through the pool (offset per region).
+export const conditionStock = (regionSlug, i, regionIndex = 0) => {
+  if (i === 0) return stockFor(REGION_STOCK, regionSlug, regionIndex);
+  const region = REGION_STOCK[regionSlug];
+  const pool = CONDITION_POOL.filter((p) => p !== region);
+  return pool[(i - 1 + regionIndex * 3) % pool.length];
+};
+
 export const stockFor = (map, slug, i = 0) => map[slug] || POOL[i % POOL.length];
