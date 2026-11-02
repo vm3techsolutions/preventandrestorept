@@ -37,7 +37,7 @@ export default function MobileNav({ links, isActive }) {
         })}
       </nav>
       <div className="mt-6 grid gap-3">
-        <Link href={SITE.appointmentHref} className="btn-site justify-center py-3.5" data-testid="mobile-appointment-btn">Request Appointment</Link>
+        <Link href={SITE.appointmentHref} className="btn-site justify-center py-3.5" data-testid="mobile-appointment-btn">Book an Appointment</Link>
         <a href={SITE.phoneHref} className="btn-site-outline justify-center py-3.5" data-testid="mobile-phone-link"><Phone className="h-4 w-4" /> {SITE.phone}</a>
       </div>
     </div>

@@ -77,7 +77,13 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Footer Facebook link set
 - Stock image maps in lib/stockImages.js
 - Testing iteration_9: all flows passed
-- Pending: the header and Who We Help design screenshots were never received
+- 2026-11-02: Header and Who We Help matched to the client's screenshots
+  - Services mega menu: numbered 2-column list
+  - What We Treat mega menu: region list + condition panel, links go to region#anchor; layout.js fetches each region's sections
+  - Header and mobile CTA renamed "Book an Appointment"; phone link shows only at 2xl
+  - Who We Help bento grid with new stock run-*.webp images; cards stay non-clickable
+  - Testing iteration_10: all flows passed
+  - Open CMS issue: functional-dry-needling redirects to dry-needling, so the Services menu shows two entries for one page
 
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS

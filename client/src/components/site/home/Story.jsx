@@ -30,7 +30,8 @@ function AudienceCard({ a, i }) {
     <div className={`reveal relative min-h-[260px] overflow-hidden bg-navy ${a.cls}`} style={{ transitionDelay: `${i * 90}ms` }} data-testid={`who-card-${a.title.toLowerCase().replace(/[^a-z]+/g, '-')}`}>
       <Image src={a.image} alt="" fill sizes="(min-width:1024px) 40vw, 100vw" className="object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent" aria-hidden />
-      <span className="absolute left-4 top-4 text-[11px] text-white/80">{String(i + 1).padStart(2, '0')}</span>
+      <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-navy/50 to-transparent" aria-hidden />
+      <span className="absolute left-4 top-4 text-xs font-semibold text-white [text-shadow:0_1px_3px_rgba(0,29,57,0.7)]">{String(i + 1).padStart(2, '0')}</span>
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
         <div>
           <h3 className="font-heading text-2xl font-semibold text-white sm:text-3xl">{a.title}</h3>

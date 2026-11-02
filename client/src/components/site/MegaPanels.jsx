@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { withSlash } from '@/lib/seo';
@@ -61,6 +61,9 @@ function RegionDetailPane({ region, close, testId }) {
 
 export function ConditionsPanel({ items, href, allLabel, close, testId }) {
   const [active, setActive] = useState(items[0]?.slug);
+  const hoverTimer = useRef(null);
+  // Short hover intent so a diagonal move toward the panel doesn't swap regions.
+  const hoverTo = (slug) => { clearTimeout(hoverTimer.current); hoverTimer.current = setTimeout(() => setActive(slug), 120); };
   const region = items.find((r) => r.slug === active) || items[0];
   return (
     <div className="w-[min(880px,calc(100vw-4rem))]">
@@ -68,7 +71,7 @@ export function ConditionsPanel({ items, href, allLabel, close, testId }) {
         <ul className="max-h-[60vh] overflow-y-auto bg-slate-50 p-5">
           {items.map((r) => (
             <li key={r.slug}>
-              <Link href={withSlash(r.path)} onClick={close} onPointerEnter={() => setActive(r.slug)} onFocus={() => setActive(r.slug)} aria-current={r.slug === region.slug ? 'true' : undefined}
+              <Link href={withSlash(r.path)} onClick={close} onPointerEnter={() => hoverTo(r.slug)} onPointerLeave={() => clearTimeout(hoverTimer.current)} onFocus={() => setActive(r.slug)} aria-current={r.slug === region.slug ? 'true' : undefined}
                 className={`${itemCls} px-4 text-sm font-medium ${r.slug === region.slug ? 'bg-white text-teal' : ''}`} data-testid={`${testId}-item-${r.slug}`}>
                 {r.title}<ArrowRight className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-teal" aria-hidden />
               </Link>
