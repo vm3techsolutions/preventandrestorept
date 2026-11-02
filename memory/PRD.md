@@ -69,6 +69,16 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Case studies CMS and public pages; one DRAFT example (noindex)
 - Reviews admin module removed (table kept)
 
+## Implemented (2026-11-02) - Layout updates (frontend only)
+- Header: Case Studies added after Blogs
+- Home: scroll-driven sticky Services (first 7 in CMS order, ServicesScroll.jsx); Who We Help is informational and non-clickable
+- Service detail: image hero with blue overlay and CTA, slate background; blog detail: featured-image hero
+- Body-region pages: RegionDetail with hero, Understanding intro, sticky ConditionSelector, per-condition sections (H2/H3), FAQ, CTA. Description paragraphs starting "Causes:" or "Daily life:" become their own subsections
+- Footer Facebook link set
+- Stock image maps in lib/stockImages.js
+- Testing iteration_9: all flows passed
+- Pending: the header and Who We Help design screenshots were never received
+
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
 - P1: clinic hours (unverified), separate GHL form IDs for Speak with a PT / Discovery Call, service images, licensed fonts, remove the leftover authoring line in the IT band post, NEXT_PUBLIC_SITE_URL/MEDIA_HOSTS for prod
