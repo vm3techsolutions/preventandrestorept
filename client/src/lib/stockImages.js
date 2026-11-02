@@ -36,7 +36,8 @@ export const conditionStock = (regionSlug, i, regionIndex = 0) => {
   if (i === 0) return stockFor(REGION_STOCK, regionSlug, regionIndex);
   const region = REGION_STOCK[regionSlug];
   const pool = CONDITION_POOL.filter((p) => p !== region);
-  return pool[(i - 1 + regionIndex * 3) % pool.length];
+  const offset = [...regionSlug].reduce((a, c) => a + c.charCodeAt(0), 0);
+  return pool[(i - 1 + offset) % pool.length];
 };
 
 export const stockFor = (map, slug, i = 0) => map[slug] || POOL[i % POOL.length];

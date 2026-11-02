@@ -84,6 +84,13 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
   - Who We Help bento grid with new stock run-*.webp images; cards stay non-clickable
   - Testing iteration_10: all flows passed
   - Open CMS issue: functional-dry-needling redirects to dry-needling, so the Services menu shows two entries for one page
+- 2026-11-02: Page clean-up batch
+  - Header: no phone number (desktop or mobile); nav centred and kept on one line; desktop nav from 1280px (xl), hamburger below that
+  - Homepage testimonials section removed (Reviews backend untouched)
+  - About Us: Dr. Reid Dobson added below Dr. Ray with the supplied bio word-for-word (the client confirmed the "fewer than 5%" line); initials placeholder photo
+  - Removed the image below the hero on service, region and blog detail pages; blog Related articles removed; blog body now sits in a white card
+  - Region detail: alternating image/text condition rows using stock photos (conditionStock in lib/stockImages.js); a CMS section image takes priority
+  - Testing iteration_11: all passed
 
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS

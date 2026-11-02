@@ -4,8 +4,8 @@ import { CtaBand, PageHero, SectionHeading } from '@/components/site/ui';
 import { staticMetadata } from '@/lib/seo';
 
 export const metadata = staticMetadata({
-  title: 'About Us | Dr. Ray Waters & Prevent & Restore PT Marietta',
-  description: 'Meet Dr. Ray Waters, DPT, CSCS, CEAS, owner and founder of Prevent & Restore Physical Therapy, and learn about our one-on-one approach to care.',
+  title: 'About Us | Dr. Ray Waters, Dr. Reid Dobson & Prevent & Restore PT Marietta',
+  description: 'Meet Dr. Ray Waters, DPT, CSCS, CEAS, owner and founder, and Dr. Reid Dobson, PT, DPT, OCS, and learn about our one-on-one approach to physical therapy.',
   path: '/about-us/',
 });
 
