@@ -25,7 +25,7 @@ export const SITE = {
 
 // Shown when they have a URL or are marked pending (icon only, not clickable, until the URL arrives).
 export const SOCIALS = [
-  { key: 'facebook', label: 'Facebook', url: '', pending: true },
+  { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/preventandrestorept/?rdid=wClMF74M6WqpIuPL' },
   { key: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/preventandrestorept' },
   { key: 'google', label: 'Google Business Profile', url: SITE.mapsUrl },
   { key: 'yelp', label: 'Yelp', url: 'https://www.yelp.com/search?find_desc=Prevent+%26+Restore+Physical+Therapy&find_loc=Marietta%2C+GA' },
@@ -46,6 +46,7 @@ export const NAV = [
   { label: 'Services', href: '/services/' },
   { label: 'What We Treat', href: '/what-we-treat/' },
   { label: 'Blogs', href: '/blogs/' },
+  { label: 'Case Studies', href: '/case-studies/' },
   { label: 'Contact', href: '/contact/' },
 ];
 

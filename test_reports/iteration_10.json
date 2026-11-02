@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only test of the What We Treat and Services mega menus, dropdown keyboard and mouse behaviour, the homepage Who We Help bento grid (1460, 768 and 390 px), the Book an Appointment button, the mobile nav, and regressions (ServicesScroll, region chip selector, Case Studies link). All requested flows passed. One content issue: the 'Functional Dry Needling' menu item (/services/functional-dry-needling/) is 301-redirected by a CMS redirect to /services/dry-needling/, which is also in the menu as item 06. The menu shows two entries that open the same page.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Services mega menu", "issue": "nav-services-item-functional-dry-needling goes to /services/functional-dry-needling/. An admin redirect returns 301 to /services/dry-needling/, which is already menu item 06. The user sees two items that open the same page. This is a CMS data issue: unpublish one of the services or remove the redirect.", "affected_selectors": ["[data-testid='nav-services-item-functional-dry-needling']", "[data-testid='nav-services-item-dry-needling']"]}
+    ],
+    "design_issues": [
+      {"screen": "Home Who We Help cards", "issues": ["The 01-04 number labels are very small and low contrast. '03' is almost invisible over the bright sky in the Runners image. Consider adding a text shadow or a darker top gradient.", "The arrow circles look clickable but the cards are intentionally non-clickable. This matches the design request; flagged only as an affordance note."]},
+      {"screen": "Mobile nav", "issues": ["The mobile CTA reads 'Request Appointment' but the desktop header button reads 'Book an Appointment'. Consider using the same label."]},
+      {"screen": "What We Treat mega menu", "issues": ["Moving the mouse diagonally from a region toward the right panel can pass over other regions and swap the panel. There is no hover-intent delay. This is minor; vertical movement works fine."]},
+      {"screen": "All pages", "issues": ["Pre-existing: 404 on /fonts/FuturaPT-Book.woff2, FuturaPT-Demi.woff2 and BlairITCStd-Medium.woff2. These are the only console errors.", "The 4 extra CMS regions (shoulder-neck-pain, back-sciatica-pain, foot-ankle-pain, testing-treatement) still appear. This is expected per E1."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Resolve the duplicate Functional Dry Needling / Dry Needling service: unpublish one, or remove the CMS redirect if both are meant to exist",
+    "Optional: make the Who We Help number labels easier to read",
+    "Optional: use the same appointment CTA label in the mobile nav and the header"
+  ],
+  "critical_code_review_comments": [
+    "NavDropdown onToggleKey uses `id` before its const declaration. This works only because the call happens later in an event handler (TDZ-safe). Moving `const id` above the handlers would be clearer.",
+    "ConditionsPanel keeps its active region state between openings: reopening the menu shows the last hovered region, not Neck Pain. This is acceptable, but differs from 'Neck Pain active by default' after first use.",
+    "Both dropdown panels stay in the DOM when closed, hidden with visibility:hidden. This is fine for accessibility. All condition links for 15 regions are rendered in every page's HTML only for the active region, so the SSR cost is low."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100% of requested flows (1 CMS content issue)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified at 1460px: hover opens nav-what-we-treat-dropdown with neck-pain aria-current=true. Hover and focus on items swap nav-what-we-treat-panel-<slug>. The region list scrolls (775/540). Condition links go to /what-we-treat/<region>/#<anchor>, and the section top lands at 160px both across pages and on the same page. Explore and view-all work, and the menu closes after a click. Services: 11 numbered items, and view-all goes to /services/. Keyboard: Enter opens; Escape closes and returns focus to the toggle; ArrowDown focuses the first link; tabbing past the last item closes the menu; an outside click closes it; a 2nd click on the toggle closes it after the 800ms hover guard. Who cards: 0 links, tabIndex -1, no overflow at 390 or 768. header-appointment-btn goes to /contact/#request-appointment. Mobile nav toggles expand the WWT and Services lists, and choosing a link navigates and closes the nav."
+}

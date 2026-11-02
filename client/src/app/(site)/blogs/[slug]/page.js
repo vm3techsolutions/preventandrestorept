@@ -2,8 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import BlockRenderer from '@/components/content/BlockRenderer';
-import SmartImage from '@/components/site/SmartImage';
-import { BlogCard } from '@/components/site/Cards';
 import { CtaBand, PageHero } from '@/components/site/ui';
 import { formatDate, getDetail } from '@/lib/siteData';
 import { absUrl, canonicalFor, cmsMetadata, jsonLd, withSlash } from '@/lib/seo';
@@ -62,9 +60,9 @@ export default async function BlogDetailPage({ params }) {
     publisher: { '@type': 'Organization', name: SITE.name, logo: { '@type': 'ImageObject', url: absUrl('/images/logo-stacked.png') } },
   };
   return (
-    <article data-testid="blog-detail">
+    <article className="bg-slate-50" data-testid="blog-detail">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(ld)} />
-      <PageHero title={post.title} crumbs={[{ label: 'Home', href: '/' }, { label: 'Blogs', href: '/blogs/' }, { label: post.title, href: withSlash(post.path) }]}>
+      <PageHero title={post.title} image={post.featuredImage?.url} crumbs={[{ label: 'Home', href: '/' }, { label: 'Blogs', href: '/blogs/' }, { label: post.title, href: withSlash(post.path) }]}>
         {post.categories.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-2">
             {post.categories.map((c) => <Link key={c.slug} href={`/blogs/?category=${c.slug}`} className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-100 hover:bg-white/20">{c.name}</Link>)}
@@ -73,17 +71,9 @@ export default async function BlogDetailPage({ params }) {
         <Byline post={post} />
       </PageHero>
       <div className="container-site py-14 lg:py-20">
-        <div className="mx-auto max-w-3xl">
-          {post.featuredImage && (
-            <figure className="mb-12">
-              <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-slate-100">
-                <SmartImage src={post.featuredImage.url} alt={post.featuredImage.alt || post.title} priority sizes="(min-width:768px) 768px, 100vw" className="object-cover" testId="blog-featured-image" />
-              </div>
-              {post.featuredImage.caption && <figcaption className="mt-3 text-center text-sm text-slate-500">{post.featuredImage.caption}</figcaption>}
-            </figure>
-          )}
-          {post.introduction && <p className="mb-8 text-xl leading-relaxed text-navy" data-testid="blog-introduction">{post.introduction}</p>}
-          <BlockRenderer blocks={post.blocks} />
+        <div className="mx-auto max-w-3xl rounded-3xl bg-white px-6 py-10 shadow-sm ring-1 ring-slate-200/70 sm:px-10 sm:py-14 lg:px-14" data-testid="blog-body">
+          {post.introduction && <p className="mb-10 border-l-4 border-teal pl-5 text-lg leading-relaxed text-navy md:text-xl" data-testid="blog-introduction">{post.introduction}</p>}
+          <div className="text-base leading-relaxed text-slate-700 md:text-lg [&_h2]:mt-12 [&_h3]:mt-8 [&_p]:mt-5"><BlockRenderer blocks={post.blocks} /></div>
           {post.tags.length > 0 && (
             <div className="mt-12 flex flex-wrap gap-2" data-testid="blog-tags">
               {post.tags.map((t) => <Link key={t.slug} href={`/blogs/?tag=${t.slug}`} className="rounded-full bg-slate-100 px-3 py-1.5 text-sm text-navy hover:bg-teal-50 hover:text-teal">#{t.name}</Link>)}
@@ -92,14 +82,6 @@ export default async function BlogDetailPage({ params }) {
           <AuthorBox author={post.author} />
         </div>
       </div>
-      {post.related.length > 0 && (
-        <section className="bg-slate-50 py-16 lg:py-20" aria-labelledby="related-heading" data-testid="related-articles">
-          <div className="container-site">
-            <h2 id="related-heading" className="display text-2xl text-navy sm:text-3xl">Related articles</h2>
-            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{post.related.map((r) => <BlogCard key={r.slug} post={r} />)}</div>
-          </div>
-        </section>
-      )}
       <CtaBand />
     </article>
   );

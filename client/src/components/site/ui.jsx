@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, ChevronRight, Phone } from 'lucide-react';
 import { SITE } from '@/lib/site';
 import { absUrl, jsonLd } from '@/lib/seo';
+import SmartImage from './SmartImage';
 
 // Concentric arcs echoing the shield mark in the logo.
 export function ArcMotif({ className = '' }) {
@@ -47,10 +48,15 @@ export function Breadcrumbs({ items }) {
   );
 }
 
-export function PageHero({ eyebrow, title, intro, crumbs, children, testId = 'page-hero' }) {
+export function PageHero({ eyebrow, title, intro, crumbs, children, image, imageAlt = '', testId = 'page-hero' }) {
   return (
     <section className="relative overflow-hidden bg-navy text-white" data-testid={testId}>
-      <ArcMotif className="-right-24 -top-10 h-[520px] w-[520px] text-white/[0.05]" />
+      {image ? (
+        <>
+          <SmartImage src={image} alt={imageAlt} priority sizes="100vw" className="object-cover" testId="hero-bg-image" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-teal/60" aria-hidden />
+        </>
+      ) : <ArcMotif className="-right-24 -top-10 h-[520px] w-[520px] text-white/[0.05]" />}
       <div className="container-site relative py-16 sm:py-20 lg:py-24">
         {crumbs && <Breadcrumbs items={crumbs} />}
         {eyebrow && <p className="eyebrow mt-8 text-teal-100">{eyebrow}</p>}

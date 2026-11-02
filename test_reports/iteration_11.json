@@ -1,0 +1,48 @@
+{
+  "summary": "Frontend-only test of the 9 requested changes using Playwright at 1280, 1366, 1920, 1279, 1024 and 390 px. Covered: header layout and phone removal, mega menus, the homepage testimonial removal, Dr. Reid Dobson on About Us, removal of images below the hero on service, region and blog detail pages, alternating condition images, blog body card and Related articles removal, and horizontal overflow at 390px. All requested checks passed. Two minor findings: the per-region image offset never takes effect because the index is not passed, and the About Us meta description still mentions only Ray.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Region detail condition images", "issues": [
+        "conditionStock(item.slug, i, index) is meant to offset the image pool for each region. However, /what-we-treat/[slug]/page.js renders <RegionDetail item={item} /> without an index, so regionIndex is always 0. As a result, every region shows the same order from condition 2 on: assess, stretch, rehab-gym, knee-exam, and so on. Neck, knee and shoulder all start with assess, then stretch or rehab-gym. Pass a stable per-region index, or hash the slug, to vary the images.",
+        "The stock photos are generic and sometimes clearly unrelated to the condition. Shoulder 'Little League Arm' shows a doctor touching a patient's hip (assess.webp). 'Biceps tendinopathy' uses neck.webp. Shoulder 'Adhesive capsulitis' uses knee-exam.webp. Consider mapping images by body region."
+      ]},
+      {"screen": "About Us", "issues": [
+        "The page metadata title and description mention only Dr. Ray Waters. Consider adding Dr. Reid Dobson now that he is on the team.",
+        "The bio says Reid 'joined ... in July of 2026'. Today is Jan 2026, so this date is in the future. It is word-for-word as supplied, but worth confirming with the client in case it should be 2025."
+      ]},
+      {"screen": "Service detail /services/physical-therapy/", "issues": ["Without the image below the hero, the main column shows only the 'Draft copy for client review' note. A large empty area sits beside the sidebar. This is a CMS content gap, not a code bug."]},
+      {"screen": "Header 1920", "issues": ["The nav is centred between the logo and the CTA: its centre is at 934px against a viewport centre of 960px. This is because the logo is narrower than the button. The gaps are even (24px, or 32px at 2xl). Acceptable."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: pass a per-region index (or a slug hash) into RegionDetail so the condition images vary between regions",
+    "Optional: choose condition images that fit each region better",
+    "Optional: update the About Us meta description to include Dr. Reid Dobson, and confirm 'July of 2026' with the client"
+  ],
+  "critical_code_review_comments": [
+    "what-we-treat/[slug]/page.js does not pass `index` to RegionDetail. Because of this, the regionIndex offset in conditionStock and stockFor(REGION_STOCK, slug, index) is dead code.",
+    "ContentDetail AppointmentCard still shows a phone link in the sidebar. This is fine: only the header phone was meant to be removed.",
+    "Condition section images use alt=''. As decorative stock photos this is acceptable."
+  ],
+  "verified": [
+    "Header at 1280, 1366 and 1920: logo on the left, 7 nav items on one line (all the same top), even gaps, Book an Appointment on the right, height 81px. There is no header-phone-link and no tel: link in the header. mobile-nav-toggle is hidden.",
+    "Below 1280 (1279, 1024, 390): mobile-nav-toggle is visible. The mobile nav has no mobile-phone-link and no tel: link, and it includes the Book an Appointment button.",
+    "Both mega menus (What We Treat and Services) open on hover at 1280px and fit the viewport.",
+    "Homepage sections: hero, about, metrics, who, services, conditions, approach, offer, blogs, full CTA. There are no testimonial or review elements and no matching text.",
+    "About Us: team-member-dr-ray-waters, then team-member-dr-reid-dobson. Name, 'PT, DPT, OCS', 3 bio paragraphs including 'fewer than 5%', and chips PT, DPT, OCS. The RD initials placeholder is on the right (Ray's photo is on the left). The layout stacks with no overflow at 390px.",
+    "Service detail (dry-needling, physical-therapy): no detail-featured-image and no images in the body. The sidebar (related links and appointment card) is present.",
+    "Region detail (shoulder, neck, knee): condition-intro has 0 images. Every region-section has region-section-image-<anchor> with a loaded image. On desktop the image is on the left for even sections and on the right for odd sections. On mobile the image stacks above the text. The chip selector renders (condition-chip-*) and stays sticky.",
+    "Blog detail (testing-blog4, shoulder-impingement): no blog-featured-image and no Related articles. The blog-body white card is 768px wide. Introduction, tags and author box display properly.",
+    "scrollWidth is 390 at 390px on the home, blog, service and region pages."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100% of requested checks"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 11 verified the header cleanup, testimonial removal, Reid Dobson bio, removal of images below the hero on service, region and blog pages, alternating region-section images, and removal of blog Related articles. Known: the font 404s, the 4 extra CMS regions and the functional-dry-needling redirect are pre-existing CMS or data issues. The region image offset is not wired up (no index prop)."
+}

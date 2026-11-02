@@ -69,6 +69,29 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
 - Case studies CMS and public pages; one DRAFT example (noindex)
 - Reviews admin module removed (table kept)
 
+## Implemented (2026-11-02) - Layout updates (frontend only)
+- Header: Case Studies added after Blogs
+- Home: scroll-driven sticky Services (first 7 in CMS order, ServicesScroll.jsx); Who We Help is informational and non-clickable
+- Service detail: image hero with blue overlay and CTA, slate background; blog detail: featured-image hero
+- Body-region pages: RegionDetail with hero, Understanding intro, sticky ConditionSelector, per-condition sections (H2/H3), FAQ, CTA. Description paragraphs starting "Causes:" or "Daily life:" become their own subsections
+- Footer Facebook link set
+- Stock image maps in lib/stockImages.js
+- Testing iteration_9: all flows passed
+- 2026-11-02: Header and Who We Help matched to the client's screenshots
+  - Services mega menu: numbered 2-column list
+  - What We Treat mega menu: region list + condition panel, links go to region#anchor; layout.js fetches each region's sections
+  - Header and mobile CTA renamed "Book an Appointment"; phone link shows only at 2xl
+  - Who We Help bento grid with new stock run-*.webp images; cards stay non-clickable
+  - Testing iteration_10: all flows passed
+  - Open CMS issue: functional-dry-needling redirects to dry-needling, so the Services menu shows two entries for one page
+- 2026-11-02: Page clean-up batch
+  - Header: no phone number (desktop or mobile); nav centred and kept on one line; desktop nav from 1280px (xl), hamburger below that
+  - Homepage testimonials section removed (Reviews backend untouched)
+  - About Us: Dr. Reid Dobson added below Dr. Ray with the supplied bio word-for-word (the client confirmed the "fewer than 5%" line); initials placeholder photo
+  - Removed the image below the hero on service, region and blog detail pages; blog Related articles removed; blog body now sits in a white card
+  - Region detail: alternating image/text condition rows using stock photos (conditionStock in lib/stockImages.js); a CMS section image takes priority
+  - Testing iteration_11: all passed
+
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
 - P1: clinic hours (unverified), separate GHL form IDs for Speak with a PT / Discovery Call, service images, licensed fonts, remove the leftover authoring line in the IT band post, NEXT_PUBLIC_SITE_URL/MEDIA_HOSTS for prod

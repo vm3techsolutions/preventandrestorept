@@ -4,8 +4,8 @@ import { CtaBand, PageHero, SectionHeading } from '@/components/site/ui';
 import { staticMetadata } from '@/lib/seo';
 
 export const metadata = staticMetadata({
-  title: 'About Us | Dr. Ray Waters & Prevent & Restore PT Marietta',
-  description: 'Meet Dr. Ray Waters, DPT, CSCS, CEAS, owner and founder of Prevent & Restore Physical Therapy, and learn about our one-on-one approach to care.',
+  title: 'About Us | Dr. Ray Waters, Dr. Reid Dobson & Prevent & Restore PT Marietta',
+  description: 'Meet Dr. Ray Waters, DPT, CSCS, CEAS, owner and founder, and Dr. Reid Dobson, PT, DPT, OCS, and learn about our one-on-one approach to physical therapy.',
   path: '/about-us/',
 });
 
@@ -22,6 +22,16 @@ const TEAM = [
     ],
     quote: 'Let’s work together to help you reach your full potential and keep you moving well.',
     certifications: ['DPT', 'CSCS', 'FMS', 'CEAS', 'Stecco fascial manipulation'],
+  },
+  {
+    name: 'Dr. Reid Dobson',
+    credentials: 'PT, DPT, OCS',
+    bio: [
+      'Dr. Reid Dobson, PT, DPT, OCS is an outpatient orthopedic physical therapist who thrives on the ‘investigation’ stage of patient care. He approaches every initial evaluation as a unique puzzle, analyzing complex movement breakdowns to build a precise path toward recovery.',
+      'What truly sets Dr. Reid apart is his designation as an Orthopedic Certified Specialist (OCS), an elite board certification held by fewer than 5% of practicing physical therapists in the country. This advanced training grants him superior diagnostic capabilities and evidence-based insights to solve even the most persistent musculoskeletal issues.',
+      'Dr. Reid joined Prevent & Restore Physical Therapy in July of 2026 to focus entirely on intentional, 1-on-1 patient care. Outside the clinic, he is an avid hiker, farmer’s market shopper, and soccer player.',
+    ],
+    certifications: ['PT', 'DPT', 'OCS'],
   },
 ];
 
@@ -44,8 +54,8 @@ const TESTING = [
 function MemberPhoto({ m }) {
   if (!m.photo) {
     return (
-      <div className="flex aspect-[4/5] items-center justify-center rounded-3xl bg-slate-100 text-slate-400" role="img" aria-label={`Photo of ${m.name} coming soon`}>
-        <UserRound className="h-20 w-20" aria-hidden strokeWidth={1.25} />
+      <div className="flex aspect-[4/5] items-center justify-center rounded-3xl bg-gradient-to-br from-navy to-teal text-white" role="img" aria-label={`Photo of ${m.name} coming soon`} data-testid="team-member-initials">
+        <span className="font-heading text-7xl font-semibold tracking-wide" aria-hidden>{m.name.replace(/^Dr\.\s*/, '').split(' ').map((w) => w[0]).join('')}</span>
       </div>
     );
   }
@@ -59,7 +69,7 @@ function MemberPhoto({ m }) {
 function TeamMember({ m, i }) {
   const slug = m.name.toLowerCase().replace(/[^a-z]+/g, '-');
   return (
-    <article className="grid items-center gap-10 lg:grid-cols-[minmax(0,400px)_1fr] lg:gap-16" data-testid={`team-member-${slug}`}>
+    <article className={`grid items-center gap-10 lg:gap-16 ${i % 2 ? 'lg:grid-cols-[1fr_minmax(0,400px)]' : 'lg:grid-cols-[minmax(0,400px)_1fr]'}`} data-testid={`team-member-${slug}`}>
       <div className={`relative mx-auto w-full max-w-sm lg:max-w-none ${i % 2 ? 'lg:order-2' : ''}`}>
         <div className="absolute inset-0 -translate-x-3 translate-y-3 rounded-3xl bg-teal-50 sm:-translate-x-4 sm:translate-y-4" aria-hidden />
         <div className="relative"><MemberPhoto m={m} /></div>
@@ -67,7 +77,7 @@ function TeamMember({ m, i }) {
       <div>
         <h3 className="display text-3xl text-navy sm:text-4xl">{m.name}</h3>
         <p className="mt-2 font-medium text-slate-500">{m.credentials}</p>
-        <p className="mt-3 text-base font-semibold text-teal md:text-lg" data-testid={`team-member-${slug}-role`}>{m.role}</p>
+        {m.role && <p className="mt-3 text-base font-semibold text-teal md:text-lg" data-testid={`team-member-${slug}-role`}>{m.role}</p>}
         <div className="mt-6 space-y-4 text-base leading-relaxed text-slate-600 md:text-lg">{m.bio.map((p) => <p key={p.slice(0, 20)}>{p}</p>)}</div>
         {m.quote && <blockquote className="mt-6 border-l-4 border-teal pl-5 font-heading text-lg font-medium italic text-navy">“{m.quote}”</blockquote>}
         <ul className="mt-8 flex flex-wrap gap-2" aria-label="Certifications" data-testid={`team-member-${slug}-certifications`}>

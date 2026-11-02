@@ -1,0 +1,33 @@
+{
+  "summary": "Frontend-only test of the Next.js client: header and Case Studies link, homepage ServicesScroll (desktop, tablet and mobile), Who We Help, service detail hero, all body-region pages including the chip selector, blog detail hero, footer Facebook link, and regression on the main pages. Every requested flow passed. One content issue remains: /what-we-treat/ and the header dropdown list 15 published regions, not 11. The extras are 'testing-treatement' (id 25, found last iteration) and three newer duplicate regions: shoulder-neck-pain (33), back-sciatica-pain (32) and foot-ankle-pain (34), all created 2026-10-29 12:50. No data was modified.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/what-we-treat/ and header What We Treat dropdown", "issues": ["15 regions are shown, not 11. 'Shoulder & Neck Pain', 'Back & Sciatica Pain' and 'Foot & Ankle Pain' overlap with Neck/Shoulder, Low Back and Ankle/Foot. 'testing treatement' is a public test record with a typo. It has no sections, so its page shows no condition selector."]},
+      {"screen": "Region condition sections", "issues": ["'Common signs and symptoms' shows only one bullet per condition. The CMS symptoms text is a single sentence, so it never splits into a list. This is a content limit, not a code bug."]},
+      {"screen": "Blog detail", "issues": ["The featured image is used as the hero background and is also repeated as a large image at the top of the body. Consider dropping one of them."]},
+      {"screen": "Homepage ServicesScroll at tablet 768", "issues": ["The Dry Needling stage image looks soft or low resolution at this size. Check the source image resolution."]},
+      {"screen": "All pages", "issues": ["Pre-existing since iteration 1: 404 on /fonts/FuturaPT-Book.woff2, FuturaPT-Demi.woff2 and BlairITCStd-Medium.woff2 (client/public/fonts is missing). These 404s are the only console errors on the public pages."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Confirm with the client, then unpublish or archive the extra conditions so exactly 11 body regions show: testing-treatement (id 25), shoulder-neck-pain (33), back-sciatica-pain (32), foot-ankle-pain (34)",
+    "Optional: add the missing brand font files to client/public/fonts or remove the @font-face rules",
+    "Optional: avoid showing the blog featured image twice (hero background and top of body)"
+  ],
+  "critical_code_review_comments": [
+    "ServicesScroll: if items is empty, items[active] is undefined and s.slug throws. Guard with `if (!items?.length) return null`.",
+    "ServicesScroll and ConditionSelector use IntersectionObserver with thin rootMargin bands. This worked in testing. Fast jumps (keyboard End, or anchor links) can skip a stage, but the final state is correct.",
+    "RegionDetail bullets() splits on sentence boundaries. Text like 'e.g. Pain' would split wrongly. Low risk.",
+    "Paragraph keys use p.slice(0,24), which can collide when two paragraphs start the same way. Use the index instead."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (frontend only)", "frontend": "100% of requested flows (1 content issue)"},
+  "seed_data_creation": "None. Read-only checks only.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Results: header nav order is correct on desktop and in the mobile menu (mobile-nav-toggle). services-scroll is sticky: the .sticky child stays at top 96px while number 01..07, title and the Learn More href change. services-list-mobile has 7 items at 390px. who-card-* elements have no <a> and tabIndex -1. /services/dry-needling/ has hero-bg-image and detail-hero-cta pointing to /contact/#request-appointment. On neck-pain, clicking condition-chip-whiplash sets #whiplash and aria-current=true, and the section top lands at 160px, below the sticky selector at 80px. The active chip follows scroll. Anchors are spondylosis-neck / herniated-disc-neck and spondylosis-low-back / herniated-disc-low-back, with different text. All 15 region pages return 200 with one H1 and no overflow at 390px. The blog hero uses the /api/uploads featured image. social-facebook has the correct href, target=_blank and rel=noopener noreferrer. /contact/ never reaches networkidle because of the GHL and Cloudflare iframe, so use wait_until=load. Its CSP console errors come from Cloudflare (third party). The 401s on /admin/login come from /api/auth/me and are expected."
+}

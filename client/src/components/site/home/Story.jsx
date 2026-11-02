@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowUpRight, Clock, Dumbbell, ShieldCheck, UserRound } from 'lucide-react';
+import { ArrowRight, Clock, Dumbbell, ShieldCheck, UserRound } from 'lucide-react';
 import { SectionHeading } from '../ui';
 
-// Audiences named in Dr. Ray's verified bio. Links are dropped if the target is not published.
+// Copy from the client's Who We Help design reference; bento positions per card.
 const AUDIENCES = [
-  { title: 'Athletes', text: 'From Division 1 athletes to youth sports, get back to competing with less chance of reinjury.', image: '/images/stock/lift-woman.webp', href: '/what-we-treat/muscle-strains/' },
-  { title: 'Weekend warriors', text: 'Keep doing the activities you love with strength and conditioning built into your care.', image: '/images/stock/kettlebell.webp', href: '/services/remote-strength-and-conditioning/' },
-  { title: 'Desk workers', text: 'Long days at a desk can lead to back and neck pain. We find the cause and build a plan around it.', image: '/images/stock/desk.webp', href: '/what-we-treat/low-back-pain/' },
-  { title: 'Recovering from surgery', text: 'Personalised rehab to restore strength and mobility after your procedure.', image: '/images/stock/rehab-gym.webp', href: '/services/blood-flow-restriction-therapy/' },
+  { title: 'Everyday movement', text: 'Move through work, family life, and the moments in between with greater ease.', image: '/images/stock/rehab-gym.webp', cls: 'sm:col-span-2 lg:col-span-1 lg:row-span-2 aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto' },
+  { title: 'Active adults', text: 'Build a foundation for the activities and adventures that keep you moving.', image: '/images/stock/run-beach.webp', cls: 'aspect-[4/3] lg:aspect-auto' },
+  { title: 'Runners & athletes', text: 'Return to training with a plan shaped around the demands of your sport.', image: '/images/stock/run-track.webp', cls: 'aspect-[4/3] lg:aspect-auto' },
+  { title: 'Strength & performance', text: 'Develop movement capacity, control, and confidence for what comes next.', image: '/images/stock/run-race.webp', cls: 'sm:col-span-2 aspect-[4/3] sm:aspect-[2/1] lg:aspect-auto' },
 ];
 
 const STEPS = [
@@ -24,29 +24,38 @@ const OFFER = [
   { icon: ShieldCheck, title: 'Prevention built in', text: 'Recover now and prevent future issues.' },
 ];
 
-function AudienceCard({ a, linked }) {
-  const body = (
-    <>
-      <Image src={a.image} alt="" fill sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-      <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" aria-hidden />
-      <div className="absolute inset-x-0 bottom-0 p-6">
-        <h3 className="flex items-center justify-between gap-2 font-heading text-xl font-semibold text-white">{a.title}{linked && <ArrowUpRight className="h-5 w-5 text-teal-100 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-slate-200">{a.text}</p>
+// Informational only: the arrow is decorative, cards are not links.
+function AudienceCard({ a, i }) {
+  return (
+    <div className={`reveal relative min-h-[260px] overflow-hidden bg-navy ${a.cls}`} style={{ transitionDelay: `${i * 90}ms` }} data-testid={`who-card-${a.title.toLowerCase().replace(/[^a-z]+/g, '-')}`}>
+      <Image src={a.image} alt="" fill sizes="(min-width:1024px) 40vw, 100vw" className="object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent" aria-hidden />
+      <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-navy/50 to-transparent" aria-hidden />
+      <span className="absolute left-4 top-4 text-xs font-semibold text-white [text-shadow:0_1px_3px_rgba(0,29,57,0.7)]">{String(i + 1).padStart(2, '0')}</span>
+      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
+        <div>
+          <h3 className="font-heading text-2xl font-semibold text-white sm:text-3xl">{a.title}</h3>
+          <p className="mt-2 max-w-md text-xs leading-relaxed text-slate-200 sm:text-sm">{a.text}</p>
+        </div>
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/70 text-white" aria-hidden><ArrowRight className="h-4 w-4" /></span>
       </div>
-    </>
+    </div>
   );
-  const cls = 'reveal group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-navy sm:aspect-[4/5]';
-  const testId = `who-card-${a.title.toLowerCase().replace(/\s+/g, '-')}`;
-  return linked ? <Link href={a.href} className={cls} data-testid={testId}>{body}</Link> : <div className={cls} data-testid={testId}>{body}</div>;
 }
 
-export function WhoWeTreat({ published }) {
+export function WhoWeTreat() {
   return (
-    <section className="bg-white py-20 lg:py-28" data-testid="home-who">
+    <section className="bg-slate-50 py-20 lg:py-28" data-testid="home-who">
       <div className="container-site">
-        <SectionHeading eyebrow="Who we treat" title="Care for every kind of active life" intro="From Division 1 athletes and weekend warriors to those with desk jobs and patients recovering from surgery." />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {AUDIENCES.map((a) => <AudienceCard key={a.title} a={a} linked={published.has(a.href)} />)}
+        <div className="grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <p className="eyebrow flex items-center gap-3 text-teal"><span className="h-px w-8 bg-teal" aria-hidden />Who we help</p>
+            <h2 className="mt-5 font-heading text-4xl font-semibold leading-[1.05] text-navy sm:text-5xl lg:text-6xl" data-testid="home-who-title">Your goals. Your movement. <em className="block font-heading italic text-teal">Your starting point.</em></h2>
+          </div>
+          <p className="max-w-sm text-slate-600 lg:justify-self-end">There&rsquo;s no single definition of progress. We meet you where you are and build from there.</p>
+        </div>
+        <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr_0.8fr_0.8fr] lg:grid-rows-[280px_280px]">
+          {AUDIENCES.map((a, i) => <AudienceCard key={a.title} a={a} i={i} />)}
         </div>
       </div>
     </section>

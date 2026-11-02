@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, Phone } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { SITE } from '@/lib/site';
 import { withSlash } from '@/lib/seo';
 
@@ -28,7 +28,7 @@ function Sub({ label, href, items, allLabel, active, testId }) {
 
 export default function MobileNav({ links, isActive }) {
   return (
-    <div id="mobile-nav" className="h-[calc(100dvh-5rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 pb-10 pt-4 lg:hidden" data-testid="mobile-nav">
+    <div id="mobile-nav" className="h-[calc(100dvh-5rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 pb-10 pt-4 xl:hidden" data-testid="mobile-nav">
       <nav aria-label="Mobile" className="space-y-1">
         {links.map((n) => {
           const testId = `mobile-nav-${n.label.toLowerCase().replace(/\s+/g, '-')}`;
@@ -37,8 +37,7 @@ export default function MobileNav({ links, isActive }) {
         })}
       </nav>
       <div className="mt-6 grid gap-3">
-        <Link href={SITE.appointmentHref} className="btn-site justify-center py-3.5" data-testid="mobile-appointment-btn">Request Appointment</Link>
-        <a href={SITE.phoneHref} className="btn-site-outline justify-center py-3.5" data-testid="mobile-phone-link"><Phone className="h-4 w-4" /> {SITE.phone}</a>
+        <Link href={SITE.appointmentHref} className="btn-site justify-center py-3.5" data-testid="mobile-appointment-btn">Book an Appointment</Link>
       </div>
     </div>
   );

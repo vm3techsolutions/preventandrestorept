@@ -5,32 +5,8 @@ import { BlogCard } from '../Cards';
 import CardCarousel from '../CardCarousel';
 import { EmptyState, MoreLink, SectionHeading } from '../ui';
 import { withSlash } from '@/lib/seo';
-
-// Stock photos (Unsplash/Pexels) shown only until a service has its own CMS image.
-const STOCK = {
-  'physical-therapy': '/images/stock/neck.webp',
-  'manual-therapy': '/images/stock/neck.webp',
-  'dry-needling': '/images/stock/knee-exam.webp',
-  'blood-flow-restriction-therapy': '/images/stock/knee-device.webp',
-  'shockwave-therapy': '/images/stock/knee-device.webp',
-  cupping: '/images/stock/stretch.webp',
-  'functional-movement-screening': '/images/stock/assess.webp',
-  'injury-prevention-screening': '/images/stock/performance-testing.webp',
-  'remote-strength-and-conditioning': '/images/stock/barbell.webp',
-  'in-person-personal-training': '/images/stock/kettlebell.webp',
-  'injury-prevention-workshops': '/images/stock/rehab-gym.webp',
-};
-const FALLBACK = ['/images/stock/kettlebell.webp', '/images/stock/lift-woman.webp', '/images/stock/assess.webp'];
-// Licensed stock photos for conditions without a CMS image (illustrative, not patients of the clinic).
-const CONDITION_STOCK = {
-  'low-back-pain': '/images/stock/desk.webp',
-  'neck-pain': '/images/stock/neck.webp',
-  'shoulder-pain': '/images/stock/stretch.webp',
-  'knee-pain': '/images/stock/knee-exam.webp',
-  'muscle-strains': '/images/stock/lift-woman.webp',
-  'hip-pain': '/images/stock/kettlebell.webp',
-};
-const CONDITION_FALLBACK = ['/images/stock/assess.webp', '/images/stock/rehab-gym.webp', '/images/stock/knee-device.webp', '/images/stock/kettlebell.webp'];
+import { REGION_STOCK, SERVICE_STOCK, stockFor } from '@/lib/stockImages';
+import ServicesScroll from './ServicesScroll';
 
 function Head({ eyebrow, title, intro, href, label, testId }) {
   return (
@@ -57,15 +33,15 @@ function CarouselCard({ item, img, cta, testId }) {
   );
 }
 
+// Scroll-driven presentation of the first 7 services in CMS order.
 export function FeaturedServices({ items }) {
+  const list = items.slice(0, 7).map((s, i) => ({ ...s, img: s.featuredImage?.url || stockFor(SERVICE_STOCK, s.slug, i) }));
   return (
     <section className="bg-slate-50 py-20 lg:py-28" data-testid="home-services">
       <div className="container-site">
-        <Head eyebrow="Our services" title="Treatment built around you" intro="Hands-on care and evidence-based training to help you move better and stay that way." href="/services/" label="View All Services" testId="home-all-services-link" />
-        <div className="reveal mt-12">
-          {items.length
-            ? <CardCarousel label="Services" testId="services-carousel">{items.map((s, i) => <CarouselCard key={s.slug} item={s} img={s.featuredImage?.url || STOCK[s.slug] || FALLBACK[i % FALLBACK.length]} cta="Learn More" testId={`service-card-${s.slug}`} />)}</CardCarousel>
-            : <EmptyState title="Services are being updated" text="Please check back soon or call us to learn more." />}
+        <Head eyebrow="Our services" title="Treatment built around you" intro="One-on-one physical therapy blended with strength and conditioning, so you recover, perform and stay active." href="/services/" label="View All Services" testId="home-all-services-link" />
+        <div className="mt-12">
+          {list.length ? <ServicesScroll items={list} /> : <EmptyState title="Services are being updated" text="Please check back soon or call us to learn more." />}
         </div>
       </div>
     </section>
@@ -81,7 +57,7 @@ export function ConditionsSection({ items }) {
         <Head eyebrow="What we treat" title="Conditions we help with" href="/what-we-treat/" label="View All Conditions" testId="home-all-conditions-link" />
         <div className="reveal mt-12">
           <CardCarousel label="Conditions" testId="conditions-carousel">
-            {items.map((c, i) => <CarouselCard key={c.slug} item={c} img={c.featuredImage?.url || CONDITION_STOCK[c.slug] || CONDITION_FALLBACK[i % CONDITION_FALLBACK.length]} cta="Read More" testId={`condition-card-${c.slug}`} />)}
+            {items.map((c, i) => <CarouselCard key={c.slug} item={c} img={c.featuredImage?.url || stockFor(REGION_STOCK, c.slug, i)} cta="Read More" testId={`condition-card-${c.slug}`} />)}
           </CardCarousel>
         </div>
       </div>
