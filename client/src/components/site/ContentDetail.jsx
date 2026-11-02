@@ -8,6 +8,7 @@ import { CtaBand, PageHero } from './ui';
 import { ItemIcon } from './Cards';
 import { SITE } from '@/lib/site';
 import { withSlash } from '@/lib/seo';
+import { SERVICE_STOCK, stockFor } from '@/lib/stockImages';
 
 function RelatedList({ title, items, testId }) {
   if (!items?.length) return null;
@@ -41,8 +42,10 @@ function AppointmentCard() {
 // Shared detail layout for services and conditions.
 export default function ContentDetail({ item, section, related, relatedTitle }) {
   return (
-    <article data-testid={`${section.key}-detail`}>
-      <PageHero eyebrow={section.label} title={item.title} intro={item.shortDescription} crumbs={[{ label: 'Home', href: '/' }, { label: section.label, href: section.href }, { label: item.title, href: withSlash(item.path) }]} />
+    <article className="bg-slate-50" data-testid={`${section.key}-detail`}>
+      <PageHero eyebrow={section.label} title={item.title} intro={item.shortDescription} image={item.featuredImage?.url || stockFor(SERVICE_STOCK, item.slug)} crumbs={[{ label: 'Home', href: '/' }, { label: section.label, href: section.href }, { label: item.title, href: withSlash(item.path) }]}>
+        <Link href={SITE.appointmentHref} className="btn-site mt-8" data-testid="detail-hero-cta">Request Appointment</Link>
+      </PageHero>
       <div className="container-site grid gap-12 py-16 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-20">
         <div className="min-w-0 max-w-3xl">
           {item.featuredImage ? (

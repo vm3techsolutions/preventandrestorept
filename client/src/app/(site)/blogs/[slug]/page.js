@@ -62,9 +62,9 @@ export default async function BlogDetailPage({ params }) {
     publisher: { '@type': 'Organization', name: SITE.name, logo: { '@type': 'ImageObject', url: absUrl('/images/logo-stacked.png') } },
   };
   return (
-    <article data-testid="blog-detail">
+    <article className="bg-slate-50" data-testid="blog-detail">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(ld)} />
-      <PageHero title={post.title} crumbs={[{ label: 'Home', href: '/' }, { label: 'Blogs', href: '/blogs/' }, { label: post.title, href: withSlash(post.path) }]}>
+      <PageHero title={post.title} image={post.featuredImage?.url} crumbs={[{ label: 'Home', href: '/' }, { label: 'Blogs', href: '/blogs/' }, { label: post.title, href: withSlash(post.path) }]}>
         {post.categories.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-2">
             {post.categories.map((c) => <Link key={c.slug} href={`/blogs/?category=${c.slug}`} className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-100 hover:bg-white/20">{c.name}</Link>)}
@@ -93,7 +93,7 @@ export default async function BlogDetailPage({ params }) {
         </div>
       </div>
       {post.related.length > 0 && (
-        <section className="bg-slate-50 py-16 lg:py-20" aria-labelledby="related-heading" data-testid="related-articles">
+        <section className="bg-white py-16 lg:py-20" aria-labelledby="related-heading" data-testid="related-articles">
           <div className="container-site">
             <h2 id="related-heading" className="display text-2xl text-navy sm:text-3xl">Related articles</h2>
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{post.related.map((r) => <BlogCard key={r.slug} post={r} />)}</div>

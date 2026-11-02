@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowUpRight, Clock, Dumbbell, ShieldCheck, UserRound } from 'lucide-react';
+import { Clock, Dumbbell, ShieldCheck, UserRound } from 'lucide-react';
 import { SectionHeading } from '../ui';
 
 // Audiences named in Dr. Ray's verified bio. Links are dropped if the target is not published.
@@ -24,29 +24,27 @@ const OFFER = [
   { icon: ShieldCheck, title: 'Prevention built in', text: 'Recover now and prevent future issues.' },
 ];
 
-function AudienceCard({ a, linked }) {
-  const body = (
-    <>
-      <Image src={a.image} alt="" fill sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+// Informational only: no links or hover effects.
+function AudienceCard({ a }) {
+  return (
+    <div className="reveal relative aspect-[3/4] overflow-hidden rounded-2xl bg-navy sm:aspect-[4/5]" data-testid={`who-card-${a.title.toLowerCase().replace(/\s+/g, '-')}`}>
+      <Image src={a.image} alt="" fill sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" className="object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent" aria-hidden />
       <div className="absolute inset-x-0 bottom-0 p-6">
-        <h3 className="flex items-center justify-between gap-2 font-heading text-xl font-semibold text-white">{a.title}{linked && <ArrowUpRight className="h-5 w-5 text-teal-100 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />}</h3>
+        <h3 className="font-heading text-xl font-semibold text-white">{a.title}</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-200">{a.text}</p>
       </div>
-    </>
+    </div>
   );
-  const cls = 'reveal group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-navy sm:aspect-[4/5]';
-  const testId = `who-card-${a.title.toLowerCase().replace(/\s+/g, '-')}`;
-  return linked ? <Link href={a.href} className={cls} data-testid={testId}>{body}</Link> : <div className={cls} data-testid={testId}>{body}</div>;
 }
 
-export function WhoWeTreat({ published }) {
+export function WhoWeTreat() {
   return (
     <section className="bg-white py-20 lg:py-28" data-testid="home-who">
       <div className="container-site">
-        <SectionHeading eyebrow="Who we treat" title="Care for every kind of active life" intro="From Division 1 athletes and weekend warriors to those with desk jobs and patients recovering from surgery." />
+        <SectionHeading eyebrow="Who we help" title="Care for every kind of active life" intro="From Division 1 athletes and weekend warriors to those with desk jobs and patients recovering from surgery." />
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {AUDIENCES.map((a) => <AudienceCard key={a.title} a={a} linked={published.has(a.href)} />)}
+          {AUDIENCES.map((a) => <AudienceCard key={a.title} a={a} />)}
         </div>
       </div>
     </section>

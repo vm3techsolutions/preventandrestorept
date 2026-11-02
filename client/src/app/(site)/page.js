@@ -5,7 +5,7 @@ import { ConditionsSection, FeaturedServices, LatestBlogs } from '@/components/s
 import Testimonials from '@/components/site/home/Testimonials';
 import { api } from '@/lib/api';
 import { listSafe } from '@/lib/siteData';
-import { staticMetadata, jsonLd, absUrl, withSlash } from '@/lib/seo';
+import { staticMetadata, jsonLd, absUrl } from '@/lib/seo';
 import { METRICS, SITE } from '@/lib/site';
 
 export const revalidate = 60;
@@ -36,14 +36,13 @@ export default async function HomePage() {
     listSafe('blogs', { limit: 3 }),
     reviewsSafe(),
   ]);
-  const published = new Set([...services.data, ...conditions.data].map((x) => withSlash(x.path)));
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(clinicLd)} />
       <HomeHero />
       <AboutRay />
       <Metrics items={METRICS} />
-      <WhoWeTreat published={published} />
+      <WhoWeTreat />
       <FeaturedServices items={services.data} />
       <ConditionsSection items={conditions.data} />
       <ApproachSection />
