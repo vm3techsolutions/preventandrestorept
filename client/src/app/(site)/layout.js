@@ -1,6 +1,8 @@
 import Header from '@/components/site/Header';
 import Footer from '@/components/site/Footer';
 import RevealInit from '@/components/site/RevealInit';
+import MetaPixel from '@/components/site/MetaPixel';
+import CookieConsent from '@/components/site/CookieConsent';
 import { getDetail, listSafe } from '@/lib/siteData';
 
 export const revalidate = 60;
@@ -24,6 +26,8 @@ export default async function SiteLayout({ children }) {
       <main id="main" className="flex-1">{children}</main>
       <Footer services={s} conditions={c} />
       <RevealInit />
+      <MetaPixel />
+      <CookieConsent />
     </div>
   );
 }

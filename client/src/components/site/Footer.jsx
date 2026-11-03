@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { LogIn, Mail, MapPin, Phone } from 'lucide-react';
+import { Clock, LogIn, Mail, MapPin, Phone } from 'lucide-react';
 import SocialLinks from './SocialLinks';
+import BusinessHours from './BusinessHours';
+import { CookiePreferencesButton } from './CookieConsent';
 import { LEGAL, SITE, SOCIALS, fullAddress } from '@/lib/site';
 import { withSlash } from '@/lib/seo';
 
@@ -50,6 +52,13 @@ export default function Footer({ services = [], conditions = [] }) {
             <li className="flex gap-3"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-teal-hover" aria-hidden /><a className="footer-link" href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" data-testid="footer-address">{fullAddress()}</a></li>
             <li className="flex gap-3"><Phone className="mt-0.5 h-4 w-4 shrink-0 text-teal-hover" aria-hidden /><a className="footer-link" href={SITE.phoneHref} data-testid="footer-phone">{SITE.phone}</a></li>
             <li className="flex gap-3"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-teal-hover" aria-hidden /><a className="footer-link break-all" href={`mailto:${SITE.email}`} data-testid="footer-email">{SITE.email}</a></li>
+            <li className="flex gap-3" data-testid="footer-hours">
+              <Clock className="mt-0.5 h-4 w-4 shrink-0 text-teal-hover" aria-hidden />
+              <div>
+                <p className="font-medium text-white">Business hours</p>
+                <BusinessHours className="mt-2 text-sm text-slate-300" dayCls="text-slate-400" closedCls="text-slate-500" testId="footer-hours-list" />
+              </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -61,6 +70,7 @@ export default function Footer({ services = [], conditions = [] }) {
           </div>
           <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {LEGAL.map((l) => <li key={l.href}><Link href={l.href} className="footer-link" data-testid={`footer-${l.href.replace(/\//g, '')}`}>{l.label}</Link></li>)}
+            <li><CookiePreferencesButton /></li>
             <li><Link href="/admin/login" target="_blank" rel="noopener noreferrer" className="footer-link inline-flex items-center gap-1.5" data-testid="footer-cms-login"><LogIn className="h-3.5 w-3.5" aria-hidden /> CMS Login<span className="sr-only"> (opens in a new tab)</span></Link></li>
           </ul>
         </div>

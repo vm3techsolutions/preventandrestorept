@@ -91,6 +91,12 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
   - Removed the image below the hero on service, region and blog detail pages; blog Related articles removed; blog body now sits in a white card
   - Region detail: alternating image/text condition rows using stock photos (conditionStock in lib/stockImages.js); a CMS section image takes priority
   - Testing iteration_11: all passed
+- 2026-11-03: Business hours and Meta Pixel
+  - SITE.hours in lib/site.js; BusinessHours.jsx shown on the Contact page (next to the address) and in the footer
+  - Meta Pixel (NEXT_PUBLIC_META_PIXEL_ID in client/.env.local) via MetaPixel.jsx in the (site) layout, so it runs on public pages only, not admin
+    - Loads and inits only after the visitor accepts the consent banner (CookieConsent.jsx, choice saved in localStorage, "Cookie preferences" in the footer reopens it)
+    - One PageView per pathname change; decline revokes consent and stops tracking
+  - The noscript pixel fallback was left out on purpose: it would track visitors who never gave consent
 
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
