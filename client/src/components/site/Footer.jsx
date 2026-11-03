@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { Clock, LogIn, Mail, MapPin, Phone } from 'lucide-react';
 import SocialLinks from './SocialLinks';
 import BusinessHours from './BusinessHours';
-import { CookiePreferencesButton } from './CookieConsent';
 import { LEGAL, SITE, SOCIALS, fullAddress } from '@/lib/site';
 import { withSlash } from '@/lib/seo';
 
@@ -70,7 +69,6 @@ export default function Footer({ services = [], conditions = [] }) {
           </div>
           <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {LEGAL.map((l) => <li key={l.href}><Link href={l.href} className="footer-link" data-testid={`footer-${l.href.replace(/\//g, '')}`}>{l.label}</Link></li>)}
-            <li><CookiePreferencesButton /></li>
             <li><Link href="/admin/login" target="_blank" rel="noopener noreferrer" className="footer-link inline-flex items-center gap-1.5" data-testid="footer-cms-login"><LogIn className="h-3.5 w-3.5" aria-hidden /> CMS Login<span className="sr-only"> (opens in a new tab)</span></Link></li>
           </ul>
         </div>

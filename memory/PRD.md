@@ -98,6 +98,7 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
     - One PageView per pathname change; decline revokes consent and stops tracking
   - The noscript pixel fallback was left out on purpose: it would track visitors who never gave consent
 - 2026-11-03: The pixel now starts on every visit (opt-out). Only Decline sends consent revoke, set before init, and stops PageViews. Accept and the banner work as before. The banner's "With your permission" wording is unchanged and should be reviewed by the client.
+- 2026-11-03: Removed the cookie/privacy popup completely (CookieConsent.jsx, lib/consent.js and the footer "Cookie preferences" link deleted). MetaPixel.jsx now inits on every load with no consent check, one PageView per pathname change.
 
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
