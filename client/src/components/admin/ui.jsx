@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader2, Inbox, AlertTriangle, X, Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -99,6 +99,12 @@ export function Toggle({ checked, onChange, label, testId }) {
 }
 
 export function Modal({ open, onClose, title, children, testId, wide }) {
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose?.(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-navy/40 p-4 backdrop-blur-sm" onMouseDown={onClose}>

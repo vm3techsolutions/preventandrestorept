@@ -99,6 +99,24 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
   - The noscript pixel fallback was left out on purpose: it would track visitors who never gave consent
 - 2026-11-03: The pixel now starts on every visit (opt-out). Only Decline sends consent revoke, set before init, and stops PageViews. Accept and the banner work as before. The banner's "With your permission" wording is unchanged and should be reviewed by the client.
 - 2026-11-03: Removed the cookie/privacy popup completely (CookieConsent.jsx, lib/consent.js and the footer "Cookie preferences" link deleted). MetaPixel.jsx now inits on every load with no consent check, one PageView per pathname change.
+- 2026-11-03: Treatment PDF and lead capture (What We Treat)
+  - DB migration 20261103120000_treatment_pdf_leads:
+    - treatments gets pdf_key, pdf_storage, pdf_file_name, pdf_size, pdf_label and pdf_uploaded_at
+    - new pdf_leads table, linked to treatments with SET NULL on delete
+  - Storage: storage.js putPrivate/readPrivate/deletePrivate
+    - S3 when the AWS_* keys are set (private objects); otherwise server/private_uploads, which is never served statically
+    - The old file is deleted when a PDF is replaced or removed
+  - Admin API (requireAuth):
+    - POST/GET/DELETE /api/admin/conditions/:id/pdf (PDF only: mimetype, .pdf extension and %PDF- magic bytes; MAX_UPLOAD_MB)
+    - GET /api/admin/pdf-leads?search=&page=
+  - Public API:
+    - POST /api/public/conditions/:slug/pdf-leads (zod validation, honeypot, 10 per 15 min per IP) returns a 10-minute JWT download URL
+    - GET /api/public/treatment-pdf/:token streams the file and sets downloadedAt
+    - The public detail shows only pdf {label, fileName}, never the key
+  - Admin UI: PdfField in the condition editor, plus the PDF Leads page in the sidebar (search + detail modal). The shared admin Modal now closes on Escape
+  - Public UI: PdfDownload card to the right of the intro, with an accessible lead modal (portal). Location is optional and empty (user choice)
+  - The preview shim (/app/backend/server.py) passes AWS_* keys from /app/backend/.env to Express
+  - Testing iteration_12: 100% pass. Test leads and PDFs cleaned up; no treatment currently has a PDF
 
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS

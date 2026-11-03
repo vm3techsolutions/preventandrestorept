@@ -1,0 +1,35 @@
+{
+  "summary": "Tested the Treatment PDF upload, download and lead-capture feature end to end, on the API (pytest, 12/12 passing) and in the UI (Playwright at 1920 and 390 px). Every requested check passed. Admin: the PDF section shows the file name, and Open streams the file inline. Choosing a non-PDF shows the client toast 'Please choose a PDF file'. Replacing the file updates the name and deletes the old file from disk. Saving the label keeps all other fields (title, short description, 4 sections, SEO, 2 related services, PUBLISHED status). /new shows pdf-save-first. Public site: the download card sits to the right of the intro at 1920px and below it at 390px, with no horizontal overflow. Knee Pain has no card. The modal is portalled into document.body and covers the sticky header. Submitting it empty shows all 3 required-field errors. Treatment is read-only 'Neck Pain' and Location is empty and editable. Escape, the X button and Close all close the modal. A valid submit shows 'Sending…', then the success message, then a .pdf download (TEST_Neck-Guide-v3.pdf). Three rapid clicks created only 1 lead. A mocked 500 shows the error, starts no download, keeps the entered data and re-enables the button for a retry. Admin PDF Leads: the table shows treatment, location, file name and 'Downloaded'. Search works by email and location, and the empty state shows when nothing matches. Clicking a row opens the detail modal. The page redirects to login when logged out. Remove + confirm hides the card on the public page right away, and lead POSTs then return 404. The PDF was re-uploaded afterwards. API security: no-auth upload gives 401, a fake .pdf gives 415, a PNG gives 415, an unknown condition gives 404, and an invalid token gives 410. The public detail response has no pdfKey, storage or private path. RateLimit headers report limit=10 over a 900s window; the limit was not exhausted.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/public/conditions/:slug/pdf-leads", "issue": "Validation errors return 422, not 400. This matches the app's existing convention, so it is informational only."},
+      {"endpoint": "GET /api/public/treatment-pdf/:token", "issue": "The token can be reused for its 10-minute lifetime, and only the first download is recorded in downloadedAt. Acceptable, but noted."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Admin shared Modal (ui.jsx), used by lead-detail-modal", "issue": "Escape does not close the modal. Only the X button and a backdrop click do. The public lead modal does support Escape.", "selector": "[data-testid='lead-detail-modal']", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_treatment_pdf.py", "/app/test_reports/pytest/pytest_pdf.xml"],
+  "action_items": [
+    "Optional: add Escape-to-close to the shared admin Modal in client/src/components/admin/ui.jsx.",
+    "Optional: in adminUpload, if prisma.treatment.update fails after putPrivate succeeds, the new file is left orphaned. Wrap the update in a try/catch and delete the new key on failure."
+  ],
+  "critical_code_review_comments": [
+    "In adminUpload, putPrivate runs before the DB update. If the update fails, an orphaned file is left in private_uploads.",
+    "The public LeadModal backdrop closes on mousedown even while a request is loading. The download still starts, but the user never sees the success message. Consider ignoring backdrop clicks while loading.",
+    "trust proxy is 1. Behind the k8s ingress (and possibly a CDN), confirm that req.ip is the real client IP. If it is not, the 10/15min lead limit is shared by all visitors. RateLimit-Remaining values looked inconsistent across runs (some POSTs seemed not to be counted), which suggests the IP key differs between hops or pods.",
+    "Good: magic-byte sniffing, path traversal guard in safePrivatePath, honeypot, pdfKey stripped from admin and public payloads, and a token bound to pdfKey so it is invalidated on replace."
+  ],
+  "updated_files": ["/app/backend/tests/test_treatment_pdf.py"],
+  "success_rate": {"backend": "100%", "frontend": "100% of requested checks (1 low-priority Escape issue in the admin modal)"},
+  "test_credentials": "test_qa_admin@example.com / TestQaAdmin2026x (temporary, id 53). Real admins were not touched.",
+  "seed_data_creation": "Test leads created: TEST_Lead API (test_lead_api@example.com), TEST_Lead UI (test_lead_ui@example.com, location Marietta) and TEST_Lead UI2 (test_lead_ui2@example.com). TEST_Lead One was pre-existing, from the main agent. Clean up with prisma.pdfLead.deleteMany({where:{email:{startsWith:'test_'}}}). Final Neck Pain (id 26) state: PDF present, file TEST_Neck-Guide-v3.pdf (a tiny 125-byte placeholder PDF), label restored to 'Neck Pain Home Exercise Guide'. Upload a real guide before going live.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run pytest on /app/backend/tests/test_treatment_pdf.py with REACT_APP_BACKEND_URL set. Each run uses 3 lead POSTs (rate limit 10/15min/IP). The admin Open link href is relative (/api/admin/conditions/26/pdf); a headless new tab never fires load for a PDF, so check it with page.request instead. Public page revalidation looked immediate (on-demand), not 60s."
+}
