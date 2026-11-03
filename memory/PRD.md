@@ -97,6 +97,7 @@ Requirements: setup-token admin creation (expiring, disabled after the first adm
     - Loads and inits only after the visitor accepts the consent banner (CookieConsent.jsx, choice saved in localStorage, "Cookie preferences" in the footer reopens it)
     - One PageView per pathname change; decline revokes consent and stops tracking
   - The noscript pixel fallback was left out on purpose: it would track visitors who never gave consent
+- 2026-11-03: The pixel now starts on every visit (opt-out). Only Decline sends consent revoke, set before init, and stops PageViews. Accept and the banner work as before. The banner's "With your permission" wording is unchanged and should be reviewed by the client.
 
 ## Backlog
 - P1: real clinic video and photos, verified metrics, Facebook/YouTube/Yelp URLs, approved Terms text, privacy policy "Country: Wisconsin" review, genuine reviews entered in the CMS
