@@ -21,7 +21,7 @@ export function emptyForm(type) {
   if (type.kind === 'blog') {
     return { ...base, excerpt: '', introduction: '', authorId: null, publishedAt: '', featuredImageCaption: '', targetKeyword: '', categoryIds: [], tagIds: [], relatedBlogIds: [] };
   }
-  if (type.kind === 'service') return { ...base, shortDescription: '', iconName: '', faqs: [], ctaHeading: '', ctaLabel: '', ctaUrl: '', relatedIds: [], targetKeyword: '', needsReview: false, ...(type.sections ? { sections: [] } : {}) };
+  if (type.kind === 'service') return { ...base, shortDescription: '', iconName: '', faqs: [], ctaHeading: '', ctaLabel: '', ctaUrl: '', relatedIds: [], targetKeyword: '', needsReview: false, ...(type.sections ? { sections: [], pdfLabel: '' } : {}) };
   if (type.kind === 'case') {
     return {
       ...base, summary: '', primaryConcern: '', patientGoal: '', careApproach: '', outcomeSummary: '', challenge: '', assessment: '', plan: '', progress: '', outcome: '', takeaways: '',

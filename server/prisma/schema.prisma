@@ -251,11 +251,38 @@ model Treatment {
   sections         Json               @default("[]")
   targetKeyword    String?            @map("target_keyword")
   needsReview      Boolean            @default(false) @map("needs_review")
+  pdfKey           String?            @map("pdf_key")
+  pdfStorage       String?            @map("pdf_storage")
+  pdfFileName      String?            @map("pdf_file_name")
+  pdfSize          Int?               @map("pdf_size")
+  pdfLabel         String?            @map("pdf_label")
+  pdfUploadedAt    DateTime?          @map("pdf_uploaded_at")
+  pdfLeads         PdfLead[]
 
   @@index([status])
   @@index([displayOrder])
   @@index([deletedAt])
   @@map("treatments")
+}
+
+// Visitors who requested a treatment guide PDF.
+model PdfLead {
+  id            Int        @id @default(autoincrement())
+  fullName      String     @map("full_name")
+  email         String
+  phone         String
+  location      String?
+  treatmentId   Int?       @map("treatment_id")
+  treatment     Treatment? @relation(fields: [treatmentId], references: [id], onDelete: SetNull)
+  treatmentName String     @map("treatment_name")
+  pdfKey        String?    @map("pdf_key")
+  pdfFileName   String?    @map("pdf_file_name")
+  downloadedAt  DateTime?  @map("downloaded_at")
+  createdAt     DateTime   @default(now()) @map("created_at")
+
+  @@index([createdAt])
+  @@index([treatmentId])
+  @@map("pdf_leads")
 }
 
 // Case studies (non-identifying, approved content only).

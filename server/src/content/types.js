@@ -180,7 +180,7 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
       ctaUrl: b.ctaUrl,
       targetKeyword: b.targetKeyword,
       needsReview: b.needsReview,
-      ...(model === 'treatment' ? { sections: cleanSections(b.sections) } : {}),
+      ...(model === 'treatment' ? { sections: cleanSections(b.sections), pdfLabel: b.pdfLabel } : {}),
       ...seoData(b),
     }),
     async afterSave(tx, id, b) {
@@ -190,8 +190,8 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
       if (b.relatedIds.length) await tx.serviceTreatment.createMany({ data: unique(b.relatedIds).map((x) => ({ [self]: id, [other]: x })) });
     },
     serializeAdmin(r) {
-      const { [relation]: rel, ...rest } = r;
-      return { ...rest, path: cfg.path(r.slug), content: blocksOut(r.content), related: (rel || []).map((m) => m[relKey]), relatedIds: (rel || []).map((m) => m[relKey].id) };
+      const { [relation]: rel, pdfKey, pdfStorage, ...rest } = r;
+      return { ...rest, ...(model === 'treatment' ? { hasPdf: !!pdfKey } : {}), path: cfg.path(r.slug), content: blocksOut(r.content), related: (rel || []).map((m) => m[relKey]), relatedIds: (rel || []).map((m) => m[relKey].id) };
     },
     publishErrors: (r) => publishErrors(r, r.content),
     publicSummary: (r) => ({
@@ -206,7 +206,7 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
         cta: r.ctaLabel && r.ctaUrl ? { heading: r.ctaHeading, label: r.ctaLabel, url: r.ctaUrl } : null,
         [relatedName]: (r[relation] || []).map((m) => m[relKey]).filter(isLive).map((x) => ({ title: x.title, slug: x.slug, path: `${relPrefix}/${x.slug}` })),
         seo: await buildSeo({ ...r, fallbackDescription: r.shortDescription, path: cfg.path(r.slug), image: r.featuredImageUrl, keyword: r.targetKeyword }),
-        ...(model === 'treatment' ? { sections: await publicSections(r.sections) } : {}),
+        ...(model === 'treatment' ? { sections: await publicSections(r.sections), pdf: r.pdfKey ? { label: r.pdfLabel || r.pdfFileName, fileName: r.pdfFileName } : null } : {}),
       };
     },
   };

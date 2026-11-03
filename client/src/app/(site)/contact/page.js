@@ -1,4 +1,5 @@
-import { Mail, MapPin, Navigation, Phone } from 'lucide-react';
+import { Clock, Mail, MapPin, Navigation, Phone } from 'lucide-react';
+import BusinessHours from '@/components/site/BusinessHours';
 import GhlForm from '@/components/site/GhlForm';
 import ContactOptions from '@/components/site/ContactOptions';
 import { PageHero } from '@/components/site/ui';
@@ -31,6 +32,9 @@ export default function ContactPage() {
           <InfoItem icon={Mail} title="Email" testId="contact-email"><a href={`mailto:${SITE.email}`} className="break-all font-medium text-teal hover:text-teal-hover">{SITE.email}</a></InfoItem>
           <InfoItem icon={MapPin} title="Visit the clinic" testId="contact-address">
             <address className="not-italic">{SITE.address.street}<br />{SITE.address.city}, {SITE.address.region} {SITE.address.postal}</address>
+          </InfoItem>
+          <InfoItem icon={Clock} title="Business hours" testId="contact-hours">
+            <BusinessHours className="mt-1 max-w-xs text-[15px]" dayCls="font-medium text-navy" closedCls="text-slate-400" testId="contact-hours-list" />
           </InfoItem>
           <InfoItem icon={Navigation} title="Finding us" testId="contact-directions"><p>{SITE.directions}</p></InfoItem>
           <div className="overflow-hidden rounded-2xl border border-slate-200">

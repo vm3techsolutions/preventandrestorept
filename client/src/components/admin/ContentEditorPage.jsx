@@ -14,6 +14,7 @@ import BlockEditor from './editor/BlockEditor';
 import ImageField from './editor/ImageField';
 import FaqEditor from './editor/FaqEditor';
 import SectionsEditor from './editor/SectionsEditor';
+import PdfField from './editor/PdfField';
 import CaseStudyFields from './editor/CaseStudyFields';
 import { Toggle } from './ui';
 import EditorSidebar from './EditorSidebar';
@@ -181,6 +182,9 @@ export default function ContentEditorPage({ typeKey, id }) {
             <Section title={type.sections ? 'Introduction content (optional)' : 'Content'} testId="editor-content">
               <BlockEditor blocks={form.blocks} onChange={(blocks) => set({ blocks })} folder={type.folder} />
             </Section>
+          )}
+          {type.sections && (
+            <Section title="Treatment PDF" testId="editor-pdf"><PdfField key={loaded ? current.id : 'new'} item={loaded ? current : null} label={form.pdfLabel} onLabel={(pdfLabel) => set({ pdfLabel })} /></Section>
           )}
           {type.sections && (
             <Section title="Condition sections" testId="editor-sections"><SectionsEditor sections={form.sections} onChange={(sections) => set({ sections })} /></Section>

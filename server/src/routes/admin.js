@@ -7,12 +7,18 @@ const { createTaxonomyController } = require('../controllers/taxonomyController'
 const media = require('../controllers/mediaController');
 const admin = require('../controllers/adminController');
 const adminUsers = require('../controllers/adminUsersController');
+const treatmentPdf = require('../controllers/treatmentPdfController');
 const { taxonomySchema, authorSchema } = require('../validators/schemas');
 
 const router = express.Router();
 router.use(requireAuth);
 
 router.get('/dashboard', h(admin.dashboard));
+
+router.post('/conditions/:id/pdf', treatmentPdf.upload.single('file'), h(treatmentPdf.adminUpload));
+router.get('/conditions/:id/pdf', h(treatmentPdf.adminOpen));
+router.delete('/conditions/:id/pdf', h(treatmentPdf.adminRemove));
+router.get('/pdf-leads', h(treatmentPdf.adminLeads));
 
 for (const cfg of Object.values(TYPES)) {
   const c = createContentController(cfg);

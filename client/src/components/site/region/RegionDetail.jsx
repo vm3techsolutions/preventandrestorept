@@ -4,6 +4,7 @@ import BlockRenderer from '@/components/content/BlockRenderer';
 import FaqList from '../FaqList';
 import { CtaBand, PageHero } from '../ui';
 import ConditionSelector from './ConditionSelector';
+import PdfDownload from './PdfDownload';
 import { withSlash } from '@/lib/seo';
 import { REGION_STOCK, conditionStock, stockFor } from '@/lib/stockImages';
 
@@ -65,7 +66,7 @@ export default function RegionDetail({ item, index = 0 }) {
       <PageHero eyebrow="What we treat" title={item.title} intro={item.shortDescription} crumbs={crumbs} image={img} imageAlt="">
         <Link href="/contact/#request-appointment" className="btn-site mt-8" data-testid="region-hero-cta">Request Appointment</Link>
       </PageHero>
-      <section className="container-site py-16 lg:py-20" data-testid="condition-intro">
+      <section className={`container-site py-16 lg:py-20 ${item.pdf ? 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-16' : ''}`} data-testid="condition-intro">
         <div className="max-w-3xl">
           <p className="eyebrow text-teal">Understanding the condition</p>
           <h2 className="display mt-2 text-2xl text-navy sm:text-3xl">Understanding {item.title.toLowerCase()}</h2>
@@ -73,6 +74,7 @@ export default function RegionDetail({ item, index = 0 }) {
           {item.content?.length > 0 && <div className="mt-6"><BlockRenderer blocks={item.content} /></div>}
           {sections.length > 0 && <p className="mt-5 text-slate-600">This page covers: {sections.map((s) => s.heading).join(', ')}.</p>}
         </div>
+        {item.pdf && <PdfDownload slug={item.slug} treatmentName={item.title} pdf={item.pdf} />}
       </section>
       {sections.length > 0 && <ConditionSelector sections={sections} />}
       {sections.map((s, i) => <ConditionSection key={s.anchor} s={s} i={i} image={conditionStock(item.slug, i, index)} />)}

@@ -27,7 +27,16 @@ def express_up():
 async def boot_express():
     if not express_up():
         log = open("/var/log/supervisor/express.log", "a")
-        subprocess.Popen(["bash", "/app/server/scripts/preview-start.sh"], stdout=log, stderr=subprocess.STDOUT, start_new_session=True, env=os.environ.copy())
+        env = os.environ.copy()
+        # Storage keys saved through the platform secrets card live in /app/backend/.env; pass them to Express.
+        try:
+            for line in open("/app/backend/.env"):
+                k, _, v = line.strip().partition("=")
+                if k.startswith("AWS_") and v:
+                    env[k] = v.strip().strip('"')
+        except FileNotFoundError:
+            pass
+        subprocess.Popen(["bash", "/app/server/scripts/preview-start.sh"], stdout=log, stderr=subprocess.STDOUT, start_new_session=True, env=env)
 
 
 @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"])

@@ -93,6 +93,16 @@ export const api = {
     resetPassword: (id, newPassword) => request(`/admin/admins/${id}/password`, { method: 'PUT', body: { newPassword } }),
   },
   activity: { list: (query) => request('/admin/activity', { query }) },
+  conditionPdf: {
+    upload: (id, file) => {
+      const form = new FormData();
+      form.append('file', file);
+      return request(`/admin/conditions/${id}/pdf`, { method: 'POST', form });
+    },
+    remove: (id) => request(`/admin/conditions/${id}/pdf`, { method: 'DELETE' }),
+    openUrl: (id) => `${BASE}/admin/conditions/${id}/pdf`,
+  },
+  pdfLeads: { list: (query) => request('/admin/pdf-leads', { query }) },
   media: {
     status: () => request('/admin/media/status'),
     list: (query) => request('/admin/media', { query }),
@@ -120,7 +130,10 @@ export const api = {
     sitemap: () => pub('/public/sitemap'),
     settings: () => pub('/public/settings'),
     reviews: (query) => pub('/public/reviews', query),
+    submitPdfLead: (slug, body) => request(`/public/conditions/${encodeURIComponent(slug)}/pdf-leads`, { method: 'POST', body }),
   },
 };
+
+export const apiUrl = (path) => `${BASE}${path}`;
 
 export const mediaUrl = (u) => (!u ? '' : /^https?:\/\//i.test(u) ? u : `${API_ORIGIN}${u}`);

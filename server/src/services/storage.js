@@ -1,7 +1,7 @@
 const fs = require('fs/promises');
 const path = require('path');
 const crypto = require('crypto');
-const { S3Client, PutObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3');
 const env = require('../config/env');
 
 const MIME_EXT = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif', 'image/avif': 'avif' };
@@ -48,4 +48,43 @@ async function deleteObject({ key, storage }) {
   }
 }
 
-module.exports = { MIME_EXT, FOLDERS, sniffMime, putObject, deleteObject, storageMode: () => (s3 ? 's3' : 'local') };
+// Private files (treatment PDFs): never served statically; streamed by the API after checks.
+const privateDir = path.join(env.uploadDir, '..', 'private_uploads');
+const safePrivatePath = (key) => {
+  const p = path.resolve(privateDir, key);
+  if (!p.startsWith(path.resolve(privateDir) + path.sep)) throw new Error('Invalid storage key');
+  return p;
+};
+
+async function putPrivate({ buffer, mimeType, ext, folder }) {
+  const now = new Date();
+  const key = `${folder}/${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, '0')}/${crypto.randomUUID()}.${ext}`;
+  if (s3) {
+    await s3.send(new PutObjectCommand({ Bucket: env.aws.bucket, Key: key, Body: buffer, ContentType: mimeType, CacheControl: 'private, no-store' }));
+  } else {
+    const dest = safePrivatePath(key);
+    await fs.mkdir(path.dirname(dest), { recursive: true });
+    await fs.writeFile(dest, buffer);
+  }
+  return { key, storage: s3 ? 's3' : 'local' };
+}
+
+async function readPrivate({ key, storage }) {
+  if (storage === 's3') {
+    if (!s3) throw new Error('S3 is not configured; cannot read S3 object');
+    const out = await s3.send(new GetObjectCommand({ Bucket: env.aws.bucket, Key: key }));
+    return out.Body;
+  }
+  return require('fs').createReadStream(safePrivatePath(key));
+}
+
+async function deletePrivate({ key, storage }) {
+  if (storage === 's3') {
+    if (!s3) throw new Error('S3 is not configured; cannot delete S3 object');
+    await s3.send(new DeleteObjectCommand({ Bucket: env.aws.bucket, Key: key }));
+  } else {
+    await fs.rm(safePrivatePath(key), { force: true });
+  }
+}
+
+module.exports = { MIME_EXT, FOLDERS, sniffMime, putObject, deleteObject, putPrivate, readPrivate, deletePrivate, storageMode: () => (s3 ? 's3' : 'local') };
