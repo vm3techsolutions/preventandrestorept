@@ -36,8 +36,8 @@ export const SOCIALS = [
 export const METRICS = [
   { value: 60, suffix: ' min', label: 'One-on-one sessions with a Doctor of Physical Therapy' },
   { value: 10, suffix: '+', label: 'Years of clinical experience' },
-  { value: 1000, suffix: '+', label: 'Patients helped' },
-  { value: 100, suffix: '%', label: 'Personalised treatment plans' },
+  { value: 100, suffix: '+', label: '5-Star Reviews' },
+  { value: 100, suffix: '%', label: 'Personalized treatment plans' },
 ];
 
 export const NAV = [

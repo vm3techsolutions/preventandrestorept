@@ -57,7 +57,7 @@ export default function Footer({ services = [], conditions = [] }) {
         <div className="container-site flex flex-col gap-4 py-6 text-sm text-slate-400 md:flex-row md:items-center md:justify-between">
           <div className="space-y-1">
             <p data-testid="footer-copyright">© {new Date().getFullYear()} {SITE.name}. All rights reserved.</p>
-            <p className="text-xs text-slate-500" data-testid="footer-credit">Designed and developed by VM3 Tech Solutions LLP</p>
+            <p className="text-xs text-slate-500" data-testid="footer-credit"><Link href="https://vm3techsolution.com/" target="_blank" rel="noopener noreferrer"> Designed & Developed by VM3 Tech Solutions LLP<span className="sr-only"> (opens in a new tab)</span></Link></p>
           </div>
           <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
             {LEGAL.map((l) => <li key={l.href}><Link href={l.href} className="footer-link" data-testid={`footer-${l.href.replace(/\//g, '')}`}>{l.label}</Link></li>)}

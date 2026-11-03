@@ -46,9 +46,9 @@ const WHY = [
 ];
 
 const TESTING = [
-  { icon: ClipboardList, title: 'Strength and movement assessment', text: 'Using reliable and objective measurement, we run a battery of tests to analyse how well you push, pull, hinge, rotate and brace, plus your balance, stability and control.' },
+  { icon: ClipboardList, title: 'Strength and movement assessment', text: 'Using reliable and objective measurement, we run a battery of tests to analyze how well you push, pull, hinge, rotate and brace, plus your balance, stability and control.' },
   { icon: Gauge, title: 'Performance testing', text: 'Applying force plate technology and hand-held dynamometry, we examine how your body produces force and accepts load, including upper and lower body power, tendon stiffness and elasticity, neuromuscular fatigue and dynamic strength index.' },
-  { icon: FileBarChart, title: 'Reports and interventions', text: 'You take away a customised report showing where you are strong, where you move well and what could be improved. When it is time to test again, we compare results and track your progress over time.' },
+  { icon: FileBarChart, title: 'Reports and interventions', text: 'You take away a customized report showing where you are strong, where you move well and what could be improved. When it is time to test again, we compare results and track your progress over time.' },
 ];
 
 function MemberPhoto({ m }) {

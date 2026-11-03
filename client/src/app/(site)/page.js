@@ -5,6 +5,7 @@ import { ConditionsSection, FeaturedServices, LatestBlogs } from '@/components/s
 import { listSafe } from '@/lib/siteData';
 import { staticMetadata, jsonLd, absUrl } from '@/lib/seo';
 import { METRICS, SITE } from '@/lib/site';
+import GoogleReviews from '@/components/site/home/GoogleReviews';
 
 export const revalidate = 60;
 
@@ -43,6 +44,7 @@ export default async function HomePage() {
       <ApproachSection />
       <WhatWeOffer />
       <LatestBlogs items={blogs.data} />
+      <GoogleReviews/>
       <FullCta />
     </>
   );

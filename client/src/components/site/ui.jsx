@@ -68,7 +68,7 @@ export function PageHero({ eyebrow, title, intro, crumbs, children, image, image
   );
 }
 
-export function CtaBand({ heading = 'Want to get relief faster?', text = 'Choose which option works best for you.', label = 'Request Appointment', url = SITE.appointmentHref }) {
+export function CtaBand({ heading = 'Want to get relief faster?', text = 'Choose which option works best for you.', label = 'Book an Appointment', url = SITE.appointmentHref }) {
   return (
     <section className="bg-white py-20" data-testid="cta-band">
       <div className="container-site">

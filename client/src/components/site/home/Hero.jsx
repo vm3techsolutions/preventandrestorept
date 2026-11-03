@@ -17,13 +17,13 @@ export function HomeHero() {
       <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/75 to-navy/30" aria-hidden />
       <div className="container-site relative py-24">
         <div className="max-w-2xl animate-rise">
-          <p className="eyebrow text-teal-100">Physical therapy · Marietta, GA</p>
+          <p className="eyebrow text-teal-100">East Cobb · Marietta, GA</p>
           <h1 className="display mt-5 text-4xl text-white sm:text-5xl lg:text-6xl">Feel strong <span className="text-teal-hover">again.</span></h1>
           <p className="mt-7 max-w-xl text-base text-slate-200 md:text-lg">
-            One-on-one, 60-minute sessions with a Doctor of Physical Therapy. Relieve pain, rebuild strength, and protect your future health.
+            One-on-one, 60-minute physical therapy with a Doctor of Physical Therapy in East Cobb, Marietta. Relieve pain, rebuild strength and stay active. Book a free discovery call.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href={SITE.appointmentHref} className="btn-site px-7 py-4" data-testid="hero-appointment-btn">Request Appointment <ArrowRight className="h-4 w-4" /></Link>
+            <Link href={SITE.appointmentHref} className="btn-site px-7 py-4" data-testid="hero-appointment-btn">Book an Appointment <ArrowRight className="h-4 w-4" /></Link>
             <Link href="/services/" className="btn-site-ghost-light px-7 py-4" data-testid="hero-services-btn">Explore Services</Link>
           </div>
           <a href={SITE.phoneHref} className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-slate-200 hover:text-white" data-testid="hero-phone-link"><Phone className="h-4 w-4" aria-hidden /> Speak with a PT: {SITE.phone}</a>
@@ -73,7 +73,7 @@ export function FullCta() {
           <p className="mt-5 max-w-xl text-base text-slate-200 md:text-lg">Speak with a PT, check availability and pricing, or book a free discovery call to discuss your needs.</p>
         </div>
         <div className="reveal flex flex-wrap gap-3 lg:justify-end">
-          <Link href={SITE.appointmentHref} className="btn-site-light px-7 py-4" data-testid="full-cta-appointment">Request Appointment <ArrowRight className="h-4 w-4" /></Link>
+          <Link href={SITE.appointmentHref} className="btn-site-light px-7 py-4" data-testid="full-cta-appointment">Book an Appointment <ArrowRight className="h-4 w-4" /></Link>
           <a href={SITE.phoneHref} className="btn-site-ghost-light px-7 py-4" data-testid="full-cta-phone"><Phone className="h-4 w-4" /> {SITE.phone}</a>
         </div>
       </div>
