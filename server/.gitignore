@@ -3,3 +3,4 @@ node_modules/
 .pgdata/
 uploads/*
 !uploads/legacy/
+private_uploads/

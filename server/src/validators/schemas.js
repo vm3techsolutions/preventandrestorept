@@ -80,7 +80,7 @@ const section = z.object({
   ctaLabel: optStr(120),
   ctaUrl: urlOrPath,
 });
-const conditionSchema = z.object({ ...serviceLike, sections: z.array(section).max(60).default([]) });
+const conditionSchema = z.object({ ...serviceLike, sections: z.array(section).max(60).default([]), pdfLabel: optStr(200) });
 
 const longText = optStr(20000);
 const caseStudySchema = z.object({
