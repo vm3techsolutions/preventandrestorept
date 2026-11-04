@@ -6,6 +6,7 @@ import { listSafe } from '@/lib/siteData';
 import { staticMetadata, jsonLd, absUrl } from '@/lib/seo';
 import { METRICS, SITE } from '@/lib/site';
 import GoogleReviews from '@/components/site/home/GoogleReviews';
+import WhyPreventRestore from '@/components/site/home/WhyPreventAndRestore';
 
 export const revalidate = 60;
 
@@ -39,6 +40,7 @@ export default async function HomePage() {
       <AboutRay />
       <Metrics items={METRICS} />
       <WhoWeTreat />
+      <WhyPreventRestore/>
       <FeaturedServices items={services.data} />
       <ConditionsSection items={conditions.data} />
       <ApproachSection />
