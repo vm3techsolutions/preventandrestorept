@@ -26,6 +26,7 @@ const TEAM = [
   {
     name: 'Dr. Reid Dobson',
     credentials: 'PT, DPT, OCS',
+     photo: '/images/Reid.jpg',
     bio: [
       'Dr. Reid Dobson, PT, DPT, OCS is an outpatient orthopedic physical therapist who thrives on the ‘investigation’ stage of patient care. He approaches every initial evaluation as a unique puzzle, analyzing complex movement breakdowns to build a precise path toward recovery.',
       'What truly sets Dr. Reid apart is his designation as an Orthopedic Certified Specialist (OCS), an elite board certification held by fewer than 5% of practicing physical therapists in the country. This advanced training grants him superior diagnostic capabilities and evidence-based insights to solve even the most persistent musculoskeletal issues.',

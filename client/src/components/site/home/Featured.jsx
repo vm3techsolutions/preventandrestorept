@@ -35,7 +35,7 @@ function CarouselCard({ item, img, cta, testId }) {
 
 // Scroll-driven presentation of the first 7 services in CMS order.
 export function FeaturedServices({ items }) {
-  const list = items.slice(0, 7).map((s, i) => ({ ...s, img: s.featuredImage?.url || stockFor(SERVICE_STOCK, s.slug, i) }));
+  const list = items.map((s, i) => ({ ...s, img: s.featuredImage?.url || stockFor(SERVICE_STOCK, s.slug, i) }));
   return (
     <section className="bg-slate-50 py-20 lg:py-28" data-testid="home-services">
       <div className="container-site">
