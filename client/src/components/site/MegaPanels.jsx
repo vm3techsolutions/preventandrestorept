@@ -10,7 +10,7 @@ const itemCls = 'group flex items-center justify-between gap-4 border-b border-s
 function ViewAll({ href, label, close, testId }) {
   return (
     <div className="flex justify-center border-t border-slate-200 bg-white px-8 py-4">
-      <Link href={href} onClick={close} className="inline-flex items-center gap-6 bg-teal px-6 py-3.5 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-teal-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal" data-testid={`${testId}-view-all`}>
+      <Link href={href} onClick={close} className="btn-site" data-testid={`${testId}-view-all`}>
         {label} <ArrowRight className="h-4 w-4" aria-hidden />
       </Link>
     </div>

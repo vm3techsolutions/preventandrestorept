@@ -54,7 +54,11 @@ export default function Header({ services = [], conditions = [] }) {
           })}
         </nav>
         <div className="hidden shrink-0 xl:flex">
-          <Link href={SITE.appointmentHref} className="inline-flex items-center gap-4 bg-teal px-5 py-3.5 text-xs font-semibold uppercase tracking-wide text-white transition-colors hover:bg-teal-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal" data-testid="header-appointment-btn">Book an Appointment <ArrowRight className="h-4 w-4" aria-hidden /></Link>
+        <Link
+  href={SITE.appointmentHref}
+  className="btn-site"
+  data-testid="header-appointment-btn"
+>Book an Appointment <ArrowRight className="h-4 w-4" aria-hidden /></Link>
         </div>
         <button type="button" className="rounded-lg p-2 text-navy hover:bg-slate-100 xl:hidden" aria-expanded={open} aria-controls="mobile-nav" aria-label={open ? 'Close menu' : 'Open menu'} onClick={() => dispatch(toggleMobileNav())} data-testid="mobile-nav-toggle">
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
