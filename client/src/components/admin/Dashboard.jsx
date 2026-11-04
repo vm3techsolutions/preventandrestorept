@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
-import { FileText, CheckCircle2, PencilLine, Stethoscope, HeartPulse, Files, ArrowRightLeft } from 'lucide-react';
+import { FileText, CheckCircle2, PencilLine, Stethoscope, HeartPulse, Files, ArrowRightLeft, FileDown } from 'lucide-react';
 import { fetchDashboard } from '@/store/slices/dashboardSlice';
 import { ErrorState, LoadingState, PageHeader, StatusBadge } from './ui';
 import { formatDate } from '@/lib/utils';
@@ -46,7 +46,14 @@ export default function Dashboard() {
             <StatCard label="Draft blogs" value={stats.blogs.draft} icon={PencilLine} href="/admin/blogs" testId="stat-draft-blogs" accent="bg-amber-50 text-amber-700" />
             <StatCard label="Services" value={stats.services.total} sub={`${stats.services.published} published`} icon={Stethoscope} href="/admin/services" testId="stat-services" />
             <StatCard label="What We Treat" value={stats.treatments.total} sub={`${stats.treatments.published} published`} icon={HeartPulse} href="/admin/what-we-treat" testId="stat-treatments" />
-            <StatCard label="CMS pages" value={stats.pages.total} sub={`${stats.pages.published} published`} icon={Files} href="/admin/pages" testId="stat-pages" />
+            {/* <StatCard label="CMS pages" value={stats.pages.total} sub={`${stats.pages.published} published`} icon={Files} href="/admin/pages" testId="stat-pages" /> */}
+            <StatCard
+  label="PDF Captures"
+  value={stats.pdfLeads.total}
+  icon={FileDown}
+  href="/admin/pdf-leads"
+  testId="stat-pdf-leads"
+/>
           </div>
           <div className="mt-8 grid gap-6 lg:grid-cols-3">
             <div className="card lg:col-span-2">

@@ -5,10 +5,10 @@ import { SectionHeading } from '../ui';
 
 // Copy from the client's Who We Help design reference; bento positions per card.
 const AUDIENCES = [
-  { title: 'Everyday movement', text: 'Move through work, family life, and the moments in between with greater ease.', image: '/images/stock/rehab-gym.webp', cls: 'sm:col-span-2 lg:col-span-1 lg:row-span-2 aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto' },
-  { title: 'Active adults', text: 'Build a foundation for the activities and adventures that keep you moving.', image: '/images/stock/run-beach.webp', cls: 'aspect-[4/3] lg:aspect-auto' },
-  { title: 'Runners & athletes', text: 'Return to training with a plan shaped around the demands of your sport.', image: '/images/stock/run-track.webp', cls: 'aspect-[4/3] lg:aspect-auto' },
-  { title: 'Strength & performance', text: 'Develop movement capacity, control, and confidence for what comes next.', image: '/images/stock/run-race.webp', cls: 'sm:col-span-2 aspect-[4/3] sm:aspect-[2/1] lg:aspect-auto' },
+  { title: 'Everyday movement', text: 'Move through work, family life, and the moments in between with greater ease.', image: '/images/everyday.jpg', cls: 'sm:col-span-2 lg:col-span-1 lg:row-span-2 aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto' },
+  { title: 'Active adults', text: 'Build a foundation for the activities and adventures that keep you moving.', image: '/images/ActiveAdults.jpg', cls: 'aspect-[4/3] lg:aspect-auto' },
+  { title: 'Runners & athletes', text: 'Return to training with a plan shaped around the demands of your sport.', image: '/images/EverydayMovement.jpg', cls: 'aspect-[4/3] lg:aspect-auto' },
+  { title: 'Strength & performance', text: 'Develop movement capacity, control, and confidence for what comes next.', image: '/images/StrengthenPerformance.jpg', cls: 'sm:col-span-2 aspect-[4/3] sm:aspect-[2/1] lg:aspect-auto' },
 ];
 
 const STEPS = [

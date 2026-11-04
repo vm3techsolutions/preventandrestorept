@@ -13,7 +13,7 @@ export const NAV = [
   { href: '/admin/services', label: 'Services', icon: Stethoscope },
   { href: '/admin/what-we-treat', label: 'What We Treat', icon: HeartPulse },
   { href: '/admin/pdf-leads', label: 'PDF Leads', icon: FileDown },
-  { href: '/admin/pages', label: 'Pages', icon: Files },
+  // { href: '/admin/pages', label: 'Pages', icon: Files },
   { href: '/admin/case-studies', label: 'Case Studies', icon: BookOpen },
   { href: '/admin/categories', label: 'Categories', icon: FolderTree },
   { href: '/admin/tags', label: 'Tags', icon: Tags },

@@ -12,7 +12,7 @@ const logRedirect = (req, action, r, details) => logActivity(req, { action, enti
 
 async function dashboard(_req, res) {
   const nd = { deletedAt: null };
-  const [blogsTotal, blogsPublished, blogsDraft, blogsArchived, services, servicesPublished, treatments, treatmentsPublished, pages, pagesPublished, redirects, categories, tags, recent] = await Promise.all([
+  const [blogsTotal, blogsPublished, blogsDraft, blogsArchived, services, servicesPublished, treatments, treatmentsPublished, pages, pagesPublished, redirects, categories, tags, recent, pdfLeads] = await Promise.all([
     prisma.blog.count({ where: nd }),
     prisma.blog.count({ where: { ...nd, status: 'PUBLISHED' } }),
     prisma.blog.count({ where: { ...nd, status: 'DRAFT' } }),
@@ -27,6 +27,7 @@ async function dashboard(_req, res) {
     prisma.blogCategory.count(),
     prisma.blogTag.count(),
     prisma.blog.findMany({ where: nd, orderBy: { updatedAt: 'desc' }, take: 5, select: { id: true, title: true, status: true, updatedAt: true, publishedAt: true } }),
+    prisma.pdfLead.count(),
   ]);
   res.json({
     data: {
@@ -34,7 +35,8 @@ async function dashboard(_req, res) {
       services: { total: services, published: servicesPublished },
       treatments: { total: treatments, published: treatmentsPublished },
       pages: { total: pages, published: pagesPublished },
-      redirects, categories, tags, recentBlogs: recent,
+    redirects, categories, tags, recentBlogs: recent,
+pdfLeads: { total: pdfLeads },
     },
   });
 }
