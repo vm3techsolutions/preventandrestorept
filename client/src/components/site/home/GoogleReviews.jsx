@@ -13,10 +13,10 @@ export default function GoogleReviews() {
         </h2> */}
 
         <p className="mb-2 text-center text-sm font-semibold uppercase tracking-wider text-teal">
-  Our Google Reviews
+  OUR GOOGLE REVIEWS
 </p>
-<h2 className="mb-8 text-center text-3xl font-bold">
-  What Our Clients Say
+<h2 className="mb-8 text-center text-4xl font-bold">
+  WHAT OUR CLIENTS SAY
 </h2>
 
         <Script

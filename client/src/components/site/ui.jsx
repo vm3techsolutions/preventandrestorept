@@ -17,7 +17,7 @@ export function ArcMotif({ className = '' }) {
 
 export function SectionHeading({ eyebrow, title, intro, align = 'left', light = false, id }) {
   return (
-    <div className={align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
+    <div className={align === 'center' ? 'mx-auto max-w-6xl text-center' : 'max-w-6xl'}>
       {eyebrow && <p className={`eyebrow ${light ? 'text-teal-100' : 'text-teal'}`}>{eyebrow}</p>}
       <h2 id={id} className={`display mt-3 text-2xl sm:text-3xl lg:text-4xl ${light ? 'text-white' : 'text-navy'}`}>{title}</h2>
       {intro && <p className={`mt-4 text-base md:text-lg ${light ? 'text-slate-300' : 'text-slate-600'}`}>{intro}</p>}
@@ -48,40 +48,252 @@ export function Breadcrumbs({ items }) {
   );
 }
 
-export function PageHero({ eyebrow, title, intro, crumbs, children, image, imageAlt = '', testId = 'page-hero' }) {
+// export function PageHero({ eyebrow, title, intro, crumbs, children, image, imageAlt = '', testId = 'page-hero' }) {
+//   return (
+//     <section className="relative overflow-hidden bg-navy text-white" data-testid={testId}>
+//       {image ? (
+//         <>
+//           <SmartImage src={image} alt={imageAlt} priority sizes="100vw" className="object-cover" testId="hero-bg-image" />
+//           <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-teal/60" aria-hidden />
+//         </>
+//       ) : <ArcMotif className="-right-24 -top-10 h-[520px] w-[520px] text-white/[0.05]" />}
+//       <div className="container-site relative py-16 sm:py-20 lg:py-24">
+//         {crumbs && <Breadcrumbs items={crumbs} />}
+//         {eyebrow && <p className="eyebrow mt-8 text-teal-100">{eyebrow}</p>}
+//         <h1 className="display mt-4 max-w-4xl text-4xl text-white sm:text-5xl lg:text-6xl" data-testid="page-title">{title}</h1>
+//         {intro && <p className="mt-6 max-w-2xl text-base text-slate-300 md:text-lg">{intro}</p>}
+//         {children}
+//       </div>
+//     </section>
+//   );
+// }
+
+export function PageHero({
+  eyebrow,
+  title,
+  intro,
+  crumbs,
+  children,
+  image,
+  imageAlt = '',
+  testId = 'page-hero',
+}) {
   return (
-    <section className="relative overflow-hidden bg-navy text-white" data-testid={testId}>
+    <section
+      className="relative isolate overflow-hidden bg-navy text-white"
+      data-testid={testId}
+    >
+      {/* Background image */}
       {image ? (
-        <>
-          <SmartImage src={image} alt={imageAlt} priority sizes="100vw" className="object-cover" testId="hero-bg-image" />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-teal/60" aria-hidden />
-        </>
-      ) : <ArcMotif className="-right-24 -top-10 h-[520px] w-[520px] text-white/[0.05]" />}
-      <div className="container-site relative py-16 sm:py-20 lg:py-24">
+        <SmartImage
+          src={image}
+          alt={imageAlt}
+          priority
+          sizes="100vw"
+          className="object-cover"
+          testId="hero-bg-image"
+        />
+      ) : (
+        <div
+          className="absolute inset-0 bg-[url('/images/RayBanners.png')] bg-cover bg-center bg-no-repeat"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Content */}
+      <div className="container-site relative z-10 py-16 sm:py-20 lg:py-24">
         {crumbs && <Breadcrumbs items={crumbs} />}
-        {eyebrow && <p className="eyebrow mt-8 text-teal-100">{eyebrow}</p>}
-        <h1 className="display mt-4 max-w-4xl text-4xl text-white sm:text-5xl lg:text-6xl" data-testid="page-title">{title}</h1>
-        {intro && <p className="mt-6 max-w-2xl text-base text-slate-300 md:text-lg">{intro}</p>}
+
+        {eyebrow && (
+          <p className="eyebrow mt-8 text-teal-100">
+            {eyebrow}
+          </p>
+        )}
+
+        <h1
+          className="display mt-4 max-w-4xl text-4xl text-white sm:text-5xl lg:text-6xl"
+          data-testid="page-title"
+        >
+          {title}
+        </h1>
+
+        {intro && (
+          <p className="mt-6 max-w-2xl text-base text-slate-300 md:text-lg">
+            {intro}
+          </p>
+        )}
+
         {children}
       </div>
     </section>
   );
 }
 
-export function CtaBand({ heading = 'Want to get relief faster?', text = 'Choose which option works best for you.', label = 'Book an Appointment', url = SITE.appointmentHref }) {
+
+// export function CtaBand({ heading = 'Want to get relief faster?', text = 'Choose which option works best for you.', label = 'Book an Appointment', url = SITE.appointmentHref }) {
+//   return (
+//     <section className="bg-white py-20" data-testid="cta-band">
+//       <div className="container-site">
+//         <div className="relative overflow-hidden rounded-3xl bg-teal px-6 py-14 text-white sm:px-12 lg:px-16">
+//           <ArcMotif className="-bottom-40 -right-20 h-[520px] w-[520px] text-white/10" />
+//           <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+//             <div>
+//               <h2 className="display text-3xl text-white sm:text-4xl">{heading}</h2>
+//               {text && <p className="mt-4 max-w-xl text-base text-teal-50 md:text-lg">{text}</p>}
+//             </div>
+//             <div className="flex flex-wrap gap-3 lg:justify-end">
+//               <Link href={url} className="btn-site-light" data-testid="cta-band-primary">{label} <ArrowRight className="h-4 w-4" /></Link>
+//               <a href={SITE.phoneHref} className="btn-site-ghost-light" data-testid="cta-band-phone"><Phone className="h-4 w-4" /> Speak With A PT</a>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+
+// export function CtaBand({
+//   heading = 'Want to get relief faster?',
+//   text = 'Choose which option works best for you.',
+//   label = 'Book an Appointment',
+//   url = SITE.appointmentHref,
+// }) {
+//   return (
+//     <section
+//       className="bg-white py-20"
+//       data-testid="cta-band"
+//     >
+//       <div className="container-site">
+//         <div className="relative isolate min-h-[360px] overflow-hidden rounded-3xl px-6 py-23 text-white sm:px-12 sm:py-26 lg:px-18 lg:py-28">
+
+//           {/* Background image */}
+//           <div
+//             className="
+//               absolute inset-0
+//               bg-[url('/images/RayCTANew.png')]
+//               bg-cover
+//               bg-center
+//               bg-no-repeat
+//             "
+//             aria-hidden="true"
+//           />
+
+//           {/* Background overlay */}
+//           <div
+//             className="absolute inset-0 bg-navy/20"
+//             aria-hidden="true"
+//           />
+
+//           {/* CTA Content */}
+//           <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
+
+//             <div>
+//               <h2 className="display text-3xl text-white sm:text-4xl lg:text-5xl">
+//                 {heading}
+//               </h2>
+
+//               {text && (
+//                 <p className="mt-4 max-w-xl text-base text-teal-50 md:text-lg">
+//                   {text}
+//                 </p>
+//               )}
+//             </div>
+
+//             <div className="flex flex-wrap gap-3 lg:justify-end">
+//               <Link
+//                 href={url}
+//                 className="btn-site-light"
+//                 data-testid="cta-band-primary"
+//               >
+//                 {label}
+//                 <ArrowRight className="h-4 w-4" />
+//               </Link>
+
+//               <a
+//                 href={SITE.phoneHref}
+//                 className="btn-site-ghost-light"
+//                 data-testid="cta-band-phone"
+//               >
+//                 <Phone className="h-4 w-4" />
+//                 Speak With A PT
+//               </a>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+
+export function CtaBand({
+  heading = 'Want to get relief faster?',
+  text = 'Choose which option works best for you.',
+  label = 'Book an Appointment',
+  url = SITE.appointmentHref,
+}) {
   return (
-    <section className="bg-white py-20" data-testid="cta-band">
+    <section
+      className="bg-white py-20"
+      data-testid="cta-band"
+    >
       <div className="container-site">
-        <div className="relative overflow-hidden rounded-3xl bg-teal px-6 py-14 text-white sm:px-12 lg:px-16">
-          <ArcMotif className="-bottom-40 -right-20 h-[520px] w-[520px] text-white/10" />
-          <div className="relative grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+        <div className="relative isolate overflow-hidden rounded-3xl px-6 py-16 text-white sm:px-12 lg:px-18">
+
+          {/* Background image with shield watermark */}
+          <div
+            className="
+              absolute inset-0
+              bg-[url('/images/RayCTANe.png')]
+              bg-cover
+              bg-center
+              bg-no-repeat
+            "
+            aria-hidden="true"
+          />
+
+          {/* Background overlay */}
+          <div
+            className="absolute inset-0 bg-navy/20"
+            aria-hidden="true"
+          />
+
+          {/* CTA Content */}
+          <div className="relative z-10 grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
+
             <div>
-              <h2 className="display text-3xl text-white sm:text-4xl">{heading}</h2>
-              {text && <p className="mt-4 max-w-xl text-base text-teal-50 md:text-lg">{text}</p>}
+              <h2 className="display text-3xl text-white sm:text-4xl">
+                {heading}
+              </h2>
+
+              {text && (
+                <p className="mt-4 max-w-xl text-base text-teal-50 md:text-lg">
+                  {text}
+                </p>
+              )}
             </div>
+
             <div className="flex flex-wrap gap-3 lg:justify-end">
-              <Link href={url} className="btn-site-light" data-testid="cta-band-primary">{label} <ArrowRight className="h-4 w-4" /></Link>
-              <a href={SITE.phoneHref} className="btn-site-ghost-light" data-testid="cta-band-phone"><Phone className="h-4 w-4" /> Speak With A PT</a>
+
+              <Link
+                href={url}
+                className="btn-site-light"
+                data-testid="cta-band-primary"
+              >
+                {label}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+
+              <a
+                href={SITE.phoneHref}
+                className="btn-site-ghost-light"
+                data-testid="cta-band-phone"
+              >
+                <Phone className="h-4 w-4" />
+                Speak With A PT
+              </a>
+
             </div>
           </div>
         </div>
@@ -89,6 +301,7 @@ export function CtaBand({ heading = 'Want to get relief faster?', text = 'Choose
     </section>
   );
 }
+
 
 export function EmptyState({ title, text, testId = 'empty-state' }) {
   return (

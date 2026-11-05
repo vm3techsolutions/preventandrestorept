@@ -37,7 +37,7 @@ function AudienceCard({ a, i }) {
           <h3 className="font-heading text-2xl font-semibold text-white sm:text-3xl">{a.title}</h3>
           <p className="mt-2 max-w-md text-xs leading-relaxed text-slate-200 sm:text-sm">{a.text}</p>
         </div>
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/70 text-white" aria-hidden><ArrowRight className="h-4 w-4" /></span>
+    
       </div>
     </div>
   );
@@ -49,8 +49,8 @@ export function WhoWeTreat() {
       <div className="container-site">
         <div className="grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">
           <div>
-            <p className="eyebrow flex items-center gap-3 text-teal"><span className="h-px w-8 bg-teal" aria-hidden />Who we help</p>
-            <h2 className="mt-5 font-heading text-4xl font-semibold leading-[1.05] text-navy sm:text-5xl lg:text-6xl" data-testid="home-who-title">Your goals. Your movement. <em className="block font-heading italic text-teal">Your starting point.</em></h2>
+            <p className="eyebrow flex items-center gap-3 text-teal">Who we help</p>
+            <h2 className="mt-5 font-heading text-4xl font-bold leading-[1.05] text-navy sm:text-5xl lg:text-4xl" data-testid="home-who-title">YOUR GOALS. <br/>YOUR MOVEMENT. <em className="block font-heading italic text-teal">YOUR STARTING POINT.</em></h2>
           </div>
           <p className="max-w-sm text-slate-600 lg:justify-self-end">There&rsquo;s no single definition of progress. We meet you where you are and build from there.</p>
         </div>

@@ -7,6 +7,7 @@ import { staticMetadata, jsonLd, absUrl } from '@/lib/seo';
 import { METRICS, SITE } from '@/lib/site';
 import GoogleReviews from '@/components/site/home/GoogleReviews';
 import WhyPreventRestore from '@/components/site/home/WhyPreventAndRestore';
+import { AboutCompany } from '@/components/site/home/AboutCompany';
 
 export const revalidate = 60;
 
@@ -37,7 +38,8 @@ export default async function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(clinicLd)} />
       <HomeHero />
-      <AboutRay />
+      {/* <AboutRay /> */}
+      <AboutCompany/>
       <Metrics items={METRICS} />
       <WhoWeTreat />
       <WhyPreventRestore/>
