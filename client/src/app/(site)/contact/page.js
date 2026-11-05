@@ -5,6 +5,7 @@ import ContactOptions from '@/components/site/ContactOptions';
 import { PageHero } from '@/components/site/ui';
 import { SITE, fullAddress } from '@/lib/site';
 import { staticMetadata } from '@/lib/seo';
+import GhlStickyForm from '@/components/site/GhlStickyForm';
 
 export const metadata = staticMetadata({
   title: 'Contact Us | Request an Appointment | Prevent & Restore PT',
@@ -47,6 +48,7 @@ export default function ContactPage() {
           <h2 className="display mt-3 text-2xl text-navy sm:text-3xl">Send us your details</h2>
           <p className="mt-3 text-slate-600">Complete the form and our team will reach out to schedule your visit.</p>
           <div className="mt-8"><GhlForm /></div>
+          {/* <div className="mt-8"><GhlStickyForm/></div> */}
         </div>
       </section>
     </>

@@ -1,20 +1,24 @@
+
 'use client';
 
 import Script from 'next/script';
 import { SITE } from '@/lib/site';
 
-// Existing GoHighLevel form embed (same form ID as the live site).
 export default function GhlForm() {
-  const f = SITE.ghl;
   return (
-    <div data-testid="ghl-form">
+    <div className="w-full min-w-0" data-testid="ghl-form">
       <iframe
-        src={f.src}
-        id={`inline-${f.formId}`}
-        title={f.name}
+        src="https://link.clinicalmarketer.com/widget/form/JaIRNs6LlJ0QqpFaxSLk"
+        id="inline-JaIRNs6LlJ0QqpFaxSLk"
+        title="Website Availability & Pricing Form"
         loading="lazy"
-        className="w-full rounded-xl border-0"
-        style={{ height: f.height, minHeight: 600 }}
+        style={{
+          width: '100%',
+          height: '959px',
+          border: 'none',
+          borderRadius: '4px',
+          display: 'block',
+        }}
         data-layout="{'id':'INLINE'}"
         data-trigger-type="alwaysShow"
         data-trigger-value=""
@@ -22,15 +26,34 @@ export default function GhlForm() {
         data-activation-value=""
         data-deactivation-type="neverDeactivate"
         data-deactivation-value=""
-        data-form-name={f.name}
-        data-height={f.height}
-        data-layout-iframe-id={`inline-${f.formId}`}
-        data-form-id={f.formId}
+        data-form-name="Website Availability & Pricing Form"
+        data-height="959"
+        data-layout-iframe-id="inline-JaIRNs6LlJ0QqpFaxSLk"
+        data-form-id="JaIRNs6LlJ0QqpFaxSLk"
+        data-cookie-consent="true"
+        data-cookie-consent-provider="auto"
         data-testid="ghl-form-iframe"
       />
-      <Script src={f.script} strategy="lazyOnload" />
+
+      <Script
+        src="https://link.clinicalmarketer.com/js/form_embed.js"
+        strategy="afterInteractive"
+      />
+
       <p className="mt-4 text-sm text-slate-500">
-        Form not loading? <a href={f.src} target="_blank" rel="noopener noreferrer" className="font-medium text-teal underline underline-offset-2" data-testid="ghl-form-fallback-link">Open it in a new tab</a> or call <a href={SITE.phoneHref} className="font-medium text-teal">{SITE.phone}</a>.
+        Form not loading?{' '}
+        <a
+          href="https://link.clinicalmarketer.com/widget/form/JaIRNs6LlJ0QqpFaxSLk"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-teal underline underline-offset-2"
+        >
+          Open it in a new tab
+        </a>
+        {' '}or call{' '}
+        <a href={SITE.phoneHref} className="font-medium text-teal">
+          {SITE.phone}
+        </a>.
       </p>
     </div>
   );
