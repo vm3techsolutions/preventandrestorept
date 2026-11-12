@@ -257,6 +257,10 @@ model Treatment {
   pdfSize          Int?               @map("pdf_size")
   pdfLabel         String?            @map("pdf_label")
   pdfUploadedAt    DateTime?          @map("pdf_uploaded_at")
+  pdfThumbnailKey        String?   @map("pdf_thumbnail_key")
+  pdfThumbnailStorage    String?   @map("pdf_thumbnail_storage")
+  pdfThumbnailFileName   String?   @map("pdf_thumbnail_file_name")
+  pdfThumbnailUploadedAt DateTime? @map("pdf_thumbnail_uploaded_at") @db.Timestamp(3)
   pdfLeads         PdfLead[]
 
   @@index([status])

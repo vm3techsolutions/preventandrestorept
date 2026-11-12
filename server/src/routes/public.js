@@ -18,6 +18,10 @@ router.get('/blogs/tags', h((req, res) => pub.taxonomyList('blogTag', req, res))
 
 router.post('/conditions/:slug/pdf-leads', leadLimiter, h(treatmentPdf.publicSubmit));
 router.get('/treatment-pdf/:token', h(treatmentPdf.publicDownload));
+router.get(
+  '/conditions/:slug/pdf-thumbnail',
+  h(treatmentPdf.publicThumbnail),
+);
 
 for (const cfg of Object.values(TYPES)) {
   const c = pub.createPublicController(cfg);

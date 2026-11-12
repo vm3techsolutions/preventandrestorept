@@ -93,15 +93,50 @@ export const api = {
     resetPassword: (id, newPassword) => request(`/admin/admins/${id}/password`, { method: 'PUT', body: { newPassword } }),
   },
   activity: { list: (query) => request('/admin/activity', { query }) },
+  // conditionPdf: {
+  //   upload: (id, file) => {
+  //     const form = new FormData();
+  //     form.append('file', file);
+  //     return request(`/admin/conditions/${id}/pdf`, { method: 'POST', form });
+  //   },
+  //   remove: (id) => request(`/admin/conditions/${id}/pdf`, { method: 'DELETE' }),
+  //   openUrl: (id) => `${BASE}/admin/conditions/${id}/pdf`,
+  // },
   conditionPdf: {
-    upload: (id, file) => {
-      const form = new FormData();
+  upload: (id, file, thumbnail) => {
+    const form = new FormData();
+
+    if (file) {
       form.append('file', file);
-      return request(`/admin/conditions/${id}/pdf`, { method: 'POST', form });
-    },
-    remove: (id) => request(`/admin/conditions/${id}/pdf`, { method: 'DELETE' }),
-    openUrl: (id) => `${BASE}/admin/conditions/${id}/pdf`,
+    }
+
+    if (thumbnail) {
+      form.append('thumbnail', thumbnail);
+    }
+
+    return request(`/admin/conditions/${id}/pdf`, {
+      method: 'POST',
+      form,
+    });
   },
+
+  remove: (id) =>
+    request(`/admin/conditions/${id}/pdf`, {
+      method: 'DELETE',
+    }),
+
+  removeThumbnail: (id) =>
+    request(`/admin/conditions/${id}/pdf/thumbnail`, {
+      method: 'DELETE',
+    }),
+
+  openUrl: (id) =>
+    `${BASE}/admin/conditions/${id}/pdf`,
+
+  thumbnailOpenUrl: (id) =>
+    `${BASE}/admin/conditions/${id}/pdf/thumbnail`,
+},
+  
   pdfLeads: { list: (query) => request('/admin/pdf-leads', { query }) },
   media: {
     status: () => request('/admin/media/status'),

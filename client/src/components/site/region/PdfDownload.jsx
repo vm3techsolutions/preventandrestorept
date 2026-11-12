@@ -121,17 +121,84 @@ function LeadModal({ slug, treatmentName, onClose }) {
   );
 }
 
+// export default function PdfDownload({ slug, treatmentName, pdf }) {
+//   const [open, setOpen] = useState(false);
+//   return (
+//     <aside className="rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8 lg:sticky lg:top-28" data-testid="pdf-download-section">
+//       <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal text-white"><FileText className="h-6 w-6" aria-hidden /></span>
+//       <h2 className="mt-5 font-heading text-2xl font-semibold text-navy">Download Treatment Guide</h2>
+//       <p className="mt-2 break-words text-slate-600" data-testid="pdf-download-label">{pdf.label}</p>
+//       <button type="button" onClick={() => setOpen(true)} className="btn-site mt-6 w-full justify-center" data-testid="pdf-download-button">
+//         <Download className="h-4 w-4" aria-hidden /> Download PDF
+//       </button>
+//       {open && <LeadModal slug={slug} treatmentName={treatmentName} onClose={() => setOpen(false)} />}
+//     </aside>
+// }
+
 export default function PdfDownload({ slug, treatmentName, pdf }) {
   const [open, setOpen] = useState(false);
+
   return (
-    <aside className="rounded-3xl border border-slate-200 bg-slate-50 p-6 sm:p-8 lg:sticky lg:top-28" data-testid="pdf-download-section">
-      <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal text-white"><FileText className="h-6 w-6" aria-hidden /></span>
-      <h2 className="mt-5 font-heading text-2xl font-semibold text-navy">Download Treatment Guide</h2>
-      <p className="mt-2 break-words text-slate-600" data-testid="pdf-download-label">{pdf.label}</p>
-      <button type="button" onClick={() => setOpen(true)} className="btn-site mt-6 w-full justify-center" data-testid="pdf-download-button">
-        <Download className="h-4 w-4" aria-hidden /> Download PDF
-      </button>
-      {open && <LeadModal slug={slug} treatmentName={treatmentName} onClose={() => setOpen(false)} />}
+    <aside
+      className="relative isolate overflow-hidden rounded-3xl bg-navy shadow-xl lg:sticky lg:top-28"
+      data-testid="pdf-download-section"
+    >
+      {/* Thumbnail background */}
+     {pdf.thumbnailPath && (
+  <img
+    src={apiUrl(pdf.thumbnailPath)}
+    alt=""
+    aria-hidden="true"
+    className="absolute inset-0 h-full w-full object-cover"
+  />
+)}
+
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-navy/55" />
+
+      {/* PDF content */}
+      <div className="relative z-10 flex min-h-[340px] flex-col justify-between p-2 sm:p-3">
+
+
+        <div>
+ <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal text-white">
+          <FileText className="h-6 w-6" aria-hidden />
+        </span>
+           <p
+          className="mt-3 break-words text-sm leading-relaxed text-white/85"
+          data-testid="pdf-download-label"
+        >
+          {pdf.label}
+        </p>
+        </div>
+
+       
+
+        {/* <h2 className="mt-6 font-heading text-2xl font-semibold leading-tight text-white">
+          Download Treatment Guide
+        </h2> */}
+
+       
+
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="btn-site mt-14 w-full justify-center"
+          data-testid="pdf-download-button"
+        >
+          <Download className="h-4 w-4" aria-hidden />
+          Download PDF
+        </button>
+
+      </div>
+
+      {open && (
+        <LeadModal
+          slug={slug}
+          treatmentName={treatmentName}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </aside>
   );
 }

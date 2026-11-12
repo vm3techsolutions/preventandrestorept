@@ -68,7 +68,7 @@ export default function RootLayout({ children }) {
           {children}
         </Providers>
 
-        <GhlStickyForm/>
+        {/* <GhlStickyForm/> */}
 
         {/* Meta Pixel */}
         <Script id="meta-pixel" strategy="afterInteractive">

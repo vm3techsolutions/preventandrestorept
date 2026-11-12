@@ -101,7 +101,7 @@ export function AboutCompany() {
 
           <div className="relative aspect-[4/5] overflow-hidden rounded-t-full rounded-b-3xl bg-slate-200">
             <Image
-              src="/images/pt5.jpg"
+              src="/images/HomeImagePT.png"
               alt="Physical therapy and rehabilitation space at Prevent & Restore Physical Therapy"
               fill
               sizes="(min-width:1024px) 420px, 85vw"

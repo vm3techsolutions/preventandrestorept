@@ -37,7 +37,7 @@ export const SOCIALS = [
   { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/preventandrestorept/?rdid=wClMF74M6WqpIuPL' },
   { key: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/preventandrestorept' },
   { key: 'google', label: 'Google Business Profile', url: SITE.mapsUrl },
-  { key: 'yelp', label: 'Yelp', url: 'https://www.yelp.com/search?find_desc=Prevent+%26+Restore+Physical+Therapy&find_loc=Marietta%2C+GA' },
+  { key: 'yelp', label: 'Yelp', url: 'https://www.yelp.com/biz/prevent-and-restore-physical-therapy-marietta?osq=Prevent+%26+Restore+Physical+Therapy' },
   { key: 'youtube', label: 'YouTube', url: '' },
 ].filter((s) => s.url || s.pending);
 

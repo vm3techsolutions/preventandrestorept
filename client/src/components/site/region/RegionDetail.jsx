@@ -74,7 +74,17 @@ export default function RegionDetail({ item, index = 0 }) {
           {item.content?.length > 0 && <div className="mt-6"><BlockRenderer blocks={item.content} /></div>}
           {sections.length > 0 && <p className="mt-5 text-slate-600">This page covers: {sections.map((s) => s.heading).join(', ')}.</p>}
         </div>
-        {item.pdf && <PdfDownload slug={item.slug} treatmentName={item.title} pdf={item.pdf} />}
+        {/* {item.pdf && <PdfDownload slug={item.slug} treatmentName={item.title} pdf={item.pdf} />} */}
+    
+
+{item.pdf && (
+  <PdfDownload
+    slug={item.slug}
+    treatmentName={item.title}
+    pdf={item.pdf}
+  />
+)}
+
       </section>
       {sections.length > 0 && <ConditionSelector sections={sections} />}
       {sections.map((s, i) => <ConditionSection key={s.anchor} s={s} i={i} image={conditionStock(item.slug, i, index)} />)}

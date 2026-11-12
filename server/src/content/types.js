@@ -190,13 +190,39 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
       if (b.relatedIds.length) await tx.serviceTreatment.createMany({ data: unique(b.relatedIds).map((x) => ({ [self]: id, [other]: x })) });
     },
     serializeAdmin(r) {
-      const { [relation]: rel, pdfKey, pdfStorage, ...rest } = r;
-      return { ...rest, ...(model === 'treatment' ? { hasPdf: !!pdfKey } : {}), path: cfg.path(r.slug), content: blocksOut(r.content), related: (rel || []).map((m) => m[relKey]), relatedIds: (rel || []).map((m) => m[relKey].id) };
+      const {
+        [relation]: rel,
+        pdfKey,
+        pdfStorage,
+        pdfThumbnailKey,
+        pdfThumbnailStorage,
+        ...rest
+      } = r;
+
+      return {
+        ...rest,
+        ...(model === 'treatment'
+          ? {
+              hasPdf: !!pdfKey,
+              hasThumbnail: !!pdfThumbnailKey,
+            }
+          : {}),
+        path: cfg.path(r.slug),
+        content: blocksOut(r.content),
+        related: (rel || []).map((m) => m[relKey]),
+        relatedIds: (rel || []).map((m) => m[relKey].id),
+      };
     },
     publishErrors: (r) => publishErrors(r, r.content),
     publicSummary: (r) => ({
-      id: r.id, title: r.title, slug: r.slug, path: cfg.path(r.slug), shortDescription: r.shortDescription,
-      featuredImage: image(r.featuredImageUrl, r.featuredImageAlt), iconName: r.iconName, updatedAt: r.updatedAt,
+      id: r.id,
+      title: r.title,
+      slug: r.slug,
+      path: cfg.path(r.slug),
+      shortDescription: r.shortDescription,
+      featuredImage: image(r.featuredImageUrl, r.featuredImageAlt),
+      iconName: r.iconName,
+      updatedAt: r.updatedAt,
     }),
     async publicDetail(r) {
       return {
@@ -206,7 +232,20 @@ function serviceLike({ key, model, label, folder, prefix, relation, relKey, relP
         cta: r.ctaLabel && r.ctaUrl ? { heading: r.ctaHeading, label: r.ctaLabel, url: r.ctaUrl } : null,
         [relatedName]: (r[relation] || []).map((m) => m[relKey]).filter(isLive).map((x) => ({ title: x.title, slug: x.slug, path: `${relPrefix}/${x.slug}` })),
         seo: await buildSeo({ ...r, fallbackDescription: r.shortDescription, path: cfg.path(r.slug), image: r.featuredImageUrl, keyword: r.targetKeyword }),
-        ...(model === 'treatment' ? { sections: await publicSections(r.sections), pdf: r.pdfKey ? { label: r.pdfLabel || r.pdfFileName, fileName: r.pdfFileName } : null } : {}),
+       ...(model === 'treatment'
+  ? {
+      sections: await publicSections(r.sections),
+      pdf: r.pdfKey
+        ? {
+            label: r.pdfLabel || r.pdfFileName,
+            fileName: r.pdfFileName,
+            thumbnailPath: r.pdfThumbnailKey
+              ? `/public/conditions/${encodeURIComponent(r.slug)}/pdf-thumbnail`
+              : null,
+          }
+        : null,
+    }
+  : {}),
       };
     },
   };

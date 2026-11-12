@@ -7,6 +7,7 @@ import { CtaBand, PageHero } from './ui';
 import { SITE } from '@/lib/site';
 import { withSlash } from '@/lib/seo';
 import { SERVICE_STOCK, stockFor } from '@/lib/stockImages';
+import PdfDownload from './region/PdfDownload';
 
 function RelatedList({ title, items, testId }) {
   if (!items?.length) return null;
@@ -52,8 +53,15 @@ export default function ContentDetail({ item, section, related, relatedTitle }) 
           <FaqList faqs={item.faqs} />
         </div>
         <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
+          {section.key === 'condition' && item.pdf && (
+  <PdfDownload
+    slug={item.slug}
+    treatmentName={item.title}
+    pdf={item.pdf}
+  />
+)}
           <RelatedList title={relatedTitle} items={related} testId="related-links" />
-          <AppointmentCard />
+          {/* <AppointmentCard /> */}
         </aside>
       </div>
       <CtaBand heading={item.cta?.heading || undefined} label={item.cta?.label || undefined} url={item.cta?.url ? withSlash(item.cta.url) : undefined} />

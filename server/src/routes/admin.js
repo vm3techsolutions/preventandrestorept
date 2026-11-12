@@ -15,9 +15,37 @@ router.use(requireAuth);
 
 router.get('/dashboard', h(admin.dashboard));
 
-router.post('/conditions/:id/pdf', treatmentPdf.upload.single('file'), h(treatmentPdf.adminUpload));
-router.get('/conditions/:id/pdf', h(treatmentPdf.adminOpen));
-router.delete('/conditions/:id/pdf', h(treatmentPdf.adminRemove));
+// Treatment PDF and thumbnail management
+router.post(
+  '/conditions/:id/pdf',
+  treatmentPdf.upload.fields([
+    { name: 'file', maxCount: 1 },
+    { name: 'thumbnail', maxCount: 1 },
+  ]),
+  h(treatmentPdf.adminUpload),
+);
+
+router.get(
+  '/conditions/:id/pdf',
+  h(treatmentPdf.adminOpen),
+);
+
+router.delete(
+  '/conditions/:id/pdf',
+  h(treatmentPdf.adminRemove),
+);
+
+// Thumbnail preview and independent removal
+router.get(
+  '/conditions/:id/pdf/thumbnail',
+  h(treatmentPdf.adminThumbnailOpen),
+);
+
+router.delete(
+  '/conditions/:id/pdf/thumbnail',
+  h(treatmentPdf.adminRemoveThumbnail),
+);
+
 router.get('/pdf-leads', h(treatmentPdf.adminLeads));
 
 for (const cfg of Object.values(TYPES)) {
