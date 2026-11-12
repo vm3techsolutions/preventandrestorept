@@ -62,16 +62,27 @@ export default async function BlogDetailPage({ params }) {
   return (
     <article className="bg-slate-50" data-testid="blog-detail">
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(ld)} />
-      <PageHero title={post.title} image={post.featuredImage?.url} crumbs={[{ label: 'Home', href: '/' }, { label: 'Blogs', href: '/blogs/' }, { label: post.title, href: withSlash(post.path) }]}>
+      {/* <PageHero title={post.title} image={post.featuredImage?.url} crumbs={[{ label: 'Home', href: '/' }, { label: 'Blogs', href: '/blogs/' }, { label: post.title, href: withSlash(post.path) }]}>
         {post.categories.length > 0 && (
           <div className="mt-6 flex flex-wrap gap-2">
             {post.categories.map((c) => <Link key={c.slug} href={`/blogs/?category=${c.slug}`} className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-teal-100 hover:bg-white/20">{c.name}</Link>)}
           </div>
         )}
-        <Byline post={post} />
+        <Byline post={post} /> */}
+        <PageHero
+  title={post.title}
+  image={post.featuredImage?.url}
+  imageOverlay="bg-gradient-to-r from-[#001D39]/95 via-[#001D39]/75 to-[#001D39]/45"
+  crumbs={[
+    { label: 'Home', href: '/' },
+    { label: 'Blogs', href: '/blogs/' },
+    { label: post.title, href: withSlash(post.path) },
+  ]}
+>
       </PageHero>
+      
       <div className="container-site py-14 lg:py-20">
-        <div className="mx-auto max-w-3xl rounded-3xl bg-white px-6 py-10 shadow-sm ring-1 ring-slate-200/70 sm:px-10 sm:py-14 lg:px-14" data-testid="blog-body">
+        <div className=" rounded-3xl bg-white px-6 py-10 ring-1 ring-slate-200/70 sm:px-10 sm:py-14 lg:px-14" data-testid="blog-body">
           {post.introduction && <p className="mb-10 border-l-4 border-teal pl-5 text-lg leading-relaxed text-navy md:text-xl" data-testid="blog-introduction">{post.introduction}</p>}
           <div className="text-base leading-relaxed text-slate-700 md:text-lg [&_h2]:mt-12 [&_h3]:mt-8 [&_p]:mt-5"><BlockRenderer blocks={post.blocks} /></div>
           {post.tags.length > 0 && (
