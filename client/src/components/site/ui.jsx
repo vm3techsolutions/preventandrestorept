@@ -76,6 +76,7 @@ export function PageHero({
   children,
   image,
   imageAlt = '',
+   imageOverlay,
   testId = 'page-hero',
 }) {
   return (
@@ -93,11 +94,15 @@ export function PageHero({
           className="object-cover"
           testId="hero-bg-image"
         />
-      ) : (
+       ) : (
         <div
           className="absolute inset-0 bg-[url('/images/RayBanners.png')] bg-cover bg-center bg-no-repeat"
           aria-hidden="true"
         />
+      )}
+
+      {image && imageOverlay && (
+        <div className={`absolute inset-0 ${imageOverlay}`} aria-hidden="true" />
       )}
 
       {/* Content */}
@@ -111,7 +116,7 @@ export function PageHero({
         )}
 
         <h1
-          className="display mt-4 max-w-4xl text-4xl text-white sm:text-5xl lg:text-6xl"
+          className="display mt-4 max-w-4xl text-4xl text-white sm:text-4xl lg:text-4xl"
           data-testid="page-title"
         >
           {title}
