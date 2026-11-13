@@ -63,8 +63,10 @@ export default function RegionDetail({ item, index = 0 }) {
   const img = item.featuredImage?.url || stockFor(REGION_STOCK, item.slug, index);
   return (
     <article data-testid="condition-detail">
-      <PageHero eyebrow="What we treat" title={item.title} intro={item.shortDescription} crumbs={crumbs} image={img} imageAlt="">
-        <Link href="/contact/#request-appointment" className="btn-site mt-8" data-testid="region-hero-cta">Request Appointment</Link>
+      <PageHero eyebrow="What we treat"
+      imageOverlay="bg-gradient-to-r from-[#001D39]/95 via-[#001D39]/75 to-[#001D39]/35"
+       title={item.title} intro={item.shortDescription} crumbs={crumbs} image={img} imageAlt="">
+        <Link href="/contact/#request-appointment" className="btn-site mt-8" data-testid="region-hero-cta">Book an Appointment</Link>
       </PageHero>
       <section className={`container-site py-16 lg:py-20 ${item.pdf ? 'grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-16' : ''}`} data-testid="condition-intro">
         <div className="max-w-3xl">

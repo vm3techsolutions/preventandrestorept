@@ -32,7 +32,7 @@ function AppointmentCard() {
     <div className="rounded-2xl bg-navy p-6 text-white">
       <p className="font-heading text-lg font-semibold text-white">Ready to get started?</p>
       <p className="mt-2 text-sm text-slate-300">Book a one-on-one visit with a Doctor of Physical Therapy.</p>
-      <Link href={SITE.appointmentHref} className="btn-site mt-5 w-full justify-center" data-testid="sidebar-appointment-btn">Request Appointment</Link>
+      <Link href={SITE.appointmentHref} className="btn-site mt-5 w-full justify-center" data-testid="sidebar-appointment-btn">Book an Appointment</Link>
       <a href={SITE.phoneHref} className="mt-3 flex items-center justify-center gap-2 text-sm font-medium text-teal-100 hover:text-white"><Phone className="h-4 w-4" /> {SITE.phone}</a>
     </div>
   );
@@ -42,9 +42,18 @@ function AppointmentCard() {
 export default function ContentDetail({ item, section, related, relatedTitle }) {
   return (
     <article className="bg-slate-50" data-testid={`${section.key}-detail`}>
-      <PageHero eyebrow={section.label} title={item.title} intro={item.shortDescription} image={item.featuredImage?.url || stockFor(SERVICE_STOCK, item.slug)} crumbs={[{ label: 'Home', href: '/' }, { label: section.label, href: section.href }, { label: item.title, href: withSlash(item.path) }]}>
-        <Link href={SITE.appointmentHref} className="btn-site mt-8" data-testid="detail-hero-cta">Request Appointment</Link>
+      <PageHero imageOverlay="bg-gradient-to-r from-[#001D39]/95 via-[#001D39]/75 to-[#001D39]/35" eyebrow={section.label} title={item.title} 
+      intro={item.shortDescription} 
+      image={item.featuredImage?.url || stockFor(SERVICE_STOCK, item.slug)} crumbs={[{ label: 'Home', href: '/' }, { label: section.label, href: section.href }, { label: item.title, href: withSlash(item.path) }]}>
+        <Link href={SITE.appointmentHref} className="btn-site mt-5" data-testid="detail-hero-cta">Book an Appointment</Link>
       </PageHero>
+      {/* {item.shortDescription && (
+        <section className="container-site py-8">
+          <p className="max-w-3xl text-lg text-slate-600">
+            {item.shortDescription}
+          </p>
+        </section>
+      )} */}
       <div className="container-site grid gap-12 py-16 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-20">
         <div className="min-w-0 max-w-3xl">
           {item.sections?.length > 0 && <RegionAnchors sections={item.sections} />}
@@ -61,7 +70,7 @@ export default function ContentDetail({ item, section, related, relatedTitle }) 
   />
 )}
           <RelatedList title={relatedTitle} items={related} testId="related-links" />
-          {/* <AppointmentCard /> */}
+          {!(section.key === 'condition' && item.pdf) && <AppointmentCard />}
         </aside>
       </div>
       <CtaBand heading={item.cta?.heading || undefined} label={item.cta?.label || undefined} url={item.cta?.url ? withSlash(item.cta.url) : undefined} />
