@@ -95,10 +95,28 @@ export function PageHero({
           testId="hero-bg-image"
         />
        ) : (
-        <div
-          className="absolute inset-0 bg-[url('/images/RayBanners.png')] bg-cover bg-center bg-no-repeat"
-          aria-hidden="true"
-        />
+        // <div
+        //   className="absolute inset-0 bg-[url('/images/RayBanners.png')] bg-cover bg-center bg-no-repeat"
+        //   aria-hidden="true"
+        // />
+//         <div
+//   className="absolute inset-0 bg-navy bg-no-repeat"
+//   style={{
+//     backgroundImage: "url('/images/RayBanners.png')",
+//     backgroundSize: '180% auto',
+//     backgroundPosition: 'right center',
+//   }}
+//   aria-hidden="true"
+// />
+<div
+  className="absolute inset-0 bg-navy bg-no-repeat"
+  style={{
+    backgroundImage: "url('/images/RayBanners.png')",
+    backgroundSize: '200% auto',
+    backgroundPosition: 'calc(100% + 300px) center',
+  }}
+  aria-hidden="true"
+/>
       )}
 
       {image && imageOverlay && (
