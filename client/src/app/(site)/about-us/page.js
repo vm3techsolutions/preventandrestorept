@@ -34,6 +34,25 @@ const TEAM = [
     ],
     certifications: ['PT', 'DPT', 'OCS'],
   },
+
+  {
+    name: 'Jessica Murray',
+    credentials: 'RYT-200',
+     photo: '/images/Jessica.jpg',
+    role: 'Chief Operating Officer, Prevent & Restore Physical Therapy',
+    bio: [
+      'Jessica Murray is the Chief Operating Officer of Prevent & Restore Physical Therapy. She manages the business, finance and operations side of the clinic, so the therapists can spend their time on what matters most: intentional, one-on-one patient care.',
+      'Jessica is also a yoga instructor and teaches vinyasa and myofascial release classes in Atlanta, GA. She adds a mindful, whole-body approach to the clinic’s mission. Her classes focus on mobility, breath and releasing tension, which pairs naturally with the hands-on care patients get in the clinic and helps them keep their progress long after discharge.',
+      'As a lifelong wellness enthusiast, Jessica believes that small, consistent habits lead to lasting health. She is passionate about building a practice that empowers the East Cobb community to get back to doing the things they love, from the front desk experience to the final visit.',
+    ],
+    certifications: [
+      'COO',
+      'Yoga Instructor',
+      'Myofascial Release',
+      'Wellness',
+    ],
+  },
+
 ];
 
 const WHY = [
@@ -77,7 +96,11 @@ function TeamMember({ m, i }) {
       </div>
       <div>
         <h3 className="display text-3xl text-navy sm:text-4xl">{m.name}</h3>
-        <p className="mt-2 font-medium text-slate-500">{m.credentials}</p>
+        {/* <p className="mt-2 font-medium text-slate-500">{m.credentials}</p> */}
+        {m.credentials && (
+  <p className="mt-2 font-medium text-slate-500">{m.credentials}</p>
+)}
+        
         {m.role && <p className="mt-3 text-base font-semibold text-teal md:text-lg" data-testid={`team-member-${slug}-role`}>{m.role}</p>}
         <div className="mt-6 space-y-4 text-base leading-relaxed text-slate-600 md:text-lg">{m.bio.map((p) => <p key={p.slice(0, 20)}>{p}</p>)}</div>
         {m.quote && <blockquote className="mt-6 border-l-4 border-teal pl-5 font-heading text-lg font-medium italic text-navy">“{m.quote}”</blockquote>}
