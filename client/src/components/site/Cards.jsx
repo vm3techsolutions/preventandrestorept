@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Activity, ArrowRight, Bone, Crosshair, Dumbbell, Footprints, Hand, HeartPulse, Move, Presentation, ScanLine, ShieldCheck, Target, Waves, Zap } from 'lucide-react';
+import { Activity, ArrowRight, Bone, Crosshair, Dumbbell, Footprints, Hand, HeartPulse, Move, Presentation, ScanLine, ShieldCheck, Target, Waves, Zap, ArrowUpRight } from 'lucide-react';
 import SmartImage from './SmartImage';
 import { withSlash } from '@/lib/seo';
 import { formatDate } from '@/lib/siteData';
@@ -31,7 +31,7 @@ export function ContentCard({ item, index = 0, testPrefix }) {
         <h3 className="font-heading text-xl font-semibold text-navy">{item.title}</h3>
         {item.shortDescription && <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-slate-600">{item.shortDescription}</p>}
         <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-teal group-hover:text-teal-hover">
-          Learn more <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
+          Learn more <ArrowRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
         </span>
       </div>
     </Link>

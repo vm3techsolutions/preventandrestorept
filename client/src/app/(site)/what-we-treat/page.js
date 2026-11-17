@@ -2,6 +2,7 @@ import { ContentCard } from '@/components/site/Cards';
 import { CtaBand, EmptyState, PageHero } from '@/components/site/ui';
 import { listSafe } from '@/lib/siteData';
 import { staticMetadata } from '@/lib/seo';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 
 export const revalidate = 60;
 
