@@ -30,8 +30,8 @@ export default function Footer({ services = [], conditions = [] }) {
     <footer className="bg-navy text-slate-300" data-testid="site-footer">
       <div className="container-site grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1.5fr_0.8fr_1.1fr_1.1fr_1.4fr] lg:gap-10">
         <div>
-          <Image src="/images/logo-horizontal-white.png" alt={SITE.name} width={1174} height={272} className="h-10 w-auto" />
-          <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-slate-400">
+          <Image src="/images/Image2.png" alt={SITE.name} width={1174} height={300} className="h-20 w-auto" />
+          <p className="mt-6 max-w-sm text-[15px] leadingxx-relaxed text-slate-400">
             Educate and empower our community to prevent injuries while quickly restoring injured clients from pain so they can continue doing activities they love the most.
           </p>
           <SocialLinks items={SOCIALS} className="mt-7" />
