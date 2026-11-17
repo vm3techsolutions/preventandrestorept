@@ -12,16 +12,16 @@ const AUDIENCES = [
 ];
 
 const STEPS = [
-  { title: 'Find the root cause of your pain', text: 'A comprehensive biomechanical assessment identifies the cause of your problem and what must be done to get you back to the activities you enjoy.' },
-  { title: 'Restore strength and mobility', text: 'A treatment plan tailored specifically to you and your goals, so you get stronger, reduce pain, and reach your goals more efficiently.' },
-  { title: 'Prevent future injuries', text: 'Once current symptoms are treated, the focus shifts to optimizing your physical health and well-being through preventive strategies.' },
+  { title: 'FIND THE ROOT CAUSE OF YOUR PAIN', text: 'A comprehensive biomechanical assessment identifies the cause of your problem and what must be done to get you back to the activities you enjoy.' },
+  { title: 'RESTORE STRENGTH AND MOBILITY', text: 'A treatment plan tailored specifically to you and your goals, so you get stronger, reduce pain, and reach your goals more efficiently.' },
+  { title: 'REVENT FUTURE INJURIES', text: 'Once current symptoms are treated, the focus shifts to optimizing your physical health and well-being through preventive strategies.' },
 ];
 
 const OFFER = [
-  { icon: Clock, title: 'A full 60 minutes', text: 'Time to understand your condition, ask questions and set goals.' },
-  { icon: UserRound, title: 'One-on-one, always', text: 'No sharing time with other patients and no rushed sessions.' },
-  { icon: Dumbbell, title: 'PT meets strength & conditioning', text: 'Get better faster with less chance of reinjury.' },
-  { icon: ShieldCheck, title: 'Prevention built in', text: 'Recover now and prevent future issues.' },
+  { icon: Clock, title: 'A FULL OF 60 MINUTES', text: 'Time to understand your condition, ask questions and set goals.' },
+  { icon: UserRound, title: 'ONE-ON-ONE, ALWAYS', text: 'No sharing time with other patients and no rushed sessions.' },
+  { icon: Dumbbell, title: 'PT MEETS STRENGTH & CONDITIONING', text: 'Get better faster with less chance of reinjury.' },
+  { icon: ShieldCheck, title: 'PREVENTION BUILT IN', text: 'Recover now and prevent future issues.' },
 ];
 
 // Informational only: the arrow is decorative, cards are not links.

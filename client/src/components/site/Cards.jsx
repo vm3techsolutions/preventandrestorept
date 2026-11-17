@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Activity, ArrowUpRight, Bone, Crosshair, Dumbbell, Footprints, Hand, HeartPulse, Move, Presentation, ScanLine, ShieldCheck, Target, Waves, Zap } from 'lucide-react';
+import { Activity, ArrowRight, Bone, Crosshair, Dumbbell, Footprints, Hand, HeartPulse, Move, Presentation, ScanLine, ShieldCheck, Target, Waves, Zap } from 'lucide-react';
 import SmartImage from './SmartImage';
 import { withSlash } from '@/lib/seo';
 import { formatDate } from '@/lib/siteData';
@@ -57,7 +57,7 @@ export function BlogCard({ post, priority = false, cta }) {
           {post.author?.name && post.publishedAt && ' · '}
           {post.publishedAt && <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>}
         </p>
-        {cta && <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-teal group-hover:text-teal-hover" aria-hidden>{cta} <ArrowUpRight className="h-4 w-4" /></span>}
+        {cta && <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-teal group-hover:text-teal-hover" aria-hidden>{cta} <ArrowRight className="h-4 w-4" /></span>}
       </div>
     </article>
   );

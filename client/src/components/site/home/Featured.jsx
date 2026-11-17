@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import SmartImage from '../SmartImage';
 import { BlogCard } from '../Cards';
 import CardCarousel from '../CardCarousel';
@@ -27,7 +27,7 @@ function CarouselCard({ item, img, cta, testId }) {
       <div className="flex flex-1 flex-col p-7">
         <h3 className="line-clamp-2 min-h-[3.5rem] font-heading text-xl font-semibold leading-7 text-navy">{item.title}</h3>
         <p className="mt-3 line-clamp-3 min-h-[4.5rem] text-[15px] leading-6 text-slate-600">{item.shortDescription}</p>
-        <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-teal group-hover:text-teal-hover">{cta} <ArrowUpRight className="h-4 w-4" aria-hidden /></span>
+        <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-teal group-hover:text-teal-hover">{cta} <ArrowRight className="h-4 w-4" aria-hidden /></span>
       </div>
     </Link>
   );
