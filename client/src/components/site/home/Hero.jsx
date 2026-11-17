@@ -23,8 +23,12 @@ export function HomeHero() {
             One-on-one, 60-minute physical therapy with a Doctor of Physical Therapy in East Cobb, Marietta. Relieve pain, rebuild strength and stay active. Book a free discovery call.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href={SITE.appointmentHref} className="btn-site px-7 py-4" data-testid="hero-appointment-btn">Book an Appointment <ArrowRight className="h-4 w-4" /></Link>
-            <Link href="/services/" className="btn-site-ghost-light px-7 py-4" data-testid="hero-services-btn">Explore Services</Link>
+            <Link href={SITE.appointmentHref} className="btn-site px-7 py-4" data-testid="hero-appointment-btn">Book an Appointment 
+            <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link href="/services/" className="btn-site-ghost-light px-7 py-4" data-testid="hero-services-btn">Explore Services
+            <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
           <a href={SITE.phoneHref} className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-slate-200 hover:text-white" data-testid="hero-phone-link"><Phone className="h-4 w-4" aria-hidden /> Speak with a PT: {SITE.phone}</a>
         </div>
@@ -73,7 +77,10 @@ export function FullCta() {
           <p className="mt-5 max-w-xl text-base text-slate-200 md:text-lg">Speak with a PT, check availability and pricing, or book a free discovery call to discuss your needs.</p>
         </div>
         <div className="reveal flex flex-wrap gap-3 lg:justify-end">
-          <Link href={SITE.appointmentHref} className="btn-site-light px-7 py-4" data-testid="full-cta-appointment">Book an Appointment <ArrowRight className="h-4 w-4" /></Link>
+          <Link href={SITE.appointmentHref} className="btn-site-light px-7 py-4" data-testid="full-cta-appointment">Book an Appointment 
+          
+          {/* <ArrowRight className="h-4 w-4" /> */}
+          </Link>
           <a href={SITE.phoneHref} className="btn-site-ghost-light px-7 py-4" data-testid="full-cta-phone"><Phone className="h-4 w-4" /> {SITE.phone}</a>
         </div>
       </div>

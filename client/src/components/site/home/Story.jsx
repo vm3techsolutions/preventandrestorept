@@ -106,7 +106,7 @@ export function WhatWeOffer() {
               </li>
             ))}
           </ul>
-          <Link href="/about-us/" className="btn-site-outline mt-10" data-testid="offer-about-link">Why Prevent &amp; Restore</Link>
+          <Link href="/about-us/" className="btn-site-outline mt-10" data-testid="offer-about-link">Why Prevent &amp; Restore <ArrowRight className="h-4 w-4" /></Link>
         </div>
       </div>
     </section>

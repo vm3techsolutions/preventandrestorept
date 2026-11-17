@@ -13,9 +13,9 @@ export const metadata = staticMetadata({
 const TEAM = [
   {
     name: 'Dr. Ray Waters',
-    credentials: 'DPT, CSCS, CEAS',
+    credentials: 'DPT, CSCS, FMS, CEAS, Stecco fascial manipulation',
     role: 'Owner and Founder, Prevent & Restore Physical Therapy',
-    photo: '/images/ray-waters.webp',
+    photo: '/images/RayUpdatedImage.png',
     bio: [
       'Dr. Ray Waters, DPT, CSCS, CEAS is an outpatient orthopedic physical therapist specializing in musculoskeletal injuries, athletic performance, and preventative techniques.',
       'He is trained in the Stecco fascial manipulation method and holds certifications in CSCS, FMS, and CEAS. He works with Division 1 athletes, weekend warriors, desk workers, and post-surgery patients, providing personalized care.',
@@ -26,7 +26,7 @@ const TEAM = [
   {
     name: 'Dr. Reid Dobson',
     credentials: 'PT, DPT, OCS',
-     photo: '/images/Reid.jpg',
+     photo: '/images/ReidUpdatedImage.png',
     bio: [
       'Dr. Reid Dobson, PT, DPT, OCS is an outpatient orthopedic physical therapist who thrives on the ‘investigation’ stage of patient care. He approaches every initial evaluation as a unique puzzle, analyzing complex movement breakdowns to build a precise path toward recovery.',
       'What truly sets Dr. Reid apart is his designation as an Orthopedic Certified Specialist (OCS), an elite board certification held by fewer than 5% of practicing physical therapists in the country. This advanced training grants him superior diagnostic capabilities and evidence-based insights to solve even the most persistent musculoskeletal issues.',
@@ -37,8 +37,8 @@ const TEAM = [
 
   {
     name: 'Jessica Murray',
-    credentials: 'RYT-200',
-     photo: '/images/Jessica.jpg',
+    credentials: 'COO, Yoga Instructor, Myofascial Release, Wellness',
+     photo: '/images/JessicaUpdatedImg.png',
     role: 'Chief Operating Officer, Prevent & Restore Physical Therapy',
     bio: [
       'Jessica Murray is the Chief Operating Officer of Prevent & Restore Physical Therapy. She manages the business, finance and operations side of the clinic, so the therapists can spend their time on what matters most: intentional, one-on-one patient care.',
@@ -104,9 +104,9 @@ function TeamMember({ m, i }) {
         {m.role && <p className="mt-3 text-base font-semibold text-teal md:text-lg" data-testid={`team-member-${slug}-role`}>{m.role}</p>}
         <div className="mt-6 space-y-4 text-base leading-relaxed text-slate-600 md:text-lg">{m.bio.map((p) => <p key={p.slice(0, 20)}>{p}</p>)}</div>
         {m.quote && <blockquote className="mt-6 border-l-4 border-teal pl-5 font-heading text-lg font-medium italic text-navy">“{m.quote}”</blockquote>}
-        <ul className="mt-8 flex flex-wrap gap-2" aria-label="Certifications" data-testid={`team-member-${slug}-certifications`}>
+        {/* <ul className="mt-8 flex flex-wrap gap-2" aria-label="Certifications" data-testid={`team-member-${slug}-certifications`}>
           {m.certifications.map((c) => <li key={c} className="rounded-full border border-teal/30 bg-teal-50 px-4 py-1.5 text-sm font-medium text-navy">{c}</li>)}
-        </ul>
+        </ul> */}
       </div>
     </article>
   );

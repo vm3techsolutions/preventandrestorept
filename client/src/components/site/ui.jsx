@@ -305,7 +305,7 @@ export function CtaBand({
                 data-testid="cta-band-primary"
               >
                 {label}
-                <ArrowRight className="h-4 w-4" />
+                {/* <ArrowRight className="h-4 w-4" /> */}
               </Link>
 
               <a
@@ -338,7 +338,8 @@ export function EmptyState({ title, text, testId = 'empty-state' }) {
 export function MoreLink({ href, children, testId, light }) {
   return (
     <Link href={href} data-testid={testId} className={`group inline-flex items-center gap-2 font-medium ${light ? 'text-white' : 'text-teal hover:text-teal-hover'}`}>
-      {children} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
+      {children} 
+      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
     </Link>
   );
 }

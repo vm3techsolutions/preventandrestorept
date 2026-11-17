@@ -141,7 +141,7 @@ export function AboutCompany() {
           </p>
 
           {/* Company Highlights */}
-          <ul className="mt-7 flex flex-wrap gap-2">
+          {/* <ul className="mt-7 flex flex-wrap gap-2">
             {[
               'One-on-One Care',
               'Orthopedic Physical Therapy',
@@ -156,7 +156,7 @@ export function AboutCompany() {
                 {item}
               </li>
             ))}
-          </ul>
+          </ul> */}
 
           <Link
             href="/about-us/"

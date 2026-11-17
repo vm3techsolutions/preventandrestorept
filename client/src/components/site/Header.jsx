@@ -44,7 +44,7 @@ export default function Header({ services = [], conditions = [] }) {
     <header className={`sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color] duration-300 ${scrolled || open ? 'border-slate-200/80 bg-white/95 shadow-md shadow-navy/5 backdrop-blur-lg' : 'border-transparent bg-white'}`} data-testid="site-header">
       <div className="container-site relative flex h-20 items-center justify-between gap-6">
         <Link href="/" className="shrink-0" aria-label={`${SITE.name} home`} data-testid="header-logo-link">
-          <Image src="/images/logo-horizontal.png" alt={SITE.name} width={1174} height={272} priority className="h-9 w-auto sm:h-10" />
+          <Image src="/images/HeaderLogo.jpeg" alt={SITE.name} width={1174} height={272} priority className="h-9 w-auto sm:h-10" />
         </Link>
         <nav aria-label="Main" className="hidden flex-1 items-center justify-center gap-6 whitespace-nowrap xl:flex 2xl:gap-8">
           {links.map((n) => {
