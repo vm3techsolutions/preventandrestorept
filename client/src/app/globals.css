@@ -2,9 +2,10 @@
 
 /* Licensed brand fonts: drop the files into client/public/fonts/ to activate (see README). */
 @font-face {
-  font-family: 'Blair ITC Std';
+  font-family: 'Blair';
   src: url('/fonts/BlairITCStd-Medium.woff2') format('woff2');
   font-weight: 500 800;
+  font-style: normal;
   font-display: swap;
 }
 @font-face {

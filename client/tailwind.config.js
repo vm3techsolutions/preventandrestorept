@@ -8,8 +8,8 @@ module.exports = {
         navy: { DEFAULT: '#001D39', 2: '#002B54', 3: '#0A3A66' },
       },
       fontFamily: {
-        heading: ['"Blair"', 'Montserrat', 'ui-sans-serif', 'sans-serif'],
-        body: ['"Elza"', 'Jost', 'ui-sans-serif', 'sans-serif'],
+        heading: ['"Blair"'],
+        body: ['"Elza"'],
       },
       boxShadow: { xs: '0 1px 2px 0 rgb(0 29 57 / 0.05)' },
       keyframes: {
