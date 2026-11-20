@@ -111,7 +111,7 @@ export function PageHero({
 <div
   className="absolute inset-0 bg-navy bg-no-repeat"
   style={{
-    backgroundImage: "url('/images/RayBanners.png')",
+    backgroundImage: "url('/images/RayBannerLogo.png')",
     backgroundSize: '200% auto',
     backgroundPosition: 'calc(100% + 300px) center',
   }}
@@ -268,7 +268,7 @@ export function CtaBand({
           <div
             className="
               absolute inset-0
-              bg-[url('/images/RayCTANe.png')]
+              bg-[url('/images/BGBGBG.png')]
               bg-cover
               bg-center
               bg-no-repeat
@@ -277,10 +277,10 @@ export function CtaBand({
           />
 
           {/* Background overlay */}
-          <div
+          {/* <div
             className="absolute inset-0 bg-navy/20"
             aria-hidden="true"
-          />
+          /> */}
 
           {/* CTA Content */}
           <div className="relative z-10 grid items-end gap-8 lg:grid-cols-[1.4fr_1fr]">

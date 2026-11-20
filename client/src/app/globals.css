@@ -68,7 +68,7 @@
   }
   .legal h2 { @apply mt-12 font-heading text-2xl font-semibold text-navy; }
   .legal h3 { @apply mt-8 font-heading text-lg font-semibold text-navy; }
-  .legal p { @apply mt-4 leading-relaxed text-slate-700; }
+  .legal p { @apply leading-relaxed text-slate-700; }
   .legal ul { @apply mt-4 list-disc space-y-2 pl-6 text-slate-700; }
   .legal a { @apply text-teal underline underline-offset-2 hover:text-teal-hover; }
   .rich strong, .rich b { @apply font-semibold text-navy; }
