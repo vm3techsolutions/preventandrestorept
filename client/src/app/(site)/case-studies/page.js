@@ -20,7 +20,7 @@ function CaseCard({ c }) {
         <SmartImage src={c.featuredImage?.url || '/images/stock/assess.webp'} alt={c.featuredImage?.alt || ''} sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
       </div>
       <div className="flex flex-1 flex-col p-7">
-        {c.primaryConcern && <p className="eyebrow text-teal">{c.primaryConcern}</p>}
+        {/* {c.primaryConcern && <p className="eyebrow text-teal">{c.primaryConcern}</p>} */}
         <h2 className="mt-3 font-heading text-xl font-semibold text-navy">{c.title}</h2>
         <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-slate-600">{c.summary}</p>
         <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-teal">Read More <ArrowUpRight className="h-4 w-4" aria-hidden /></span>

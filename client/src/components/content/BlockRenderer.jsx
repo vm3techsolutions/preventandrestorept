@@ -3,7 +3,7 @@ import SmartImage from '@/components/site/SmartImage';
 // Renders structured content blocks. Shared by the admin preview and the public site.
 export default function BlockRenderer({ blocks = [] }) {
   return (
-    <div className="space-y-5 text-[17px] leading-[1.75] text-slate-700" data-testid="block-renderer">
+    <div className="content-blocks flex flex-col gap-5 text-[17px] leading-[1.75] text-slate-700"data-testid="block-renderer">
       {blocks.map((b, i) => {
         const key = `${b.type}-${i}`;
         const d = b.data || {};

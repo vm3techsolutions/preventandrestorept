@@ -46,7 +46,7 @@ export default function CaseStudyBody({ cs }) {
           <section key={k} aria-labelledby={`case-${k}`} data-testid={`case-section-${k}`}>
             <p className="eyebrow text-teal">{String(n).padStart(2, '0')}</p>
             <h2 id={`case-${k}`} className="mt-2 font-heading text-2xl font-semibold text-navy sm:text-3xl">{label}</h2>
-            <div className="mt-4 space-y-4 text-base leading-relaxed text-slate-700 md:text-lg"><Paras text={cs[k]} /></div>
+            <div className="mt-1 space-y-4 text-base leading-relaxed text-slate-700 md:text-lg"><Paras text={cs[k]} /></div>
             {k === 'plan' && cs.showApproach && <div className="mt-8"><ApproachDiagram /></div>}
             {k === 'takeaways' && [...(cs.relatedServices || []), ...(cs.relatedConditions || [])].length > 0 && (
               <div className="mt-5 flex flex-wrap gap-2">

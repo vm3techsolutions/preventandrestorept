@@ -26,7 +26,7 @@ function Section({ s }) {
           <SmartImage src={s.image.url} alt={s.image.alt || s.heading} sizes="(min-width:768px) 760px, 100vw" className="object-cover" />
         </div>
       )}
-      <div className="mt-5 space-y-4 text-base leading-relaxed text-slate-700 md:text-lg"><Paras text={s.description} /></div>
+      <div className=" space-y-4 text-base leading-relaxed text-slate-700 md:text-lg"><Paras text={s.description} /></div>
       {(s.symptoms || s.howPtHelps) && (
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {s.symptoms && <div className="rounded-2xl bg-slate-50 p-5"><h3 className="font-heading text-lg font-semibold text-navy">Common symptoms</h3><div className="mt-2 space-y-2 text-[15px] leading-relaxed text-slate-600"><Paras text={s.symptoms} /></div></div>}
